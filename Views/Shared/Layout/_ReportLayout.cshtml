@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 10]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="#">
+    <meta name="keywords" content="Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app">
+    <meta name="author" content="#">
+    <!-- Favicon icon -->
+
+    <link rel="icon" href="~/ccns.ico" type="image/x-icon">
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800" rel="stylesheet">
+    <!-- Required Fremwork -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/bootstrap/css/bootstrap.min.css">
+    <!-- themify-icons line icon -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/themify-icons/themify-icons.css">
+    <!-- sweet alert framework -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/sweetalert/css/sweetalert.css">
+    <!-- feather Awesome -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/feather/css/feather.css">
+    <!-- Menu-Search css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/pages/menu-search/css/component.css">
+     
+    <!-- Notification.css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/pages/notification/notification.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/animate.css/css/animate.css">
+    
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/icofont/css/icofont.css">
+    
+    <!-- feather Awesome -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/feather/css/feather.css">
+    
+     <!-- animation nifty modal window effects css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/css/component.css">
+    
+    <!-- Data Table Css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/pages/data-table/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css">
+    
+    <!-- Date-time picker css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/pages/advance-elements/css/bootstrap-datetimepicker.css">
+    <!-- Date-range picker css  -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/bootstrap-daterangepicker/css/daterangepicker.css">
+    <!-- Date-Dropper css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/datedropper/css/datedropper.min.css">
+    <!-- Color Picker css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/spectrum/css/spectrum.css">
+    <!-- Mini-color css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/jquery-minicolors/css/jquery.minicolors.css">
+    
+    <!-- Select 2 css -->
+    <link rel="stylesheet" href="~/template/files/bower_components/select2/css/select2.min.css">
+    <!-- Multi Select css -->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/multiselect/css/multi-select.css">
+    
+    <!--forms-wizard css-->
+    <link rel="stylesheet" type="text/css" href="~/template/files/bower_components/jquery.steps/css/jquery.steps.css">
+    <!-- Style.css -->
+    <link rel="stylesheet" type="text/css" href="~/css/site.css">
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="~/template/files/assets/css/jquery.mCustomScrollbar.css">
+    
+</head>
+<body>
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+            <!--header-->
+            @{await Html.RenderPartialAsync("Layout/_Header");}
+            <!--end header-->
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    <!-- Nav slide left -->
+                    @{await Html.RenderPartialAsync("Layout/_ReportNavigation");}
+                    <!--End Nav slide left-->
+
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <!-- Main-body start -->
+                            <div class="main-body">
+                                <div class="page-wrapper" style="padding-top: 0">
+                                    <!--Robin place-->
+                                    @*@{await Html.RenderPartialAsync("Layout/_Ribon");}*@
+                                    <!--End Robin place-->
+                                    <!--Start Body -->
+                                    <!-- Page body start -->
+                                    <div class="page-body navbar-page">
+                                        @RenderBody()
+                                    </div>
+                                    <!-- Page body end -->
+                                    <!--Start Body -->
+                                </div>
+                            </div>
+                            <!-- Main-body end -->
+                            <div id="styleSelector">
+
+                            </div>
+                            @{await Html.RenderPartialAsync("Layout/_WarningPage");}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Required Jquery -->
+@*
+   <script type="text/javascript" src="~/template/files/bower_components/jquery/js/jquery.min.js"></script>
+   <script type="text/javascript" src="~/template/files/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+   <script type="text/javascript" src="~/template/files/bower_components/popper.js/js/popper.min.js"></script>
+   <script type="text/javascript" src="~/template/files/bower_components/bootstrap/js/bootstrap.min.js"></script>*@
+
+
+    <!-- jquery slimscroll js -->
+    <script type="text/javascript" src="~/template/files/bower_components/jquery-slimscroll/js/jquery.slimscroll.js"></script>
+    <!-- modernizr js -->
+    <script type="text/javascript" src="~/template/files/bower_components/modernizr/js/modernizr.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/modernizr/js/css-scrollbars.js"></script>
+    
+    <!-- Bootstrap date-time-picker js -->
+    <script type="text/javascript" src="~/template/files/assets/pages/advance-elements/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/template/files/assets/pages/advance-elements/bootstrap-datetimepicker.min.js"></script>
+    <!-- Date-range picker js -->
+    <script type="text/javascript" src="~/template/files/bower_components/bootstrap-daterangepicker/js/daterangepicker.js"></script>
+    <!-- Date-dropper js -->
+    <script type="text/javascript" src="~/template/files/bower_components/datedropper/js/datedropper.min.js"></script>
+    <!-- Color picker js -->
+    <script type="text/javascript" src="~/template/files/bower_components/spectrum/js/spectrum.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/jscolor/js/jscolor.js"></script>
+    <!-- Mini-color js -->
+    <script type="text/javascript" src="~/template/files/bower_components/jquery-minicolors/js/jquery.minicolors.min.js"></script>
+     <!-- data-table js -->
+    <script src="~/template/files/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/template/files/assets/pages/data-table/js/jszip.min.js"></script>
+    <script src="~/template/files/assets/pages/data-table/js/pdfmake.min.js"></script>
+    <script src="~/template/files/assets/pages/data-table/js/vfs_fonts.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/template/files/bower_components/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+    <!-- notification js -->
+    <script type="text/javascript" src="~/template/files/assets/js/bootstrap-growl.min.js"></script>
+    @*<script type="text/javascript" src="~/template/files/assets/pages/notification/notification.js"></script>*@
+
+    <!-- i18next.min.js -->
+    <script type="text/javascript" src="~/template/files/bower_components/i18next/js/i18next.min.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/i18next-xhr-backend/js/i18nextXHRBackend.min.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/i18next-browser-languagedetector/js/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/jquery-i18next/js/jquery-i18next.min.js"></script>
+    <!-- Custom js -->
+    <script src="~/template/files/assets/pages/data-table/js/data-table-custom.js"></script>
+    <!--Forms - Wizard js-->
+    <script src="~/template/files/bower_components/jquery.cookie/js/jquery.cookie.js"></script>
+    <script src="~/template/files/bower_components/jquery.steps/js/jquery.steps.js"></script>
+    <script src="~/template/files/bower_components/jquery-validation/js/jquery.validate.js"></script>
+
+    <!-- Select 2 js -->
+    <script type="text/javascript" src="~/template/files/bower_components/select2/js/select2.full.min.js"></script>
+    <!-- Multiselect js -->
+    <script type="text/javascript" src="~/template/files/bower_components/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="~/template/files/bower_components/multiselect/js/jquery.multi-select.js"></script>
+    <script type="text/javascript" src="~/template/files/assets/js/jquery.quicksearch.js"></script>
+    <!-- Custom js -->
+    <script type="text/javascript" src="~/template/files/assets/pages/advance-elements/select2-custom.js"></script>
+
+    <!-- Validation js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script type="text/javascript" src="~/template/files/assets/pages/form-validation/validate.js"></script>
+
+<!-- sweet alert js -->
+    <script type="text/javascript" src="~/template/files/bower_components/sweetalert/js/sweetalert.min.js"></script>
+
+    <script type="text/javascript" src="~/template/files/assets/js/classie.js"></script>
+<!-- Custom js -->
+ <!-- Custom js -->
+    @*<script type="text/javascript" src="~/template/files/assets/pages/form-validation/form-validation.js"></script>*@
+    <script type="text/javascript" src="~/template/files/assets/pages/advance-elements/custom-picker.js"></script>
+    <script src="~/template/files/assets/pages/forms-wizard-validation/form-wizard.js"></script>
+    <script src="~/template/files/assets/js/pcoded.min.js"></script>
+    <script src="~/template/files/assets/js/vartical-layout.min.js"></script>
+    <script src="~/template/files/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script type="text/javascript" src="~/template/files/assets/js/script.js"></script>
+    <script type="text/javascript" src="~/js/employee.js"></script>
+<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-23581568-13');
+    </script>
+</body>
+</html>

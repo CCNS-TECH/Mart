@@ -1,0 +1,1194 @@
+﻿@{
+    Layout = "OrderLayout/_Layout";
+    var gsection = await SectionService.GetGroupSections();
+    var sections = await SectionService.GetSections();
+    var order = ViewBag.Order;
+    var invoice = ViewBag.Inv;
+}
+
+<div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+        <div class="page-wrapper">
+            @section Ribbon
+         {
+                <div class="btn-group nav-section-group" id="group-section">
+                    <button class="btn btn-default active btn-active" id="class-0" onclick="FindSectionByGroup(0)"><b>All</b></button>
+                    @foreach (var g in gsection)
+                    {
+                        <button class="btn btn-default btn-active" id="class-@g.Id" style="color: #00ACED;" onclick="FindSectionByGroup(@g.Id)"><b>@g.GSectionEn</b></button>
+                    }
+                </div>
+                <div class="btn-group text-right" hidden id="search-section" style="float: right;margin-right:25px;margin-top: 5px;">
+                    <input placeholder="search..." style="min-width:325px;" onkeyup="searchsection(this)" class="form-control" />
+                </div>
+            }
+            <div class="row" style="margin-top: -25px;">
+                <div class="col-sm-12">
+                    <div class="filter-button">
+                        <div class="btn-group" id="find-section-type">
+                            <button class="btn btn-primary btn-section-type" id="all" data-type="0" onclick="FindSectionNormal(this)">All</button>
+                            <button class="btn btn-primary btn-section-type" id="normal" data-type="class-Normal-0" onclick="FindSectionNormal(this)">Normal</button>
+                            <button class="btn btn-primary btn-section-type" id="vip" data-type="class-VIP-0" onclick="FindSectionNormal(this)">VIP</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="allSection">
+                @foreach (var s in sections)
+                {
+                    if (s.LineStatus == "R")
+                    {
+                        <!-- Table -->
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 class-@s.SectionType.Type-0 class-@s.GSectionId class-@s.SectionType.Type-group-@s.GSectionId" data-type="@s.SectionType.Type">
+                            <div class="card" style="background-color:#f2f2f2;">
+                                <div class="card-header pos-card-header">
+                                    <span class="badge badge-warning f-right text-white">Booked </span>
+                                    <h5 class="card-title" style="color: #138496;"><b>@s.SectionEn (<i class="text-danger">$@String.Format("{0:N2}", @s.Price)/H</i>)</b></h5>
+                                </div>
+                                <div class="card-body pos-card-body">
+                                    @if (s.SectionType.Type == "VIP")
+                                    {
+                                        <span class="badge badge-circle pull-right badge-warning text-white">  <b>VIP</b></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-circle pull-right badge-default text-white">  <b>N</b></span>
+                                    }
+                                    <table width="100%">
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-primary"></i></span> Date</td>
+                                            <td><span class="text-primary">@s.BookingSection.StartDate?.ToString("yyyy-MM-dd")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-info"></i></span> Time In</td>
+                                            <td><span class="text-primary">@s.BookingSection.Hour:@s.BookingSection.Minute.ToString("D2")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-danger"></i></span> Time</td>
+                                            <td>N/A</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="icofont icofont-ui-press text-success"></i> Duration </td>
+                                            <td>N/A</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="card-footer pos-card-footer" style="background-color:#f2f2f2;">
+                                    <div class="pull-right">
+                                        <button class="btn btn-mini btn-outline-success waves-effect confirm-booking" onclick="click_confirm_booking(@s.Id)">Confirm</button>
+                                        <button class="btn btn-mini btn-outline-danger" onclick="click_confirm_cancel_booking(@s.Id)">Cancel</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                    <!-- /Table -->
+                    if (s.LineStatus == "B")
+                    {
+                        <!-- Table -->
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 class-@s.SectionType.Type-0 class-@s.GSectionId class-@s.SectionType.Type-group-@s.GSectionId" data-type="@s.SectionType.Type">
+                            <div class="card" style="background-color:#f2f2f2;">
+                                <div class="card-header pos-card-header">
+                                    <span class="badge badge-info f-right text-white">Busy</span>
+                                    <h5 class="card-title" style="color: #138496;"><b>@s.SectionEn (<i class="text-danger">$@String.Format("{0:N2}", @s.Price)/H</i>)</b></h5>
+                                </div>
+                                <div class="card-body pos-card-body">
+                                    @if (s.SectionType.Type == "VIP")
+                                    {
+                                        <span class="badge badge-circle pull-right badge-warning text-white">  <b>VIP</b></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-circle pull-right badge-default text-white">  <b>N</b></span>
+                                    }
+
+                                    <table width="100%" class="table-room">
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-primary"></i></span> Date</td>
+                                            <td class="text-primary date-in">@s.SectionCheckIn.CheckedInDate?.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-info"></i></span> Time In</td>
+                                            <td class="text-primary"><span class="TimeIn Time-in-@s.Id">@s.SectionCheckIn.StartTime?.ToString("HH:mm:ss tt")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-danger"></i></span> Time</td>
+                                            <td class="text-danger"><span class="TrackTime text-primary"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="icofont icofont-ui-press text-success"></i> Duration </td>
+                                            <td><span class="TrackHours text-primary">N/A</span></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                <div class="card-footer pos-card-footer" style="background-color:#f2f2f2;">
+                                    <div class="pull-right">
+                                        <a role="button" class="btn btn-mini btn-outline-primary waves-effect" asp-action="order" asp-controller="poss" asp-route-id="@s.Id" asp-route-price="@String.Format("{0:N0}",@s.Price)">Order</a>
+                                        <button type="button" hidden class="btn btn-mini btn-outline-success waves-effect">Bill</button>
+                                        <div class="btn-group dropdown-split-inverse" style="margin-bottom: 0">
+                                            <button type="button" class="btn btn-mini btn-inverse btn-outline-inverse">Detail</button>
+                                            <button type="button" class="btn btn-mini btn-inverse btn-outline-inverse dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">More</span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item waves-effect waves-light md-trigger" href="javascript:void(0)" data-modal="modal-transfer" onclick="onClickSectinTransfer('@s.Id','@s.SectionEn','@s.SectionType.Type','@s.SectionCheckIn.CheckedInDate?.ToString("yyyy-MM-dd")','@s.SectionCheckIn.StartTime?.ToString("HH:mm:ss tt")')">Transfer</a>
+                                                <a class="dropdown-item " href="javascript:void(0)" data-toggle="modal" data-target="#modal-order-list-view" onclick="onClickViewOrderList(@s.Id)">Order View</a>
+                                                @*<a class="dropdown-item waves-effect waves-light md-trigger" href="javascript:void(0)" data-modal="modal-split">Split</a>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Table -->
+                    }
+                    if (s.LineStatus == "C")
+                    {
+                        <!-- Table -->
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 class-@s.SectionType.Type-0 class-@s.GSectionId class-@s.SectionType.Type-group-@s.GSectionId" data-type="@s.SectionType.Type">
+                            <div class="card" style="background-color:#f2f2f2;">
+                                <div class="card-header pos-card-header">
+                                    <span class="badge badge-primary f-right text-white">Bill</span>
+                                    <h5 class="card-title" style="color: #138496;"><b>@s.SectionEn (<i class="text-danger">$@String.Format("{0:N2}", @s.Price)/H</i>)</b></h5>
+                                </div>
+                                <div class="card-body pos-card-body">
+
+                                    @if (s.SectionType.Type == "VIP")
+                                    {
+                                        <span class="badge badge-circle pull-right badge-warning text-white">  <b>VIP</b></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-circle pull-right badge-default text-white">  <b>N</b></span>
+                                    }
+                                    <table width="100%" id="table_print_bill_viewer">
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-primary"></i></span> Date</td>
+                                            <td class="text-primary bill-date-checkin">@s.SectionCheckIn.CheckedInDate?.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-info"></i></span> Time In</td>
+                                            <td class="text-primary date-in">@s.SectionCheckIn.StartTime?.ToString("HH:mm:ss tt")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-danger"></i></span> Time</td>
+                                            <td class="text-primary"><span class="TimeIn Time-in-@s.Id">@s.SectionCheckIn.EndDate?.ToString("HH:mm:ss")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="icofont icofont-ui-press text-success"></i> Duration </td>
+                                            <td class="text-primary"><span class="duration-in-@s.Id">@s.Order.Duration</span></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                <div class="card-footer pos-card-footer" style="background-color:#f2f2f2;">
+                                    <div class="pull-right">
+                                        <a class="btn btn-mini btn-outline-success" asp-controller="payments" asp-action="payment" asp-route-id="@s.Id">Payment</a>
+                                        <a role="button" class="btn btn-mini btn-outline-primary waves-effect" asp-action="order" asp-controller="poss" asp-route-id="@s.Id" asp-route-price="@String.Format("{0:N0}",@s.Price)">Order</a>
+                                        <div class="btn-group dropdown-split-inverse" style="margin-bottom: 0">
+                                            <button type="button" class="btn btn-mini btn-inverse btn-outline-inverse">Detail</button>
+                                            <button type="button" class="btn btn-mini btn-inverse btn-outline-inverse dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="sr-only">More</span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item " href="javascript:void(0)" data-toggle="modal" data-target="#modal-print-re-bill" onclick="onClickRe_Bill(@s.Id)">Re-Bill</a>
+                                                <a class="dropdown-item" href="javascript:void(0)" data-modal="modal-cancel-bill" hidden="hidden">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Table -->
+                    }
+                    if (s.LineStatus == "N")
+                    {
+                        <!-- Table -->
+                        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-2 class-@s.SectionType.Type-0 class-@s.GSectionId class-@s.SectionType.Type-group-@s.GSectionId" data-type="@s.SectionType.Type">
+                            <div class="card">
+                                <div class="card-header pos-card-header">
+                                    <span class="badge badge-default f-right text-white">Available</span>
+                                    <h5 class="card-title" style="color: #138496;"><b>@s.SectionEn (<i class="text-danger">$@String.Format("{0:N2}", @s.Price)/H</i>)</b></h5>
+                                </div>
+                                <div class="card-body pos-card-body">
+                                    @if (s.SectionType.Type == "VIP")
+                                    {
+                                        <span class="badge badge-circle pull-right badge-warning text-white">  <b>VIP</b></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-circle pull-right badge-default text-white">  <b>N</b></span>
+                                    }
+                                    <table width="100%">
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-primary"></i></span> Date</td>
+                                            <td class="text-primary span-date-time">:</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-info"></i></span> Time In</td>
+                                            <td class="text-primary">N/A</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span><i class="icofont icofont-ui-press text-danger"></i></span> Time</td>
+                                            <td class="text-primary">N/A</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="icofont icofont-ui-press text-success"></i> Duration </td>
+                                            <td class="text-primary">N/A</td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                                <div class="card-footer pos-card-footer">
+                                    <div class="pull-right">
+                                        <button type="button" class="btn btn-mini btn-outline-primary waves-effect md-trigger" data-modal="modal-booking" onclick="onchangeSectionBooking('@s.GSectionId','@s.GroupSection.GSectionEn','@s.Id','@s.SectionEn','@s.SectionType.Id','@s.SectionType.Type')">Booking Now</button>
+                                        <button type="button" class="btn btn-mini btn-outline-success waves-effect md-trigger" data-modal="modal-checkin" onclick="onchechInSection('@s.GSectionId','@s.GroupSection.GSectionEn','@s.Id','@s.SectionEn','@s.SectionType.Id','@s.SectionType.Type');">Check In</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Table -->
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@*  Modal Booking *@
+<div class="md-modal md-effect-12" id="modal-booking" style="max-width:1200px">
+    <div class="md-content">
+        <!-- Page body start -->
+        <div class="page-body">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4>Booking Room</h4>
+                </div>
+                <div class="card-body">
+
+                    @{
+                        await Html.RenderPartialAsync("_BookingSection");
+                    }
+
+                </div>
+            </div>
+        </div>
+        <!-- Page body end -->
+    </div>
+</div>
+@*  Modal Booking List *@
+@*<div class="md-modal md-effect-12" id="modal-booking-List" style="max-width:1200px">
+        <div class="md-content">
+            <!-- Page body start -->
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header bg-default">
+                        <h5>Booking Section Lists</h5>
+                    </div>
+                    <div class="card-body">
+
+                        @{
+                            await Html.RenderPartialAsync("_BookingListPartial");
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <!-- Page body end -->
+        </div>
+    </div>*@
+
+@* Modal Checkin *@
+<div class="md-modal md-effect-12" id="modal-checkin" style="max-width:1200px">
+    <div class="md-content">
+        <!-- Page body start -->
+        <div class="page-body">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4>Checkin Room</h4>
+                </div>
+                <div class="card-body">
+
+                    @{
+                        await Html.RenderPartialAsync("_CheckingSection");
+                    }
+
+                </div>
+            </div>
+        </div>
+        <!-- Page body end -->
+    </div>
+</div>
+
+@* Modal Confirm *@
+<div class="md-modal md-effect-12" id="modal-confirm" style="max-width:1200px">
+    <div class="md-content">
+        <!-- Page body start -->
+        <div class="page-body">
+            <div class="card">
+                <div class="card-header bg-default">
+                    <h5>Checkin Room</h5>
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Room Type</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="roomtype">
+                                                <option value="N">Normal</option>
+                                                <option value="V">VIP</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Room</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="roomtype">
+                                                <option value="1">Room 1</option>
+                                                <option value="2">Room 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Title</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Title">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Member</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Member">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Date</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Start Date</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Start Date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Start Time</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Start Time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 col-form-label">Check By</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-normal" placeholder="Start Time">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Member</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="card-footer pos-card-footer">
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button class="btn btn-secondary waves-effect md-close">Back</button>
+                            <button id="checkin" class="btn bg-primary" onclick="CheckinSection();">Check In</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body end -->
+    </div>
+</div>
+<!-- / Modal Confirm -->
+@* Modal Transfer *@
+<div class="md-modal md-effect-12" id="modal-transfer" style="max-width:1200px">
+    <div class="md-content">
+        <!-- Page body start -->
+        <div class="page-body">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4>Transfer</h4>
+                </div>
+                <div class="card-body">
+
+                    @{
+                        await Html.RenderPartialAsync("_TranferSection");
+                    }
+
+                </div>
+            </div>
+        </div>
+        <!-- Page body end -->
+    </div>
+</div>
+
+@* Modal View Model *@
+<div class="modal fade modal-flex" id="modal-order-list-view" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 650px;">
+        <div class="modal-content" style="background:transparent;border:0px;">
+            <div class="modal-body model-container" style="background:transparent;border:0px;">
+                <div class="md-content" style="background:transparent;border:0px;">
+                    <!-- Page body start -->
+                    <div class="page-body">
+                        <div class="card">
+                            <div class="card-header bg-info">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>Order List</h4>
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-right">
+                                            Room <br/>
+                                            <input type="text" class="text-white " style="border:0px;background:transparent;text-align:right;font-size:1em;font-style:oblique;" id="room_view_order"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Name</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="order-list-view">
+                                      
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Page body end -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- / Modal Checkin -->
+@* Modal Split *@
+<div class="md-modal md-effect-12" id="modal-split" style="max-width:1200px">
+    <div class="md-content">
+        <!-- Page body start -->
+        <div class="page-body">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4>Transfer</h4>
+                </div>
+                <div class="card-body">
+                    @{
+                        await Html.RenderPartialAsync("_SPliteRoom");
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Page body end -->
+    </div>
+</div>
+<!--animation modal  Dialogs ends -->
+<div class="md-overlay"></div>
+<!-- modalEffects js nifty modal window effects -->
+<!-- Modal print bill-->
+<div class="modal fade modal-flex" id="modal-print-re-bill" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 950px">
+        <div class="modal-content">
+            <div class="modal-body model-container">
+                <div>
+                    <!-- Invoice card start -->
+                    <div class="" id="print_re_bill_invoice" style="font-family:'Khmer OS' !important">
+                        <div class="row invoice-contact">
+                            <div class="col-md-8">
+                                <div class="invoice-box row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <table class="table table-responsive invoice-table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td><img src="~/images/logo/@Context.Session.GetString("Logo")" style="width:125px; height: 125px;" class="m-b-10" alt=""></td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Company :</b> <b>@Context.Session.GetString("CompanyName")</b></td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td>
+                                                        <b> Address :</b>
+                                                        @Context.Session.GetString("St_Num") St.
+                                                        @Context.Session.GetString("Sangkat") ,
+                                                        <br /> @Context.Session.GetString("Khan") ,
+                                                        @Context.Session.GetString("City") ,
+                                                        <br />@Context.Session.GetString("Province")
+                                                    </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td>
+                                                        <b> Email :</b> @Context.Session.GetString("Email")
+                                                    </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Phone :</b> @Context.Session.GetString("Phone") </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Mobile :</b> @Context.Session.GetString("Mobile") </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="row invoive-info">
+                                    <h6>Order Information</h6>
+                                    <table class="table table-responsive invoice-table invoice-order table-borderless" id="tb-head-invoice">
+                                        <tbody>
+                                            <tr class="h6" hidden="hidden">
+                                                <th>
+                                                    <span class="m-b-20">Order N<sup>o</sup> : </span>
+                                                </th>
+                                                <td class="order-code" style="font-weight: bold;">
+                                                </td>
+                                            </tr>
+                                            <tr class="h6">
+                                                <th>
+                                                    <span class="m-b-20">Bill N<sup>o</sup> : </span>
+                                                </th>
+                                                <td style="font-weight: bold;" class="invoice-code">
+                                                </td>
+                                            </tr>
+
+                                            <tr class="h6">
+                                                <th>Order Date : </th>
+                                                <td class="order-date" style="font-weight: bold;">
+                                                </td>
+                                            </tr>
+                                            <tr class="h6">
+                                                <th>Doc Date : </th>
+                                                <td style="font-weight: bold;"> <span> @DateTime.Now.ToString("yyyy/MM/dd") </span></td>
+                                            </tr>
+
+                                            <tr class="h6">
+                                                <th>Status : </th>
+                                                <td style="font-weight: bold;">
+                                                    <span>Re-Bill</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table" id="table_print_bill">
+                                            <thead>
+                                                <tr class="thead-default h6">
+                                                    <th>N<sup>o</sup> <br /> ល.រ</th>
+                                                    <th>Description <br />ទំនិញ</th>
+                                                    <th>Quantity <br /> ចំនួន</th>
+                                                    <th>Price <br /> តម្លៃ</th>
+                                                    <th>Disc <br /> បញ្ខុះតម្លៃ</th>
+                                                    <th class="text-right">Amount <br /> សរុប</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbbod-print-re-bill">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <hr style="border: 3px #ccc solid" />
+                                    <div class="text-right">
+                                        <h5><b>Total Due</b></h5>
+                                    </div>
+                                    <table class="table table-responsive invoice-table invoice-total" id="invoice_total">
+
+                                        <tr>
+                                            <td style="font-weight: bold;">Sub Total / សរុប ($)</td>
+                                            <td class="text-right sub_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Free Hour / Free ម៉ោង (h)</td>
+                                            <td class="text-right free_hour_total" style="font-weight: bold;">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Discount / បញ្ខុះតម្លៃ (%)</td>
+                                            <td class="text-right discount_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                                            <td class="text-right vat_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
+                                            <td class="text-right service_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
+                                            <td class="text-right charg_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
+                                            <td class="text-right grand_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+
+                                    </table>
+                                    <div>
+                                        <h4 class="text-center">
+                                            <span>@Context.Session.GetString("Description")</span>
+                                        </h4>
+                                        <p class="text-center">
+                                            <span style="color: #cce5ff">Develop by CCNS Solution</span>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Invoice card end -->
+                    <div class="row text-center">
+                        <div class="col-sm-12 invoice-btn-group text-right">
+                            <button type="button" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" onclick="print_Re_Bill();">Re-Print</button>
+                            <button type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal print bill end -->
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/notification.js"></script>
+@*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>*@
+<script type="text/javascript" src="~/template/files/bower_components/jquery/js/jquery.min.js"></script>
+<style>
+    .nav-section-group {
+        margin: 0;
+        color: #fff;
+        padding: 2px 2px;
+    }
+
+    .active {
+        color: #fff;
+    }
+
+    .btn-section-type {
+        color: #fff;
+        background-color: #00ACED;
+    }
+
+        .btn-section-type:hover {
+            border: none;
+            background-color: #00ACED;
+        }
+</style>
+<script>$(document).ready(function () {
+        onChangeSectionType();
+    });
+    function click_confirm_booking(section_id) {
+
+        swal({
+            title: "Booking Confirm!",
+            text: "Would you like to confirm booking room?",
+            type: "input",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            inputPlaceholder: "Description",
+            confirmButtonClass: "btn-danger"
+        }, function (inputValue) {
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("You need to write description!");
+                return false
+            } else {
+                //var parm = $("#sectionId").val();
+
+                $.ajax({
+                    url: "/pos/section/confirm/booking",
+                    type: "post",
+                    datatype: "json",
+                    data: { "id": section_id, "message": inputValue },
+                    success: function (data) {
+                        swal({
+                            title: "Confirm Successful!",
+                            text: "Your booking has been confirm!",
+                            type: "success"
+                        });
+                        window.setTimeout(function () { window.location.reload() }, 1500);
+                    }
+                });
+            }
+        });
+    }
+    function click_confirm_cancel_booking(parm) {
+        swal({
+            title: "Booking Cancel!",
+            text: "Would you like to cancel booking?",
+            type: "input",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonClass: "btn-danger",
+            inputPlaceholder: "Description"
+        }, function (inputValue) {
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("You need to write description!");
+                return false
+            } else {
+                $.ajax({
+                    url: "/pos/section/cancel/booking",
+                    type: "post",
+                    datatype: "json",
+                    data: { "id": parm, "message": inputValue },
+                    success: function (data) {
+                        swal({
+                            title: "Cancel Successful!",
+                            text: "Your booking has been cancelled!",
+                            type: "success"
+                        }
+                        );
+                        window.setTimeout(function () { window.location.reload() }, 1500);
+                    }
+                });
+            }
+        });
+    }
+
+    function calculate_time(time_track) {
+        $(".table-room").each(function () {
+            var date = new Date();
+            var datein = $(this).find("tr td.date-in").text();
+            var date_in = datein.split("-");
+            var current_date = date.getDate();
+
+            var time_in = $(this).find("tr td span.TimeIn").text();
+            var time1 = time_in.split(':'), time2 = time_track.split(':');
+            var hours1 = parseInt(time1[0], 10),
+                hours2 = parseInt(time2[0], 10),
+                mins1 = parseInt(time1[1], 10),
+                mins2 = parseInt(time2[1], 10);
+            var hours = 0;
+            if (date_in[2] != current_date) {
+                //var day =parseInt(current_date) - parseInt(date_in[2]);
+                hours = 24 + hours2 - hours1;
+                //console.log("different day");
+            }
+            else {
+                hours = hours2 - hours1;
+                //console.log("the same day"+hours);
+            }
+            var mins = 0;
+            //if(hours <= 0) hours = 24 + hours;
+            if (mins2 >= mins1) {
+                mins = mins2 - mins1;
+            }
+            else {
+                mins = (mins2 + 60) - mins1;
+                hours--;
+            }
+            mins = mins / 60; // take percentage in 60
+            hours += mins;
+            var hm = hours.toString().split(".");
+            var minuts = parseInt(parseFloat("0." + hm[1]) * 60) + " min";
+            hours = hm[0] + " h : " + minuts;
+            $(this).find("td span.TrackHours").text(hours)
+        });
+    }
+    $(function () {
+        var html = '';
+        for (var i = 0; i < 60; i++) {
+            html += "<option value = '" + i + "' >" + i + "</option>";
+        }
+        $('#Minute').append(html);
+        $('#EndMinute').append(html);
+        var d = new Date();
+        var n = d.getMinutes();
+        $("#Minute").val(n);
+        $("#EndMinute").val(n);
+
+        var htm = '';
+        for (var j = 0; j < 24; j++) {
+            htm += "<option value = '" + j + "' >" + j + "</option>";
+        }
+        $('#Hour').append(htm);
+        $('#EndHour').append(htm);
+        var dt = new Date();
+        var h = dt.getHours();
+        $("#Hour").val(h);
+        $("#EndHour").val(h);
+    });
+
+
+    setInterval("date_function();", 100);
+    function date_function() {
+        var d = new Date();
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+        var second = d.getSeconds();
+
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minute < 10) {
+            minute = "0" + minute;
+        }
+        if (second < 10) {
+            second = "0" + second;
+        }
+        var html = "";
+        var htmltime = "";
+        html += year + "-" + month + "-" + day;
+        htmltime += hour + ":" + minute + ":" + second;
+
+        $(".span-date-time").html(html);
+        $(".TrackTime").html(htmltime);
+        $("#StartTime").val(htmltime);
+        $(".checkInStartTime").val(htmltime);
+        calculate_time(htmltime);
+    }
+    $('.btn-active').on('click', function () {
+        $(this).siblings().removeClass('active').css("color", "#00ACED"); // if you want to remove class from all sibling buttons
+        $(this).toggleClass('active').css("color", "#fff");
+    });
+    $('.btn-section-type').on('click', function () {
+        $(this).siblings().removeClass('active').css("color", "#fff"); // if you want to remove class from all sibling buttons
+        $(this).toggleClass('active').css("color", "#fff");
+    });
+    function FindSectionByGroup(val) {
+        $("#normal").siblings().removeClass('active').css("color", "#fff");
+        $("#vip").siblings().removeClass('active').css("color", "#fff");
+        $("#all").toggleClass('active').css("color", "#fff");
+
+        var btn = $("#group-section").find("button");
+        if (val === 0) {
+            $(btn).each(function () {
+                var cls = $(this).attr("id");
+                $("." + cls).show();
+                var groupnormal = "class-Normal-" + val;
+                var groupvip = "class-VIP-" + val;
+
+                $("#normal").attr("data-type", groupnormal);
+                $("#vip").attr("data-type", groupvip);
+            });
+        }
+        else {
+            $(btn).each(function () {
+                var cls = $(this).attr("id");
+                var cls_val = "class-" + val;
+                if (cls_val === cls) {
+                    $("." + cls).show();
+
+                    var groupnormal = "class-Normal-group-" + val;
+                    var groupvip = "class-VIP-group-" + val;
+
+                    $("#normal").attr("data-type", groupnormal);
+                    $("#vip").attr("data-type", groupvip);
+
+                }
+                else {
+                    $("." + cls).hide();
+                }
+            });
+        }
+    }
+    function FindSectionNormal(val) {
+        var sectiongrouptype = $(val).attr("data-type");
+        console.log("section type :" + sectiongrouptype);
+        var findsectiontype = $("#find-section-type").find("button");
+
+        if (sectiongrouptype == 0) {
+            $(findsectiontype).each(function () {
+                var type = $(this).attr("data-type");
+
+                $("." + type).show();
+            });
+        }
+        else {
+            $(findsectiontype).each(function () {
+                var type = $(this).attr("data-type");
+                if (type === sectiongrouptype) {
+                    $("." + sectiongrouptype).show();
+                }
+                else {
+                    $("." + type).hide();
+                }
+
+            });
+        }
+    }
+    function onchechInSection(parm1, parm2, parm3, parm4, parm5, parm6) {
+        $(".checkInGSectionId").val(parm1);
+        $(".checkInGSectionStr").val(parm2);
+        $(".checkInSectionId").val(parm3);
+        $(".checkInSectionStr").val(parm4);
+        $(".checkInTypeId").val(parm5);
+        $(".checkInTypeStr").val(parm6);
+    }
+    function onchangeSectionBooking(parm1, parm2, parm3, parm4, parm5, parm6) {
+        $("#GSectionId").val(parm1);
+        $("#GSectionStr").val(parm2);
+
+        $("#SectionId").val(parm3);
+        $("#SectionStr").val(parm4);
+
+        $("#TypeId").val(parm5);
+        $("#TypeStr").val(parm6);
+
+    }
+    function onclickShowBookingInfo(parm) {
+        $.ajax({
+            url: "/pos/section/booking/" + parm,
+            type: "get",
+            datatype: "json",
+            success: function (data) {
+                var out = "";
+                $.each(data, function (i, section) {
+                    var startdate = section.startDate.split("-");
+                    var startday = startdate[2].split("T");
+                    var bookeddate = section.bookedDate.split("-");
+                    var bookedday = startdate[2].split("T");
+
+                    out += '<li>'
+                        + '<div class="bg-primary">'
+                        + '<span style="margin-left:15px"><b>Section ' + section.section.SectionEn + '</b></span>'
+                        + '</div>'
+
+                        + '<div class="row">'
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px">Group <b class="text-primary">' + section.section.groupSection.gSectionEn + '</b></span>'
+                        + '</div>'
+                        + '<div class="col-md-6 col-sm-12">'
+
+                        + '</div>'
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-ui-calendar"></i> Booked Date <b class="text-primary">  ' + bookeddate[0] + "-" + bookeddate[1] + "-" + bookedday[0] + '</b></span>'
+                        + '</div>'
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-ui-calendar"></i> Start Date <b class="text-primary">' + startdate[0] + "-" + startdate[1] + "-" + startday[0] + '</b></span>'
+                        + '</div>'
+
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-clock-time"></i> Start <b class="text-primary">' + section.Hour + ':' + section.Minute + '</b></span>'
+                        + '</div>'
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-clock-time"></i> End <b class="text-primary">' + section.EndHour + ':' + section.EndMinute + '</b></span>'
+                        + '</div>'
+
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-user-alt-3"></i> Custom Name <b class="text-primary">' + section.CustomerStr + '</b></span>'
+                        + '</div>'
+                        + '<div class="col-md-6 col-sm-12">'
+                        + '<span style="margin-left:15px"><i class="icofont icofont-phone-circle"></i> Phone <b class="text-primary">' + section.Phone1 + '</b></span>'
+                        + '</div>'
+                        + '</div>'
+                        + '<hr/>'
+                        + '<div class="text-right" style="margin-bottom: 5px;">'
+                        + '<a class="btn-primary btn-sm text-white" onclick="confirmbooking(' + section.Id + ',' + section.Section.Id + ');">Confirm</a>'
+                        + '<a class="btn-default btn-sm" onclick="cancelbooking(section.Id)">Cancel</a>'
+                        + '</div>'
+                        + '</li>'
+                });
+                $("#booking-list").html(out);
+            }
+        });
+    }
+    function confirmbooking(parm1, parm2) {
+        $.ajax({
+            url: "/pos/section/confirm/booking",
+            type: "post",
+            datatype: "json",
+            data: { "id": parm1 },
+            success: function (data) {
+                alert(parm1 + "-" + parm2);
+            }
+        });
+    }
+    function onChangeSectionType() {
+        var typeid = $("#SectionTypeId").val();
+        var typestr = $("#SectionTypeId option:selected").text();
+        $.ajax({
+            url: "/section/type/" + typeid,
+            type: "get",
+            datatype: "json",
+            success: function (data) {
+                var out = "";
+                $.each(data, function (i, section) {
+
+                    out += "<option value=" + section.id + ">" + section.sectionEn + "</option>";
+                });
+                $("#ToSectionId").html(out);
+            }
+        });
+        //onChangeSection();
+    }
+    function onClickSectinTransfer(parm1, parm2, parm3, parm4, parm5) {
+        $("#FromSectionId").val(parm1);
+        $("#FromSectionStr").val(parm2);
+        $("#FromSectionType").val(parm3);
+        $("#StartDated").val(parm4);
+        $("#StartTimed").val(parm5);
+    }
+    function onClickViewOrderList(parm) {
+        var out = "";
+        $("#order-list-view").html("");
+        $.ajax({
+            url: "/pos/orderbyid/" + parm,
+            type: "get",
+            datatype: "json",
+            success: function (data) {
+                $("#room_view_order").val(data.SectionStr);
+                console.log(data.SectionStr);
+                $.each(data.OrderDetails, function (i, item) {
+                    out +=
+                    "<tr>"
+                    + "<td>" + (i+1) + "</td>"
+                    + "<td>" + item.itemStr + "</td>"
+                    + "<td>" + item.quantity + "</td>"
+                    + "</tr>";
+                });
+                $("#order-list-view").append(out);
+            }
+        });
+    }
+    /*function onChangeSection() {
+      var sectionid = $("#SectionId").val();
+             $.ajax({
+                    url: "/pos/section/get/"+sectionid,
+                    type: "get",
+                    datatype: "json",
+                    success: function (data) {
+                        $("#GSectionStr").val(data.GroupSection.GSectionEn);
+                        $("#GSectionId").val(data.GroupSection.Id);
+                    }
+                });
+
+    }*/
+
+    function onClickRe_Bill(parm) {
+        var total_invoice_footer = $("#invoice_total").find("tr");
+        var table_header_invoice = $("#tb-head-invoice").find("tr");
+        var table_print_bill = $("#table_print_bill_viewer").find("tr");
+
+        var out = "";
+        var outfooter = "";
+        var j = 1;
+        $("#tbbod-print-re-bill").html("");
+        $.ajax({
+            url: "/invoice/get/" + parm,
+            type: "get",
+            datatype: "json",
+            async: false,
+            success: function (data) {
+                var duration = data.duration;
+                var durations = duration.split(":");
+                var hours = durations[0];
+                var minutes = durations[1];
+                var hour = hours.split("h");
+                var h = hour[0];
+                var minute = minutes.split("min");
+                var min = minute[0];
+                var totalminutes = parseFloat(parseFloat(h * 60) + parseFloat(min)).toFixed(2);
+                var totalminutesfree = parseFloat(data.freeHour * 60).toFixed(2);
+
+                var totalDuration = parseFloat(totalminutes - totalminutesfree).toFixed(2);
+                var totaldurationhour = parseFloat(totalDuration / 60).toFixed(2);
+                var lastcaculatehour = totaldurationhour.split(".");
+                var lasthour = lastcaculatehour[0] + "h : " + parseInt(("0." + lastcaculatehour[1]) * 60);
+
+                //alert(duration + " - " + data.FreeHour + " = "+ lasthour);
+
+                out +=
+                    "<tr class='h6'>"
+                    + "<td>" + j + "</td>"
+                    + "<td class='text-left'><b>" + data.sectionStr + "</b></td>"
+                    + "<td class=''><b>" + lasthour + " min</b></td>"
+                    + "<td class=''><b>$ " + parseFloat(data.sectionPrice).toFixed(2) + "</b></td>"
+                    + "<td class=''><b>" + parseFloat(data.discPrcnt).toFixed(2) + " %</b></td>"
+                    + "<td class='text-right' style='font-weight: bold;'><b>$ " + parseFloat(data.sectionAmount).toFixed(2) + "</b></td>"
+                    + "</tr>";
+                $.each(data.invoiceDetails, function (i, invoice) {
+                    var labelfree = "";
+                    if (invoice.lineFree == "Y") {
+                        labelfree = "   <span class='label label-danger text-right'><b>Free</b><span>";
+                    } else {
+                        labelfree = "";
+                    }
+                    out +=
+                        "<tr class='h6'>"
+                        + "<td>" + (j + 1) + "</td>"
+                        + "<td class='text-left'><b>" + invoice.itemStr + labelfree + "</b></td>"
+                        + "<td class=''><b>" + parseFloat(invoice.quantity).toFixed(2) + "</b></td>"
+                        + "<td class=''><b>$ " + parseFloat(invoice.unitPrice).toFixed(2) + "</b></td>"
+                        + "<td class=''><b>" + parseFloat(invoice.discPrcnt).toFixed(2) + " %</b></td>"
+                        + "<td class='text-right' style='font-weight: bold;'><b>$ " + parseFloat(invoice.totalLine).toFixed(2) + "</b></td>"
+                        + "</tr>";
+                    j++;
+                });
+                $("#tbbod-print-re-bill").append(out);
+
+                var datecheckin = table_print_bill.find("td.bill-date-checkin").text();
+                table_header_invoice.find("td.order-code").text("#" + data.orderCode);
+                table_header_invoice.find("td.invoice-code").text("#" + data.invCode);
+                table_header_invoice.find("td.order-date").text(datecheckin);
+
+
+                total_invoice_footer.find("td.sub_total").text(parseFloat(data.subTotalUSD).toFixed(2));
+                total_invoice_footer.find("td.discount_total").text(parseFloat(data.discPrcnt).toFixed(2));
+                total_invoice_footer.find("td.vat_total").text(parseFloat(data.taxPrcnt).toFixed(2));
+                total_invoice_footer.find("td.service_total").text(parseFloat(data.serviceChargeUSD).toFixed(2));
+                total_invoice_footer.find("td.charg_total").text(parseFloat(data.otherChargeUSD).toFixed(2));
+                total_invoice_footer.find("td.free_hour_total").text(parseFloat(data.freeHour).toFixed(2));
+                total_invoice_footer.find("td.grand_total").text(parseFloat(data.grandTotalUSD).toFixed(2));
+            }
+        });
+    }
+    function print_Re_Bill() {
+        //function print bill
+        var printContents = document.getElementById("print_re_bill_invoice").innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.replace('/pos/sections')
+    }</script>
+
+

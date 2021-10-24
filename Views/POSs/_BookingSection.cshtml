@@ -1,0 +1,148 @@
+@model BookingSection
+@{
+    var sectiontypes = await SectionService.GetSectionTypes();
+    var emps = await EmployeeService.EmployeesList();
+    var sections = await SectionService.GetSections();
+    var scts = sections.Where(p => p.LineStatus == "N" && p.SectionType.Type=="Normal").ToList();
+}
+<form class="form-horizontal" asp-action="bookingSection" asp-controller="poss" method="post" role="form">
+    <fieldset>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ឈ្មោះអតិថជន</label>
+                    <div class="col-sm-8">
+                        <input type="text" asp-for="CustomerStr" class="form-control form-control-normal" placeholder="Name" required="required">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">លេខទូរស្ទព័</label>
+                    <div class="col-sm-8">
+                        <input type="text"  asp-for="Phone1" class="form-control form-control-normal" placeholder="Phone" required="required">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ភេទ</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" asp-for="Gender">
+                            <option value="Male">ប្រុស</option>
+                            <option value="Female">ស្រី</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ចំនួនអ្នកចូលរួម</label>
+                    <div class="col-sm-8">
+                        <input type="text" asp-for="Pax" class="form-control form-control-normal" placeholder="Member">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ថ្ងៃកក់</label>
+                    <div class="col-sm-8">
+                        <input type="text" asp-for="BookedDate" class="form-control form-control-normal" value="@DateTime.Now.ToString("MM/dd/yyyy")" placeholder="Date" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">កក់ដោយ</label>
+                    <div class="col-sm-8">
+                        <input id="Booked_By" name="Booked_By" class="form-control" list="bookingby" onblur="onBlurBookingSection()" required >
+
+                        <datalist id="bookingby">
+                            @foreach (var emp in emps)
+                            {
+                                <option value="@emp.Id-@emp.Emp_Name"/>
+                            }
+                        </datalist>
+                        @*<select asp-for="BookedById" class="form-control form-control-normal" onchange="onChangeBookingSection()">
+                            <option value="0">Select</option>
+                            @foreach (var emp in emps)
+                            {
+                                <option value="@emp.Id">@emp.Emp_Name</option>
+                            }
+                        </select>*@
+                        <input asp-for="BookedById" type="hidden" class="form-control" readonly="readonly" />
+                        <input asp-for="BookedByName" type="hidden" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+                
+                
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ប្រភេទបន្ទប់</label>
+                    <div class="col-sm-8">
+                        <input asp-for="TypeId" type="hidden" class="form-control">
+                        <input asp-for="TypeStr" type="text" class="form-control" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">បន្ទប់</label>
+                    <div class="col-sm-8">
+                        <input asp-for="SectionId" type="hidden" class="form-control">
+                        <input asp-for="SectionStr" type="text" class="form-control" readonly="readonly">
+                       
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">អគារ</label>
+                    <div class="col-sm-8">
+                        <input asp-for="GSectionId" type="hidden" class="form-control">
+                        <input asp-for="GSectionStr" type="text" class="form-control" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ថ្ងៃចូល</label>
+                    <div class="col-sm-8">
+                        <input asp-for="StartDate" type="text" class="form-control birthdate">
+                        
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ម៉ោងចាប់ផ្ដើម</label>
+                    <div class="col-sm-8">
+                        <select  asp-for="Hour">
+                        </select>
+                        <select  asp-for="Minute">
+                        </select>          
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">ម៉ោងចេញ</label>
+                    <div class="col-sm-8">
+                        <select  asp-for="EndHour">
+                        </select>
+                        <select  asp-for="EndMinute">
+                        </select>          
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" asp-for="Description" rows="3" required></textarea>
+            </div>
+        </div>
+                            
+    </fieldset>
+    <fieldset>
+        <div class="btn-group pull-right">
+            <button type="submit" class="btn btn-primary">Booking Now</button>
+            <button class="btn btn-default waves-effect md-close">Close</button>
+        </div>
+    </fieldset>
+</form>
+
+<script>
+    function onBlurBookingSection() {
+        var BookedStr = ($("#Booked_By").val()).split('-');
+        var bookid = BookedStr[0];
+        var bookname = BookedStr[1]
+
+        $("#BookedByName").val(bookname);
+        $("#BookedById").val(bookid);
+    }
+</script>

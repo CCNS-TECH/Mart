@@ -1,0 +1,76 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Custom' " />
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NUglify" Version="1.9.11" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+      <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
+      <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="NPOI" Version="2.5.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.9" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.2" />
+      <PackageReference Include="QRCoder" Version="1.3.9" />
+</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Infrastructures\" />
+    <Folder Include="Infrastructures\Encrypts\" />
+    <Folder Include="Infrastructures\Token\" />
+    <Folder Include="Models\BusinessObjects\" />
+    <Folder Include="Models\BusinessObjects\Accounts\" />
+    <Folder Include="Models\BusinessObjects\BusinessPartners\" />
+    <Folder Include="Models\BusinessObjects\CashInOuts\" />
+    <Folder Include="Models\BusinessObjects\Categories\" />
+    <Folder Include="Models\BusinessObjects\Commissions\" />
+    <Folder Include="Models\BusinessObjects\Companys\" />
+    <Folder Include="Models\BusinessObjects\Employees\" />
+    <Folder Include="Models\BusinessObjects\Exchanges\" />
+    <Folder Include="Models\BusinessObjects\Inventory\" />
+    <Folder Include="Models\BusinessObjects\Invoices\" />
+    <Folder Include="Models\BusinessObjects\Kdss\" />
+    <Folder Include="Models\BusinessObjects\Orders\" />
+    <Folder Include="Models\BusinessObjects\Payments\" />
+    <Folder Include="Models\BusinessObjects\Prefixs\" />
+    <Folder Include="Models\BusinessObjects\Products\" />
+    <Folder Include="Models\BusinessObjects\Sections\" />
+    <Folder Include="Models\BusinessObjects\Taxs\" />
+    <Folder Include="Models\BusinessObjects\UoMs\" />
+    <Folder Include="Models\BusinessObjects\Whs\" />
+    <Folder Include="Models\IBusinessObject\" />
+    <Folder Include="Models\Repositories\" />
+    <Folder Include="Services\" />
+    <Folder Include="SyncData\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\logo\" />
+    <Folder Include="wwwroot\images\products\" />
+    <Folder Include="wwwroot\images\profiles\" />
+    <Folder Include="wwwroot\qrcoders\" />
+    <Folder Include="wwwroot\qrcoders\qrcodes\" />
+    <Folder Include="wwwroot\template\" />
+    <Folder Include="wwwroot\Upload\" />
+     <Folder Include="Views\Shared\InvLayout\" />
+     <Folder Include="Views\Shared\AuthLayout\" />
+     <Folder Include="Views\Shared\Layout\" />
+     <Folder Include="Views\Shared\OrderLayout\" />
+     <Folder Include="Views\Account\" />
+  </ItemGroup>
+</Project>

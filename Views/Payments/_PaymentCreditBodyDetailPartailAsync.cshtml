@@ -1,0 +1,160 @@
+@{
+    var invoice = ViewBag.CreditInvoice; 
+}
+<div class="wraper">
+    <div class="row align-items-start">
+        <div class="col-sm-12">
+            <div class="d-flex" style="height: 100px; background-color: #ffffff">
+                <div class="p-2 bd-highlight">
+                    <table id="sectionInfo">
+                        <tr hidden>
+                            <td>Section Id </td>
+                            <td> <span class="text-primary data-section-id"><b> @ViewBag.CreditSection.Id </b></span></td>
+                        </tr>
+                        <tr>
+                            <td>Section </td>
+                            <td> <span class="text-primary data-section-name"><b> @ViewBag.CreditSection.SectionEn</b></span></td>
+                        </tr>
+                        <tr hidden="hidden">
+                            <td>Booking Id </td>
+                            <td> <span class="text-primary data-section-bookingId"><b> @ViewBag.CreditSection.BookingId </b></span></td>
+                        </tr>
+                        <tr hidden>
+                            <td>Group Id </td>
+                            <td> <span class="text-primary data-gsection-id"><b> @ViewBag.CreditSection.GSectionId </b></span></td>
+                        </tr>
+
+                        <tr hidden>
+                            <td>Type Id </td>
+                            <td><span class="text-primary data-section-type-id"><b> @ViewBag.CreditSection.SectionType.Id </b></span></td>
+                        </tr>
+
+                        <tr>
+                            <td>Type </td>
+                            <td><span class="text-primary data-section-type-name"><b> @ViewBag.CreditSection.SectionType.Type </b></span></td>
+                        </tr>
+                        <tr hidden>
+                            <td>Recieved Id </td>
+                            <td><span class="text-primary data-recieved-id"><b> @Context.Session.GetString("OwnnerId") </b></span></td>
+                        </tr>
+                        <tr>
+                            <td>Recie ved </td>
+                            <td><span class="text-primary data-recieved-name"><b> @Context.Session.GetString("OwnnerName") </b></span></td>
+                        </tr>
+                        <tr hidden>
+                            <td>Exchange </td>
+                            <td><span class="text-primary data-exchange-riel"><b> @Context.Session.GetString("Riel") </b></span></td>
+                        </tr>
+                        <tr hidden>
+                            <td>Shift Id </td>
+                            <td><span class="text-primary data-shift-id"><b> @Context.Session.GetString("ShiftId") </b></span></td>
+                        </tr>
+                        <tr hidden>
+                            <td>ShiftStr </td>
+                            <td><span class="text-primary data-shift-name"><b> @Context.Session.GetString("ShiftStr") </b></span></td>
+                        </tr>
+                        
+
+                    </table>
+                </div>
+                <div class="ml-auto p-2 bd-highlight">
+                    <input type="hidden" value="@String.Format("{0:N2}", @ViewBag.CreditSection.Price)" id="sectionPrice"/>
+                    <input type="hidden" id="totalhoursbeforefree"/>
+                    <input type="hidden" id="totalhoursafterfree"/>
+                    <table id="sectionPriceInfo">
+                        <tr>
+                            <td>Price </td>
+                            <td><span class="text-primary price"><b>$ @String.Format("{0:N2}", @ViewBag.CreditSection.Price) </b></span></td>
+                        </tr>
+                        <tr hidden="hidden">
+                            <td>Date </td>
+                            <td><span class="text-primary data-StartDate"><b> @invoice.CreateDate.ToString("yyyy/MM/dd") </b></span></td>
+                        </tr>
+                        <tr>
+                            <td>Create Date</td>
+                            <td class="text-primary"><span class="TimeIn Time-in-@ViewBag.CreditSection.Id"><b>@invoice.CreateDate.ToString("yyyy/MM/dd")</b></span></td>
+                        </tr>
+                        <tr>
+                            <td>Duration </td>
+                            <td><span class="text-primary totalhours" style="font-weight: bold">@String.Format("{0:N2}",invoice.TotalHour)</span></td>
+                        </tr>
+                    </table>
+                </div> 
+                <div class="ml-auto p-2 bd-highlight">
+                    <table id="timeInfo">
+                        @if (@invoice != null)
+                        {
+                            <tr hidden>
+                                <td>DocEntry</td>
+                                <td> <span class="text-primary data-docEntry"><b> @invoice.DocEntry </b></span></td>
+                            </tr>
+                            <tr>
+                                <td>Bill N<sup>o</sup></td>
+                                <td> <span class="text-primary data-Inv-code"><b>#@invoice.InvCode </b></span></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>Create Date</td>
+                                <td><span class="text-primary data-StartTime"><b> @invoice.CreateDate.ToString("HH:mm:ss tt ") </b></span></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td>Pay Date </td>
+                            <td><span class="text-primary data-StartDate"><b> @invoice.PayDate.ToString("MM/dd/yyyy") </b></span></td>
+                        </tr>
+                        <tr hidden="">
+                            <td>Member </td>
+                            <td> <span class="text-primary data-Pax"><b>0</b></span></td>
+                        </tr>
+                        <tr>
+                            <td>Section Amount </td>
+                            <td> <span class="text-primary data-Room-Amount" style="font-weight: bold;">$ <b> @String.Format("{0:N2}", invoice.SectionAmount) </b></span></td>
+                        </tr>
+                                
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div style="max-height:650px; overflow-y: auto">
+                <ul style="padding: 20px;" id="item_ordered">
+                    @if (invoice != null)
+                    {
+                        @foreach (var item in invoice.InvoiceDetails)
+                         {
+                             <li style="padding: 0 10px; background-color: #ffffff" class="item-list" 
+                                 data-item_id='@item.ItemId' data-uom_id='@item.UoMId' data-guom_id='@item.GUoMId'
+                                 data-item_code='@item.ItemCode' data-item_type='@item.ItemTypeStr'
+                                 data-item_guom_name='@item.GUoMStr' data-item_uom_name='@item.UoMStr' data-item_cost='@item.Cost' data-status-free='@item.LineFree'>
+                                 <div class="d-flex flex-row">
+                                     <div class="p-2 mr-auto">
+                                         <p class="font-weight-bold item_name" style="margin: 0">@item.ItemStr 
+                                             @if (item.LineFree == "Y")
+                                             {
+                                                 <span class="label label-danger" >(Free)</span>
+                                             }
+                                         </p>
+                                         Price : $ <span class="text-muted price">@String.Format("{0:N2}", @item.UnitPrice)</span>
+                                     </div>
+                                     <div class="p-2 align-self-center">
+                                         Qty :  <span class="quantity" style="margin: 0"> <b>@String.Format("{0:N0}", @item.Quantity)</b></span>
+                                     </div>
+                                     <div class="p-2 align-self-center">
+                                         Disc: % <span class="discount" style="margin: 0">@String.Format("{0:N2}", @item.DiscPrcnt)</span>
+                                     </div>
+                                     <div class="p-2 align-self-center">
+                                         <p style="margin: 0">Amount </p>
+                                         $ <span class="font-weight-bold item_total" style="margin: 0">@String.Format("{0:N2}", @item.TotalLine)</span>
+                                     </div>
+                                            
+                                 </div>
+                             </li>
+                         }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

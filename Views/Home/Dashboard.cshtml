@@ -1,0 +1,300 @@
+@{
+    Layout = "OrderLayout/_Layout";
+    var UserId = long.Parse(Context.Session.GetString("UserId"));
+    var menus = (await UserAccountService.GetMenuPermissions(UserId)).Where(_=>_.Type=="Module");
+    string[] color = { "bg-c-yellow", "bg-c-pink", "bg-c-green", "bg-c-lite-green", "badge-info", "badge-primary", "badge-success" };
+}
+<div class="theme-loader">
+    <div class="ball-scale">
+        <div class='contain'>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Pre-loader end -->
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-header ribbon-header">
+                <div class="row align-items-end">
+                    <div class="col-lg-8">
+                        <div class="page-header-title">
+                            <div class="d-inline">
+                                <h4>Main Dashboard</h4>
+                                <span>Dashboard</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="page-header-breadcrumb">
+                            <ul class="breadcrumb-title">
+                                <li class="breadcrumb-item">
+                                    <a href="#"> <i class="feather icon-home"></i> </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a>Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a asp-action="logout" asp-controller="Account"><i class="feather icon-log-out"></i> Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    
+            <!-- Page-header end -->
+            <div class="page-body">
+                <div class="row">
+                    @{ int i = 0;} 
+                    @foreach (var m in menus)
+                    {
+                        <div class="col-xl-3 col-md-6">
+                            <a asp-action="@m.Action" asp-controller="@m.Controller" asp-route-menu="@m.Id">
+                                <div class="card update-card @color[i]">
+                                    <div class="card-block">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h4 class="text-white">@m.Name</h4>
+                                                <h6 class="text-white m-b-0">@m.Name</h6>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="@m.Icon"></i>
+                                                @*@m.Icon*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>@m.Description</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        i++;
+                    }
+
+                    <!-- task, page, download counter  start -->
+                    @*@if (Context.Session.GetString("Role") == "Admin")
+        {
+            <div class="col-xl-3 col-md-6">
+                <a href="/home/index">
+                    <div class="card bg-c-yellow update-card">
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="text-white">Administator</h4>
+                                    <h6 class="text-white m-b-0">Administator</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="feather icon-users f-34 text-c-white social-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for administrator</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="col-xl-3 col-md-6">
+                <a href="/home/index">
+                    <div class="card bg-c-yellow update-card">
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="text-white">Main</h4>
+                                    <h6 class="text-white m-b-0">Page</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="feather icon-users f-34 text-c-white social-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for administrator</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+        <div class="col-xl-3 col-md-6">
+            <a asp-action="order" asp-controller="orders">
+                <div class="card bg-c-pink update-card">
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h4 class="text-white">Order</h4>
+                                <h6 class="text-white m-b-0">POS</h6>
+                            </div>
+                            <div class="col-auto">
+                                <i class="feather icon-shopping-cart f-34 text-c-white social-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for order </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <a href="/pos/sections">
+                <div class="card bg-c-green update-card">
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h4 class="text-white">POS</h4>
+                                <h6 class="text-white m-b-0">Cashier</h6>
+                            </div>
+                            <div class="col-auto">
+                                <i class="feather icon-user f-34 text-c-white social-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for cashier</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xl-3 col-md-6" hidden>
+            <a href="/kds/index">
+                <div class="card bg-c-lite-green update-card">
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h4 class="text-white">KDS</h4>
+                                <h6 class="text-white m-b-0">KDS</h6>
+                            </div>
+                            <div class="col-auto">
+                                <i class="feather icon-cpu f-34 text-c-white social-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for kds</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @if (Context.Session.GetString("Role") == "Admin")
+        {
+            <div class="col-xl-3 col-md-6">
+                <a asp-action="ItemList" asp-controller="Products">
+                    <div class="card badge-danger update-card">
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="text-white">Inventory</h4>
+                                    <h6 class="text-white m-b-0">Inventory</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="feather icon-feather f-34 text-c-white social-icon"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for purchase</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <a asp-action="Purchase" asp-controller="Inventory">
+                    <div class="card badge-primary update-card">
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="text-white">Purchase</h4>
+                                    <h6 class="text-white m-b-0">Purchase</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="feather icon-edit f-34 text-c-white social-icon"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for purchase</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <a href="/dashboard/report/">
+                    <div class="card badge-success update-card">
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h4 class="text-white">Reports</h4>
+                                    <h6 class="text-white m-b-0">Reports</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="feather icon-pie-chart f-34 text-c-white social-icon"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-white m-b-0"><i class="feather icon-clock text-white f-14 m-r-10"></i>This is dashboard for reported</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer text-center" style="font-family: Helvetica Neue, Arial,sans-serif;margin: 0;background-color:#ccebff; color: #ccc">
+    <p>Develop by ccns-solution</p>
+    <span class="text-left">&copy;copyright-2019  </span>
+    <div class="page-header-breadcrumb text-right" style="margin-top: -10px">
+        <div>
+            <p class="text-right">
+                <span>Phone <i class="feather icon-phone"></i> :096 30 17 360 && 085 95 95 83 |</span>
+                <span>Email <i class="feather icon-mail"></i> :ccns168@gmail.com |</span>
+                <span>
+                    <a href="https://www.facebook.com/CCNS-Solution-805062406513636/" class="btn-default btn-sm m-b-20 waves-effect waves-light"><i class="feather icon-facebook "></i>facebook</a>
+                </span>
+            </p>
+        </div>
+    </div>
+</div>

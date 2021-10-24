@@ -1,0 +1,148 @@
+@using System.Globalization
+@{
+    var invoice = ViewBag.Invoice; 
+}
+<form id="frm-total-payment-footer" style="background-color: #ffffff;padding: 5px 5px;">
+    <fieldset>
+        <legend>Cash</legend>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Sub Total / សរុប </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="sub_total" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}", @invoice.SubTotalUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Free Hour / Free ម៉ោង </label>
+            <label class="col-sm-1 text-right">(h)</label>
+            <div class="col-sm-6">
+                <input type="text" id="free-hour" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",invoice.FreeHour)">
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Discount / បញ្ខុះតម្លៃ </label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="discount_percent" readonly="readonly" onblur="blur_discount_percent(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.DiscPrcnt)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total Discount / បញ្ខុះតម្លៃ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="discount_dollar" readonly="readonly" onblur="blur_discount(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TotalDiscUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">VAT / ពន្ធ </label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="vat_percent" readonly="readonly" onblur="blur_vat_percent(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TaxPrcnt)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total VAT / ពន្ធ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="vat_dollar" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",invoice.TotalTaxUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Other Charge / ការចំណាយផ្សេងៗ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="other_charge" readonly="readonly" onblur="blur_charge(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.OtherChargeUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Service Charge / សេវាកម្ម </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="service_charge" readonly="readonly" onblur="blur_charge(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.ServiceChargeUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Grand Total / សរុបទាំងអស់ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="grand_total" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.GrandTotalUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Grand Total / សរុបទាំងអស់ </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="grand_total_riel" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value=" @invoice.GrandTotalRiel.ToString("N2", CultureInfo.InvariantCulture);)">
+            </div>
+        </div>
+
+    </fieldset>
+    <fieldset>
+        <legend>Total Receive / ប្រាក់ទទួល </legend>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Received Dollars </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="receive_dollar" onblur="blur_receive(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Received Riels / ប្រាក់ទទួល </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="receive_reil" onblur="blur_receive(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Dollars / ប្រាក់អាប់ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="exchange" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Riels / ប្រាក់អាប់ </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="exchange_reil" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row commission">
+            <label class="col-sm-5 col-form-label">Commission / ប្រាក់កម្រៃជើងសារ</label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="commission" @ViewBag.CommissionCheck  onblur="blur_commission(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00" readonly>
+            </div>
+        </div>
+        
+        <div class="form-group row commission">
+            <label class="col-sm-5 col-form-label">Commission Amount / ប្រាក់កម្រៃជើងសារ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="commission_amount" @ViewBag.CommissionCheck onblur="blur_commission_amount(this)"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00" readonly>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Rate / អត្រាប្ដូរប្រាក់ 1$ = </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="exchange_rate" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@Convert.ToDecimal(Context.Session.GetString("Riel")).ToString("0.00")">
+            </div>
+        </div>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <div class="form-group">
+            <div class="pull-right">
+            @*data-toggle="modal" data-target="#modal-print-payment"*@
+                <a  role="button" class="btn btn-primary text-white" onclick="onClickPrintPayment();">Pay</a>
+                <a asp-action="Pos" asp-controller="Poss" role="button" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>

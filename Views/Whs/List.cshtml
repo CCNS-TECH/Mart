@@ -1,0 +1,58 @@
+<div class="card">
+    <div class="card-header">
+        <div class="text-right no-padding">
+            <button type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#whs-model">Create New</button>
+        </div>
+        
+        <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Company Lists</h4>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+            <table id="footer-select" class="table table-striped table-bordered nowrap">
+                <thead>
+                <tr>
+                    <th>N<sup>o</sup></th>
+                    <th>Whs Name</th>
+                    <th>InStock</th>
+                    <th>Remark</th>
+                    <th>Address</th>
+                    <th class="text-right">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{ int i = 1;}
+                @foreach (var c in ViewBag.Whs as List<Whs>)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@c.Whs_En</td>
+                        <td>@c.InStock</td>
+                        <td>@c.Remark</td>
+                        <td>@c.Address</td>
+                        @if (c.Default == "Y")
+                        {
+                            <td class="text-right">
+                                <a class="btn-success btn-sm text-white"><i class="icofont icofont-check-circled"></i></a> |
+                                <a class="btn-info btn-sm text-white" asp-action="Edit" asp-controller="Whs" asp-route-id="@c.Id">Edit</a>
+                                @*<a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deletecompany(@c.Id);">Delete</a>*@
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-right">
+                                <a class="btn-danger btn-sm text-white" onclick="setwhs(@c.Id)"><i class="icofont icofont-eye-alt"></i></a> |
+                                <a class="btn-info btn-sm text-white" asp-action="Edit" asp-controller="Whs" asp-route-id="@c.Id">Edit</a>|
+                                <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deletewhs(@c.Id);">Delete</a>
+                            </td>
+                        }
+                        
+                    </tr>
+                    i++;
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/whs.js"></script>

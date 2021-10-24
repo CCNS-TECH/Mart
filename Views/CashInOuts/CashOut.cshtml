@@ -1,0 +1,210 @@
+@model CashOut
+@{
+    Layout = "OrderLayout/_Layout";
+    var shifts = await EmployeeService.GetShifts();
+    var emps = await EmployeeService.EmployeesList();
+    var cashIn = await DashboardService.GetCashInAsync();
+}
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>CashOut</h4>
+                    <span>Create</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="pull-right m-l-10">
+                <div class="page-header-breadcrumb">
+                    <ul class="breadcrumb-title">
+                        <li class="breadcrumb-item">
+                            <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a>CashOut</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#!">Create </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Page-header end --> 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Close Shift</h5>
+                <span>Close Amount By Shift</span>
+
+            </div>
+            <div class="card-block">
+                @if (cashIn != null)
+                {
+                    <div class="col-md-8" style="margin:auto">
+                        <form asp-action="CashOutMoney" asp-controller="CashInOuts" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <fieldset>
+                                <div class="form-group row">
+                                    <input asp-for="CashInId" value="@cashIn.Id" type="hidden"/>
+                                    <input type="hidden" asp-for="CashOutByStr" value="@Context.Session.GetString("OwnnerName")"/>
+                                    <label class="col-sm-3 col-form-label">CashOut By</label>
+                                    <div class="col-sm-9">
+                                        <select asp-for="CashOutById" class="form-control required" onchange="selectCashOutBy();">
+                                            <option value="@Context.Session.GetString("OwnnerId")">@Context.Session.GetString("OwnnerName")</option>
+                                        </select>
+                                        <span asp-validation-for="CashOutById" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row" hidden>
+                                    <input type="hidden" asp-for="ReceivedByStr" value="@Context.Session.GetString("OwnnerName")"/>
+                                    <label class="col-sm-3 col-form-label">Receive By</label>
+                                    <div class="col-sm-9">
+                                        <select asp-for="ReceivedById" class="form-control required" onchange="selectReceiveBy();">
+                                            <option value="@Context.Session.GetString("OwnnerId")">@Context.Session.GetString("OwnnerName")</option>
+                                        </select>
+                                        <span asp-validation-for="ReceivedById" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Date</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="DocDate" type="text" class="form-control birthdate" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Shift</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" value="@cashIn.ShiftStr" readonly="readonly">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Total CashIn (USD)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="TotalCashInUSD" readonly="readonly" type="text" value="@String.Format("{0:N2}", cashIn.TotalUSD)" placeholder="0.00" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Total CashIn (៛)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="TotalCashInRiel" type="text" readonly="readonly" value="@cashIn.TotalRiel" placeholder="0.00" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">CashOut (USD)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="CashOutUSD" min="0" type="number" onblur="CashOut();" value="0" placeholder="0.00" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">CashOut (៛)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="CashOutRiel" min="0" type="number" onblur="CashOut();" value="0" placeholder="0.00" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Total CashOut (USD)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="TotalCashOutUSD" min="0" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Total CashOut (៛)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="TotalCashOutRiel" min="0" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Grand Total (USD)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="GrandTotalUSD" min="0" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Grand Total (៛)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="GrandTotalRiel" min="0" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Exchange Rate (៛)</label>
+                                    <div class="col-sm-9">
+                                        <input asp-for="ExchangeRate" type="text" class="form-control" readonly="readonly" value="@String.Format("{0:N2}", Context.Session.GetString("Riel"))">
+                                        <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 text-right">
+                                        <button type="submit" class="btn btn-primary"> Send</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <div class="card borderless-card">
+                        <div class="card-block primary-breadcrumb">
+                            <div class="breadcrumb-header">
+                                <h5>The money has been cash-out ready</h5>
+                                <span>Successfully......!!!</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CashOut() {
+      CalculatorValue();
+    }
+    function selectReceiveBy(){
+          var receivestr = $("#ReceivedById option:selected").text();
+          $("#ReceivedByStr").val(receivestr);
+        }
+    function selectCashOutBy(){
+          var cashOutstr = $("#CashOutById option:selected").text();
+          $("#CashOutByStr").val(cashOutstr);
+        }
+    function CalculatorValue() {
+        var cashOutUsd =parseFloat($("#CashOutUSD").val());
+        var cashOutRiel =parseFloat($("#CashOutRiel").val());
+        var exchange =parseFloat($("#ExchangeRate").val());
+        var cashInTotalUSD = parseFloat($("#TotalCashInUSD").val());
+        var cashInTotalRiel = parseFloat($("#TotalCashInRiel").val());
+            
+        var totalUsd= parseFloat(cashOutRiel / exchange);
+        var grandtotalCashOutUsd = parseFloat(cashOutUsd + totalUsd);
+        
+        var totalCashOut = parseFloat(grandtotalCashOutUsd - cashInTotalUSD);
+        var totalCashOutRiel = parseFloat(totalCashOut * exchange);
+        
+        var grandTotalUSD = parseFloat(totalCashOut+cashInTotalUSD).toFixed(2);
+         var grandTotalRiel = parseFloat(grandTotalUSD * exchange).toFixed(2);
+        
+        $("#TotalCashOutUSD").val(totalCashOut);
+        $("#TotalCashOutRiel").val(totalCashOutRiel);
+        
+        $("#GrandTotalUSD").val(grandTotalUSD);
+        $("#GrandTotalRiel").val(grandTotalRiel);
+        
+        
+        
+    }
+</script>

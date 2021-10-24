@@ -1,0 +1,95 @@
+ <form>
+    <fieldset>
+               <legend>Bank</legend>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Sub Total</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Discount</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Total Discount</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">VAT</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Total VAT</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Other Charge</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Service Charge</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+       
+           </fieldset>
+           <fieldset>
+               <legend>Total Receive</legend>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Received Dollars</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+       
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Received Riels</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+           </fieldset>
+           <fieldset>
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Total</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+       
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Grand Total</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+       
+               <div class="form-group row">
+                   <label class="col-sm-6 col-form-label">Exchange Rate</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                   </div>
+               </div>
+       
+           </fieldset>
+           <fieldset>
+               <div class="form-group">
+                   <div class="pull-right">
+                       <a asp-action="order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                       <a asp-action="order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                   </div>
+               </div>
+           </fieldset>
+       </form>

@@ -1,0 +1,8 @@
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    Layout = "AuthLayout/_AuthorizePage";
+}
+else
+{
+    Layout = "Layout/_Layout";
+}

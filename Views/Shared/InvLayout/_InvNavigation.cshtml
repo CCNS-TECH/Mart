@@ -1,0 +1,134 @@
+﻿@{
+    var UserId = long.Parse(Context.Session.GetString("UserId"));
+    var MenuId = long.Parse(Context.Session.GetString("menu"));
+    var Func = (await UserAccountService.GetMenuPermissions(UserId)).Where(_ => _.Type == "Function" && _.ParentId == MenuId);
+    var SubFunc = (await UserAccountService.GetMenuPermissions(UserId)).Where(_ => _.Type == "Sub-Function");
+}
+
+<nav class="pcoded-navbar">
+    <div class="pcoded-inner-navbar main-menu">
+        <div class="pcoded-navigatio-lavel">Item Master Data</div>
+        <ul class="pcoded-item pcoded-left-item">
+            @foreach (var f in Func)
+            {
+
+                @if (SubFunc.Where(_ => _.ParentId == f.Id).Count() > 0)
+                {
+                    <li class="pcoded-hasmenu">
+                        <a href="javascript:void(0)">
+                            <span class="pcoded-micon"><i class="@f.Icon"></i></span>
+                            <span class="pcoded-mtext">@f.Name</span>
+                        </a>
+                        <ul class="pcoded-submenu">
+                            @foreach (var sf in SubFunc)
+                            {
+                                if (f.Id == sf.ParentId)
+                                {
+                                    <li class="">
+                                        <a asp-action="@sf.Action" asp-controller="@sf.Controller">
+                                            <span class="pcoded-mtext">@sf.Name</span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li href="javascript:void(0)">
+                        <a asp-action="@f.Action" asp-controller="@f.Controller">
+                            <span class="pcoded-micon"><i class="@f.Icon"></i></span>
+                            <span class="pcoded-mtext">@f.Name</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+        @*<ul class="pcoded-item pcoded-left-item">
+            <li href="javascript:void(0)">
+                <a asp-action="Add" asp-controller="Whs">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Warehouse</span>
+                </a>
+            </li>
+            <li href="javascript:void(0)">
+                <a asp-action="AddNew" asp-controller="Categories">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Category</span>
+                </a>
+            </li>
+            <li href="javascript:void(0)">
+                <a asp-action="CreateSubCateL1" asp-controller="Categories">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Sub-Category</span>
+                </a>
+            </li>
+            <li href="javascript:void(0)">
+                <a asp-action="CreateSubCateL2" asp-controller="Categories">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Sub-Category L1</span>
+                </a>
+            </li>
+            <li class=" ">
+                <a asp-action="AddPriceList" asp-controller="Products">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Price List</span>
+                </a>
+            </li>
+
+
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Unit Of Measure</span>
+                </a>
+                <ul class="pcoded-submenu">
+                    <li class="">
+                        <a asp-action="AddNew" asp-controller="UoMs">
+                            <span class="pcoded-mtext">UoM</span>
+                        </a>
+                    </li>
+                    <li class=" ">
+                        <a asp-action="AddNewGroup" asp-controller="UoMs">
+                            <span class="pcoded-mtext">Group UoM</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)">
+                    <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                    <span class="pcoded-mtext">Item</span>
+                </a>
+                <ul class="pcoded-submenu">
+                    <li class="">
+                        <a asp-action="AddItem" asp-controller="Products">
+                            <span class="pcoded-mtext">Item Master Data</span>
+                        </a>
+                    </li>
+                    <li class=" ">
+                        <a asp-action="ItemList" asp-controller="Products">
+                            <span class="pcoded-mtext">Item Lists</span>
+                        </a>
+                    </li>
+                    <li class=" ">
+                        <a asp-action="PriceList" asp-controller="PriceLists">
+                            <span class="pcoded-mtext">Set PriceList</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>*@
+    </div>
+</nav>
+
+
+
+<script type="text/javascript" src="~/template/files/bower_components/jquery/js/jquery.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/popper.js/js/popper.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="~/template/files/assets/pages/data-table/extensions/buttons/js/extension-btns-custom.js"></script>

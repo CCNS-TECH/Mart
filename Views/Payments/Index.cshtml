@@ -1,0 +1,758 @@
+@{
+    Layout = "OrderLayout/_Layout";
+    var invoice = ViewBag.Invoice; 
+}
+<div class="content">
+    <!-- row -->
+    <div class="row">
+    <!-- col-md-4 -->
+    <div class="col-md-4">
+        <div class="wraper">
+            <div class="row align-items-start">
+                <div class="col-sm-12">
+                    <div class="d-flex" style="height: 85px; background-color: #eee">
+                        <div class="p-2 bd-highlight">
+                              <table id="sectionInfo">
+                                    <tr hidden>
+                                        <td>Section Id </td>
+                                        <td> <span class="text-primary data-section-id"><b> @ViewBag.section.Id </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Section </td>
+                                        <td> <span class="text-primary data-section-name"><b> @ViewBag.section.SectionEn</b></span></td>
+                                    </tr>
+                                    <tr hidden="hidden">
+                                        <td>Booking Id </td>
+                                        <td> <span class="text-primary data-section-bookingId"><b> @ViewBag.section.BookingId </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Group Id </td>
+                                        <td> <span class="text-primary data-gsection-id"><b> @ViewBag.section.GSectionId </b></span></td>
+                                    </tr>
+                                    
+                                    <tr hidden>
+                                        <td>Type Id </td>
+                                        <td><span class="text-primary data-section-type-id"><b> @ViewBag.section.SectionType.Id </b></span></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Type </td>
+                                        <td><span class="text-primary data-section-type-name"><b> @ViewBag.section.SectionType.Type </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>User </td>
+                                        <td><span class="text-primary data-check-in-name"><b> @ViewBag.section.SectionCheckIn.CheckedInByStr </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>User Id </td>
+                                        <td><span class="text-primary data-check-in-id"><b> @ViewBag.section.SectionCheckIn.CheckedInById </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Order Id </td>
+                                        <td><span class="text-primary data-orderby-id"><b> @Context.Session.GetString("OwnnerId") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Order Name </td>
+                                        <td><span class="text-primary data-orderby-name"><b> @Context.Session.GetString("OwnnerName") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Exchange </td>
+                                        <td><span class="text-primary data-exchange-riel"><b> @Context.Session.GetString("Riel") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Shift Id </td>
+                                        <td><span class="text-primary data-shift-id"><b> @Context.Session.GetString("ShiftId") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>ShiftStr </td>
+                                        <td><span class="text-primary data-shift-name"><b> @Context.Session.GetString("ShiftStr") </b></span></td>
+                                    </tr>
+                                    
+                                </table>
+                        </div>
+                        <div class="ml-auto p-2 bd-highlight">
+                             <table id="timeInfo">
+                                @if (@invoice != null)
+                                {
+                                    <tr hidden>
+                                        <td>DocEntry</td>
+                                        <td> <span class="text-primary data-docEntry"><b> @invoice.DocEntry </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bill N<sup>o</sup></td>
+                                        <td> <span class="text-primary data-order-code"><b> @invoice.IvnCode </b></span></td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>Time-In</td>
+                                        <td><span class="text-primary data-StartTime"><b> @ViewBag.section.SectionCheckIn.StartTime.ToString("HH:mm:ss tt ") </b></span></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>Date </td>
+                                    <td><span class="text-primary data-StartDate"><b> @ViewBag.section.SectionCheckIn.StartDate.ToString("yyyy-MM-dd") </b></span></td>
+                                </tr>
+                                <tr>
+                                    <td>Member </td>
+                                    <td> <span class="text-primary data-Pax"><b> @ViewBag.section.SectionCheckIn.Pax </b></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div style="max-height:500px; overflow-y: auto">
+                        <ul style="padding: 20px;" id="item_ordered">
+                            @if (invoice != null)
+                            {
+                                @foreach (var item in invoice.InvoiceDetails)
+                                 {
+                                     <li style="padding: 0 10px;" class="item-list"
+                                         data-item_id='@item.ItemId' data-uom_id='@item.UoMId' data-guom_id='@item.GUoMId'
+                                         data-item_code='@item.ItemCode' data-item_type='@item.ItemTypeStr'
+                                         data-item_guom_name='@item.GUoMStr' data-item_uom_name='@item.UoMStr' data-item_cost='@item.Cost'>
+                                         <div class="d-flex flex-row">
+                                             <div class="p-2 mr-auto">
+                                                 <p class="font-weight-bold item_name" style="margin: 0">@item.ItemStr</p>
+                                                 Price : $ <span class="text-muted price">@String.Format("{0:N2}", @item.UnitPrice)</span>
+                                             </div>
+                                             <div class="p-2 align-self-center">
+                                                 Qty <span class="quantity" style="margin: 0"><b>@String.Format("{0:N0}", @item.Quantity)</b></span>
+                                             </div>
+                                             <div class="p-2 align-self-center">
+                                                 Disc. $ <span class="discount" style="margin: 0">@String.Format("{0:N2}", @item.DiscPrcnt)</span>
+                                             </div>
+                                             <div class="p-2 align-self-center">
+                                                 $ <span class="font-weight-bold item_total" style="margin: 0">@String.Format("{0:N2}", @item.TotalLine)</span>
+                                             </div>
+                                             <div class="p-2 align-self-center">
+                                                 <input type="checkbox" checked="checked" disabled="disabled" class="text-danger pull-right"/>
+                                             </div>
+                                         </div>
+                                     </li>
+                                 }
+                            }
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /col-md-4 -->
+
+    <!-- col-md-8 -->
+    <div class="col-md-8" style="padding-left:0">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#pay_cash" role="tab"><i class="icofont icofont-money-bag"></i> CASH</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#authorize" role="tab"><i class="icofont icofont-ui-user "></i> AUTHORIZE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#credit" role="tab"><i class="icofont icofont-credit-card"></i> CREDIT</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#bank" role="tab"><i class="icofont icofont-bank"></i> BANK</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#coin" role="tab"><i class="icofont icofont-coins"></i> COIN</a>
+            </li>
+            
+        </ul>
+
+        <div style="height:85px; padding: 20px 0">
+        <div id="paymentarea" class="">
+            <div class="tab-content">
+                <div id="pay_cash" class="tab-pane active" role="tabpanel">
+                    <form>
+                        <fieldset>
+                            <legend>Total Due</legend>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Sub Total </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}", @invoice.SubTotalUSD)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Discount </label>
+                                <label class="col-sm-1 text-right">(%)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TotalDiscUSD)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Total Discount </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">VAT </label>
+                                <label class="col-sm-1 text-right">(%)</label>
+                                <div class="col-sm-6"> 
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TaxPrcnt)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Total VAT </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Other Charge </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.OtherChargeUSD)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Service Charge </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.ServiceChargeUSD)">
+                                </div>
+                            </div>
+                    
+                        </fieldset>
+                        <fieldset>
+                            <legend>Total Receive</legend>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Received Dollars </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+                                </div>
+                            </div>
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Received Riels </label>
+                                <label class="col-sm-1 text-right">(៛)</label>
+                                <div class="col-sm-6">
+                                    <input type="text"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Total</label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.SubTotalUSD)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Total </label>
+                                <label class="col-sm-1 text-right">(៛)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.SubTotalRiel)">
+                                </div>
+                            </div>
+                            
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Grand Total </label>
+                                <label class="col-sm-1 text-right">($)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly"   style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.GrandTotalUSD)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Grand Total</label>
+                                <label class="col-sm-1 text-right">(៛)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.GrandTotalRiel)">
+                                </div>
+                            </div>
+                            
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-5 col-form-label">Exchange Rate 1$ = </label>
+                                 <label class="col-sm-1 text-right">(៛)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@Context.Session.GetString("Riel")">
+                                </div>
+                            </div>
+                    
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="pull-right">
+                                    <a asp-action="Order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                                    <a asp-action="Order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                    </form>
+                    
+                </div>
+                <div id="authorize" class="tab-pane" role="tabpanel">
+                    <form>
+                        <fieldset>
+                            <legend>Authorize</legend>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Sub Total</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Discount</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Total Discount</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">VAT</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Total VAT</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Other Charge</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Service Charge</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                    
+                        </fieldset>
+                        <fieldset>
+                            <legend>Total Receive</legend>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Received Dollars</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Received Riels</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Total</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Grand Total</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                    
+                            <div class="form-group row">
+                                <label class="col-sm-6 col-form-label">Exchange Rate</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                </div>
+                            </div>
+                    
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="pull-right">
+                                    <a asp-action="Order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                                    <a asp-action="Order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                    </form>
+                        
+                    </div>
+                <div id="credit" class="tab-pane" role="tabpanel">
+                <form>
+                    <fieldset>
+                        <legend>Credit</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Sub Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Discount</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total Discount</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">VAT</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total VAT</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Other Charge</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Service Charge</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                            
+                    </fieldset>
+                    <fieldset>
+                        <legend>Total Receive</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Received Dollars</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                            
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Received Riels</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                            
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Grand Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                            
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Exchange Rate</label>
+                            <div class="col-sm-6">
+                                <input type="text" readonly="readonly" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                            
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="pull-right">
+                                <a asp-action="order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                                <a asp-action="order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                            </div>
+                        </div>
+                    </fieldset>
+                                            
+                </form>
+                                            
+            </div>
+                <div id="bank" class="tab-pane" role="tabpanel">
+                        <form>
+                            <fieldset>
+                                <legend>Bank</legend>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Sub Total</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Discount</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Total Discount</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">VAT</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Total VAT</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Other Charge</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Service Charge</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                        
+                            </fieldset>
+                            <fieldset>
+                                <legend>Total Receive</legend>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Received Dollars</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Received Riels</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Total</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Grand Total</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                        
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label">Exchange Rate</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                                    </div>
+                                </div>
+                        
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="pull-right">
+                                        <a asp-action="order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                                        <a asp-action="order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        
+                        </form>
+                        
+                    </div>
+                <div id="coin" class="tab-pane" role="tabpanel">
+                <form>
+                    <fieldset>
+                        <legend>Coin</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Sub Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Discount</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total Discount</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">VAT</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total VAT</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Other Charge</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Service Charge</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                                                    
+                    </fieldset>
+                    <fieldset>
+                        <legend>Total Receive</legend>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Received Dollars</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                                                    
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Received Riels</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                                                    
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Grand Total</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                                                    
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label">Exchange Rate</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-sm text-right form-bg-info" value="0.00">
+                            </div>
+                        </div>
+                                                                    
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="pull-right">
+                                <a asp-action="order" asp-controller="poss" role="button" class="btn btn-secondary">Back</a>
+                                <a asp-action="order" asp-controller="poss" role="button" class="btn btn-primary">Print</a>
+                            </div>
+                        </div>
+                    </fieldset>
+                                                                    
+                </form>
+                                                                    
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- /col-md-8 -->
+    </div>
+
+    <!-- /row -->
+
+    <div id="numberinputbtn">
+        <div class="select-block">
+            <div class="row">
+                <div class="col-sm-6"><h4 class="text-white">Dollars</h4></div>
+                <div class="col-sm-6"><h4 class="text-white">Riels</h4></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 1</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 100</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 5</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 500</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 10</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 1,000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 20</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 5,0000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 50</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 10,000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">$ 100</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card card-body div-button">៛ 50,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>

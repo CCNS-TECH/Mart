@@ -1,0 +1,256 @@
+@model DefineUoM
+@{
+    var uoms = await UoMService.GetUoMList();
+    var guoms = await UoMService.GetGUoMList();
+}
+<div class="dt-responsive table-responsive">
+    <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Group UoM Lists</h4>
+    <div class="col-sm-offset-2">
+        <table class="table table-striped table-bordered nowrap">
+            <thead>
+            <tr>
+                <th hidden>GUoM_Id</th>
+                <th>N<sup>o</sup></th>
+                <th>GUoM. Name</th>
+                <th>GUoM. Str</th>
+                <th class="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody id="tb_define_uom">
+            @{ int i = 1;}
+            @foreach (var sf in guoms as List<GroupUoM>)
+            {
+                <tr>
+                    <td hidden="hidden">@sf.GUoM_Id</td>
+                    <td>@i</td>
+                    <td>@sf.GUoM_Name</td>
+                    <td>@sf.GUoM_Foreign</td>
+                    <td class="text-center">
+                        <a class="btn-primary btn-sm waves-effect md-trigger text-white" data-toggle="modal" data-target="#define-uom-model" id="click_define_uom">Define UoM </a>|
+                        <a class="btn-info btn-sm text-white" asp-action="EditGroupUoM" asp-controller="UoMs" asp-route-id="@sf.GUoM_Id">Edit</a>
+                        @*<a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deleteGUoM(@sf.GUoM_Id);">Delete</a>*@
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="define-uom-model" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Define Unit Of Measure</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-block">
+                        <input type="text" value="0" hidden id="group_define_uom" />
+                        <div class="row filter-row">
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Alt UoM</label>
+                                    <select id="altuom" class="form-control required" required="required">
+                                        @foreach (var u in uoms as List<UoM>)
+                                        {
+                                            <option value="@u.UoM_Id">@u.UoM_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Base UoM</label>
+                                    <select id="baseuom" class="form-control required" required="required">
+                                        @foreach (var u in uoms as List<UoM>)
+                                        {
+                                            <option value="@u.UoM_Id">@u.UoM_Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row filter-row">
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Alt Qty</label>
+                                    <input type="text" id="altqty" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Base Qty</label>
+                                    <input type="text" id="baseqty" class="form-control">
+                                </div>
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-primary" onclick="click_DefineUoM()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                      <fieldset>
+                          <table class="table-striped table-bordered table-sm row-border" id="tbdefineuom" width="100%">
+                              <thead>
+                              <tr>
+                                  <th hidden>altuomid</th>
+                                  <th>Alt Qty</th>
+                                  <th>Alt UoM</th>
+                                  <th>Equals</th>
+                                  <th hidden>baseuomid</th>
+                                  <th>Base Qty</th>
+                                  <th>Base UoM</th>
+                                  <th class="text-right">Action</th>
+                              </tr>
+                              </thead>
+                              <tbody id="list_defineuom"></tbody>
+                          </table>
+                      </fieldset>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+@*<script src="~/js/uom.js"></script>*@
+<script>
+    var guom_id = 0;
+    var duom_id = 0;
+    
+    $(document).ready(function() {
+        $("#tb_define_uom").on("click","#click_define_uom",function() {
+            var currow = $(this).closest("tr");
+            guom_id=currow.find("td:eq(0)").text();
+            show_uom_define();
+        });
+        
+        $("#list_defineuom").on("click", "#edit_uom_define", function () {
+            var currow = $(this).closest("tr");
+            var altuom = currow.find("td:eq(1)").text();
+            var baseuom = currow.find("td:eq(5)").text();            
+            var altqty = currow.find("td:eq(2)").text();
+            var baseqty = currow.find("td:eq(6)").text();
+
+            duom_id = currow.find("td:eq(0)").text();
+            $("#altuom").val(altuom);
+            $("#baseuom").val(baseuom);
+            $("#altqty").val(altqty);
+            $("#baseqty").val(baseqty);
+        });
+    });
+    function clear_Define_UoM() {
+        $("#altuom").val(0);
+        $("#baseuom").val(0);
+        $("#altqty").val("");
+        $("#baseqty").val("");
+    }
+    function click_DefineUoM(){
+        var altuom = $("#altuom").val();
+        var altuomname = $("#altuom option:selected").text();
+        var baseuom = $("#baseuom").val();
+        var baseuomname = $("#baseuom option:selected").text();
+        var altqty = $("#altqty").val();
+        var baseqty = $("#baseqty").val();
+        
+        var duom = {
+            DUoM_Id:duom_id,
+            GUoM_Id:guom_id,
+            UoM_Id:altuom,
+            AltUoMName:altuomname,
+            AltQty:altqty,
+            BaseUoM_Id:baseuom,
+            BaseUoM_Name:baseuomname,
+            BaseQty:baseqty
+        };
+        
+        $.ajax({
+            url:"/uoms/Add_DefineUoM",
+            type:"post",
+            datatype:"json",
+            data:{duom:duom},
+            success:function(response) {
+                show_uom_define();
+                duom_id = 0;
+                clear_Define_UoM();
+            }
+        });
+        
+    }
+    function show_uom_define() {
+        $.ajax({
+           url:"/uom/define/"+guom_id,
+           type:"get",
+           datatype:"json",
+           success:function(response) {
+              var out="";
+              $.each(response,function(i,item) {
+                  out += "<tr><td hidden>" + item.dUoM_Id
+                      + "</td><td hidden>" + item.uoM_Id
+                      + "</td><td>" + item.altQty
+                      + "</td><td>" + item.altUoMName
+                      + "</td><td> = "
+                      + "</td><td hidden>" + item.baseUoM_Id
+                      + "</td><td>" + item.baseQty
+                      + "</td><td>" + item.baseUoM_Name
+                      + "<td class='text-right'>"
+                      + "<a class='btn-info btn-sm text-white' id='edit_uom_define'>Edit</a>"
+                      //+ "<a class='btn-danger btn-sm waves-effect md-trigger text-white' onclick='delete_define_uom(" + item.DUoM_Id + ")'>Delete</a>"
+                      + "</td></tr>";
+                 $("#baseuom").val(item.baseUoM_Id);
+              });
+              $("#list_defineuom").html(out);
+           },
+           complete:function() {
+              var count =0;
+              $("#list_defineuom tr").each(function() {
+                  count++;
+              });
+              if(count>0){
+                  $('#baseuom').attr('disabled', true);
+              }
+              else{
+                  $('#baseuom').attr('disabled', false);
+              }
+           },
+           error:function(error) {
+              alert(error);
+           }
+        });
+    }
+    function delete_define_uom(val) {
+        
+        return;
+
+        swal({
+        title: "Are you sure?",
+        text: "You'll to delete uom has been define!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+        },
+        function(){
+            $.ajax({
+                url: "/uom/define/delete/"+val,
+                type: 'post',
+                datatype: "json",
+                success:function(data){
+                    swal("Deleted!", "Your group uom item has been deleted.", "success");
+                    window.setTimeout(function(){window.location.reload()}, 1500);
+                },
+                error:function (data) {
+                    swal("Error!", "Your group uom item has been error deleted.", "error");
+                }
+            })
+        });
+    }
+
+
+</script>

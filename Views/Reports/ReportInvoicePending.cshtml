@@ -1,0 +1,78 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+@model IEnumerable<Invoice>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Invoice</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Invoice</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-block">
+                <div class="dt-responsive table-responsive">
+                    <table id="basic-btn" class="table-striped table-sm table-bordered nowrap" width="100%">
+                        <thead>
+                       <tr>
+                           <th>N <sup>o</sup></th>
+                           <th>Invoice Code</th>
+                           <th>Section Name</th>
+                           <th>Date</th>
+                           <th>Total</th>
+                           <th class="text-right">Action</th>
+                       </tr>
+                        </thead>
+                        <tbody>
+                        @{ int i= 1;}
+                        @foreach (var inv in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@inv.InvCode</td>
+                                <td>@inv.SectionStr</td>
+                                <td>@inv.CreateDate?.ToString("yyyy/MM/dd")</td>
+                                <td>$ @String.Format("{0:N6}",@inv.GrandTotalUSD)</td>
+                                <td class="text-right">
+                                    <button class="btn-info btn-sm text-white">Pay</button>
+                                    <a class="btn-primary btn-sm text-white">View</a>
+                                    <a class="btn-danger btn-sm text-white">Cancel</a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+    
+    

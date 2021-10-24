@@ -1,0 +1,91 @@
+@{
+    Layout = "InvLayout/_InvLayout";
+}
+@model GroupUoM
+
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Group Unit Of Measure</h4>
+                    <span>Group UoM Lists</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Group UoM</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="card">
+    <div class="card-block">
+        <div class="text-right">
+            <button type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#subl1-model">Create New</button>
+        </div>
+        @{await Html.RenderPartialAsync("GUoMList");}
+    </div>
+</div>
+
+<div class="modal fade" id="subl1-model" tabindex="-1" role="dialog">
+   <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title">Group Unit Of Measure</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+           <div class="modal-body">
+               <form class="" asp-action="AddNewGroup" asp-controller="UoMs" role="form" method="post">
+                   <fieldset>
+                       <div class="form-group row">
+                           <div class="col">
+                           </div>
+                           <div class="col-sm-10">
+                               <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Group UoM Form</h4>
+                               <div class="form-group row has-error">
+                                   <label class="col-sm-3 col-form-label">Group UoM Name <span class="text-danger">*</span></label>
+                                   <div class="col-sm-9">
+                                       <input type="text" class="form-control input-danger" asp-for="GUoM_Name" placeholder="Input Name" required="required">
+                                       <span class="text-danger labelstr" asp-validation-for="GUoM_Name"></span>
+                                   </div>
+                               </div>
+                               <div class="form-group row has-error">
+                                   <label class="col-sm-3 col-form-label">Group UoM Foreign </label>
+                                   <div class="col-sm-9">
+                                       <input type="text" class="form-control input-danger" asp-for="GUoM_Foreign" placeholder="Input Foreign">
+                                       <span asp-validation-for="GUoM_Foreign"></span>
+                                   </div>
+                               </div>
+                               <div class="form-group row text-right">
+                                   <label class="col-sm-3"></label>
+                                   <div class="col-sm-9">
+                                       <button type="button" class="btn btn-default waves-effect " data-dismiss="modal">Close</button>
+                                       <button type="submit" class="btn btn-primary m-b-0">Submit</button>
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col">
+                           </div>
+                       </div>
+                   </fieldset>
+               </form>
+           </div>
+       </div>
+   </div>
+</div>

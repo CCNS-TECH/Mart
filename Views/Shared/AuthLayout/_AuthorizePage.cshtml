@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+        <link rel="icon" href="~/login.ico" type="image/x-icon">
+        <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/bootstrap/css/bootstrap.min.css">
+         <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+         <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/animate/animate.css">
+         <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/css-hamburgers/hamburgers.min.css">
+         <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/animsition/css/animsition.min.css">
+         <!--===============================================================================================-->
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/css/util.css">
+         <link rel="stylesheet" type="text/css" href="~/template/Login_v18/css/main.css">
+        <!--===============================================================================================-->
+        
+                                         
+        <link rel="stylesheet" type="text/css" href="~/template/files/assets/css/style.css">
+        
+        <!--===============================================================================================-->
+            <script src="~/template/Login_v18/vendor/jquery/jquery-3.2.1.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="~/template/Login_v18/vendor/animsition/js/animsition.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="~/template/Login_v18/vendor/bootstrap/js/popper.js"></script>
+            <script src="~/template/Login_v18/vendor/bootstrap/js/bootstrap.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="~/template/Login_v18/vendor/daterangepicker/moment.min.js"></script>
+            <script src="~/template/Login_v18/vendor/daterangepicker/daterangepicker.js"></script>
+            <!--===============================================================================================-->
+            <script src="~/template/Login_v18/vendor/countdowntime/countdowntime.js"></script>
+            <!--===============================================================================================-->
+            <script src="~/template/Login_v18/js/main.js"></script>        
+        
+        <script type="text/javascript" src="~/template/files/assets/js/script.js"></script>
+        
+        
+    </head>
+    <body style="min-height: 850px; background-color: #83D6DE;color: #fffde7;">
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center" style="margin-top: 250px;">
+                    <h1>Oops! Error 401 user authorize.</h1>
+                    <p>
+                        The page you were looking for doesn't exist.
+                        <br> We think the page may have authorize.
+                    </p>
+                    <div class="text-center" style="margin-top: 25px;">
+                        <a asp-action="login" asp-controller="Account" class="btn btn-primary text-center">Login </a>
+                    </div>
+                </div>
+                <div hidden="hidden">
+                    @RenderBody()
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    </body>
+</html>

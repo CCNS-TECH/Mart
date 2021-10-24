@@ -1,0 +1,35 @@
+﻿@using resm_app
+@using resm_app.Models
+@using resm_app.Models.BusinessObjects
+@using resm_app.Models.BusinessObjects.Accounts
+@using resm_app.Models.BusinessObjects.Companys
+@using resm_app.Models.BusinessObjects.Employees
+@using resm_app.Models.BusinessObjects.UoMs;
+@using resm_app.ViewModels
+@using resm_app.Services
+@using resm_app.Models.BusinessObjects.Invoices
+@using resm_app.Models.BusinessObjects.Payments
+@using resm_app.Models.BusinessObjects.Categories
+@using resm_app.Models.BusinessObjects.Whs
+@using resm_app.Models.BusinessObjects.Products
+@using resm_app.Models.BusinessObjects.Sections
+@using resm_app.Models.BusinessObjects.Exchanges
+@using resm_app.Models.BusinessObjects.BusinessPartners
+@using resm_app.Models.BusinessObjects.Inventory
+@using resm_app.Models.BusinessObjects.CashInOuts
+@using resm_app.Models.BusinessObjects.Commissions
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Http
+
+@*injection service*@
+@inject CategoryService CategoryService
+@inject UoMService UoMService
+@inject UserAccountService UserAccountService
+@inject TaxService TaxService
+@inject PriceListService PriceListService
+@inject KdsService KdsService
+@inject SectionService SectionService
+@inject ItemService ItemService
+@inject EmployeeSerivce EmployeeService
+@inject DashboardService DashboardService
+

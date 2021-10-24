@@ -1,0 +1,255 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Payment</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Payment</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row" style="border-bottom:2px #00b0ff solid;">
+                    <div class="col-8">
+                        <form>
+                            <div class="form-group row">
+                                <div class="col text-center">
+                                    <p>From</p>             
+                                </div>
+                                <div class="col-sm-4">
+                                    <input id="from" name="from" type="text" class="form-control birthdate" placeholder="from..." required="required" value="@ViewBag.From">
+                                </div>
+                                <div class="col text-center">
+                                    <p>To</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input id="to" name="to" type="text" class="form-control birthdate" placeholder="to..." required="required" value="@ViewBag.To">
+                                </div>
+                                <div class="col">
+                                    <a onclick="CallPayment();" class="btn btn-primary text-white" placeholder="col" value="Find">Find</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-block">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="tbPaidList" class="table-striped table-sm table-bordered nowrap display" width="100%">
+                                <thead>
+                                <tr>
+                                    <th> </th>
+                                    <th>Payment Code</th>
+                                    <th>Date</th>
+                                    <th>Paid Time</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-right">Total</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <th class="text-right">Total</th>
+                                        <th></th>
+                                        <td id="tb-footer-total"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+<script>
+ $(document).ready(function(){
+     CallPayment();
+ });
+     function format (d) {
+         var output = "";
+                 for(var i in d.PaymentDetails){
+                     output +="<tr>"
+                     +'<td>'+d.PaymentDetails[i].LineNumber
+                     +'</td><td>'+"<span class='custom-badge status-orange'>"+d.PaymentDetails[i].ItemStr+"</span>"
+                     +'</td><td>'+"<span class='custom-badge status-red'>"+d.PaymentDetails[i].Quantity.toFixed(2)+"</span>"
+                     +'</td><td class="text-right">'+"<span class='custom-badge status-green'>"+d.PaymentDetails[i].UnitPrice.toFixed(2)+"</span>"
+                     +'</td><td class="text-right">'+"<span class='custom-badge status-green'>"+d.PaymentDetails[i].TotalLine.toFixed(2)+"</span>"
+                     +"</td></tr>";
+                 };
+                 return '<table class="table-striped table-sm table-hover table-bordered nowrap" style="float: right" width="90%">'
+                         +'<thead>'
+                            +'<tr>'
+                                 +'<th>N<sup>o</sup></th>'
+                                 +'<th>Item Name</th>'
+                                 +'<th class="text-left">Quantity</th>'
+                                 +'<th class="text-right">Price</th>'
+                                 +'<th class="text-right">Amount</th>'
+                             +'</tr>'
+                         +'</thead>'
+                         +'<tbody>'
+                             + output
+                         +'</tbody>'
+                     +'</table>';
+     }
+     function CallPayment() {
+        $('#tbPaidList').DataTable().destroy();
+        
+         var from = $("#from").val();
+         var to = $("#to").val();
+         
+         var dt = $('#tbPaidList').DataTable({
+                 "processing": true,
+                 "serverSide": false,
+                 "ajax": "/get/payment/paid?from="+from+"&to="+to,
+                 dom: 'Bfrtip',
+                 buttons: [
+                    'excel', 'pdf', 'print'
+                 ],
+                 "footerCallback": function ( row, data, start, end, display ) {
+                      var api = this.api();
+                      nb_cols = api.columns().nodes().length;
+                      var j = 5;
+                      while(j < nb_cols){
+                          var pageTotal = api
+                       .column( j, { page: 'current'} )
+                       .data()
+                       .reduce( function (a, b) {
+                           return (Number(b) + Number(a)).toFixed(2);
+                       },0);
+                         // Update footer
+                         $( api.column( j ).footer() ).html("$"+pageTotal);
+                         $("#tbPaidList tfoot tr td#tb-footer-total").text("");
+                          j++;
+                      }
+                   },
+                 "columns": [
+                     {
+                         "class":"details-control-paid",
+                         "orderable":false,
+                         "data":null,
+                         "defaultContent": ""
+                     },
+                     {
+                        "data": "paymentCode",
+                        "className": 'text-left',
+                         "render" : function(data){
+                             return "<span> #"+data+"</span>";
+                         } 
+                    },
+                     { 
+                         data: "paidDate",
+                         render: function(data, type, row){
+                             if(type === "sort" || type === "type"){
+                                 return data;
+                             }
+                             return moment(data).format("MM/DD/YYYY");
+                         }
+                     },
+                      { 
+                          data: "paidDate",
+                          render: function(data, type, row){
+                              if(type === "sort" || type === "type"){
+                                  return data;
+                              }
+                              return moment(data).format("HH:mm A");
+                          }
+                      },
+                      {
+                          "data": "docStatus",
+                          "className": 'text-center',
+                           "render" : function(data){
+                               return "<span class='label label-inverse-success'>Paid</span>";
+                           } 
+                      },                  
+                     {
+                         "data": "grandTotalUSD",
+                         "className": 'text-right',
+                          "render" : function(data){
+                              return "<span>$"+data.toFixed(2)+"</span>";
+                          }  
+                     },
+                     {
+                          'data': 'paymentCode', 
+                          'class':'text-right',
+                          'render': function (data, type, row, meta) {
+                           return '<a href="/payment/id/'+data+'" class="text-info btn-sm"><i class="icofont icofont-eye"></i> View</a>'
+                           }
+                       }
+                       
+                 ],
+                 "order": [[1, 'asc']]
+             });
+           // Array to track the ids of the details displayed rows
+              var detailRows = [];
+             $('#tbPaidList tbody').on('click', 'tr td.details-control-paid', function () {
+                 var tr = $(this).closest('tr');
+                 var row = dt.row( tr );
+                 var idx = $.inArray( tr.attr('id'), detailRows );
+                 if ( row.child.isShown() ) {
+                     tr.removeClass('details');
+                     row.child.hide();
+                     // Remove from the 'open' array
+                     detailRows.splice( idx, 1 );
+                 }
+                 else {
+                     tr.addClass('details');
+                     row.child( format( row.data() ) ).show();
+                     
+                     // Add to the 'open' array
+                     if ( idx === -1 ) {
+                         detailRows.push( tr.attr('id'));
+                     }
+                 }
+             });
+             // On each draw, loop over the `detailRows` array and show any child rows
+             dt.on('DocEntry', function () {
+                 $.each( detailRows, function ( i, id ) {
+                     $('#'+id+' td.details-control-paid').trigger( 'click' );
+                 } );
+             });
+     }  
+     </script>
+<style>
+    td.details-control-paid {
+        background: url('/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.details td.details-control-paid {
+        background: url('/images/details_close.png') no-repeat center center;
+    }
+</style>
+    

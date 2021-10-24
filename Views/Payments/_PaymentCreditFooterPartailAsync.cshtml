@@ -1,0 +1,103 @@
+@{
+    var invoice = ViewBag.CreditInvoice;
+}
+
+<div class="select-block">
+            <div class="row">
+                <div class="col-sm-6"><h4 class="text-white">Dollars</h4></div>
+                <div class="col-sm-6"><h4 class="text-white">Riels</h4></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(1,1)">
+                    <div class="card card-body div-button">$ 1</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(100,0)">
+                    <div class="card card-body div-button">៛ 100</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(5,1)">
+                    <div class="card card-body div-button">$ 5</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(500,0)">
+                    <div class="card card-body div-button">៛ 500</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(10,1)">
+                    <div class="card card-body div-button">$ 10</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(1000,0)">
+                    <div class="card card-body div-button">៛ 1,000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(20,1)">
+                    <div class="card card-body div-button">$ 20</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(5000,0)">
+                    <div class="card card-body div-button">៛ 5,000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(50,1)">
+                    <div class="card card-body div-button">$ 50</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(10000,0)">
+                    <div class="card card-body div-button">៛ 10,000</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" onclick="click_money(100,1)">
+                    <div class="card card-body div-button">$ 100</div>
+                </div>
+                <div class="col-sm-6" onclick="click_money(50000,0)">
+                    <div class="card card-body div-button">៛ 50,000</div>
+                </div>
+            </div>
+        </div>
+<div class="col-md-12" style="height: 260px;">
+    <hr style="border: 2px #fff1ab solid;"/>
+    <h5 class="text-white">Booking Status</h5>
+    @if (@invoice.BookingSection != null)
+    {
+        <table class="table table-spring text-white" id="tbcommission">
+            <tr>
+                <td>Booking Status:</td>
+                <td><span class="label label-info status">Yes</span></td>
+            </tr>
+            <tr hidden="hidden">
+                <td>Booking By Id:</td>
+                <td><span class="label label-info commissionId">@invoice.BookingSection.BookedById</span></td>
+            </tr>
+            <tr>
+                <td>Booking By:</td>
+                <td><span class="label label-info commissionName">@invoice.BookingSection.BookedByName</span></td>
+            </tr>
+            <tr>
+                <td>Commission:</td>
+                <td><input type="checkbox" id="commissionCheckbox" onclick="funcCheckCommission();" class="checked" value=""/></td>
+                <td><input type="hidden" id="commissionvalue" value="0"/></td>
+            </tr>
+                    
+        </table>
+    }
+    else
+    {
+        <table class="table table-spring text-white">
+            <tr>
+                <td>Booking Status:</td>
+                <td><span class="label label-danger">None</span></td>
+            </tr>
+            <tr hidden="hidden">
+                <td>Booking By Id:</td>
+                <td><span class="label label-danger">0</span></td>
+            </tr>
+                
+            <tr>
+                <td>Booking By:</td>
+                <td><span class="label label-danger">None</span></td>
+            </tr>
+        </table>
+    }
+</div>

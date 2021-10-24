@@ -1,0 +1,191 @@
+﻿@{
+    Layout = "Layout/_ReportLayout";
+}
+@model IEnumerable<CashOut>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Cash In / Out Report</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Cash In / Out Report</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row" style="border-bottom:2px #00b0ff solid;">
+                    <div class="col-8">
+                        <form asp-action="CashInOutReport" asp-controller="Reports" accept-charset="UTF-8" role="form" method="get">
+                            <div class="form-group row">
+                                <div class="col text-center">
+                                    <p>From</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="from" id="from" type="text" class="form-control birthdate" placeholder="from..." required="required" value="@ViewBag.From">
+                                </div>
+                                <div class="col text-center">
+                                    <p>To</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="to" id="to" type="text" class="form-control birthdate" placeholder="to..." required="required" value="@ViewBag.To">
+                                </div>
+                                <div class="col">
+                                    <input type="submit" class="btn btn-primary btn-sm" placeholder="col" value="Find">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-block">
+                <div class="dt-responsive table-responsive">
+                    <table id="simpletable" class="table-striped table-sm table-bordered nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th>N <sup>o</sup></th>
+                                <th>Cash by</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Date Cash In</th>
+                                <th>Cash In ($)</th>
+                                <th>Cash In (៛)</th>
+                                <th>Date Cash Out</th>
+                                <th>Cash Out ($)</th>
+                                <th>Cash Out (៛)</th>
+                                <th>Start PaymentCode</th>
+                                <th>End PaymentCode</th>
+                                <th>Sale Amount ($)</th>
+                                <th>Sale Amount (៛)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int i = 1;}
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.CashOutByStr</td>
+                                <td>@item.DocDate?.ToString("MM/dd/yyyy")</td>
+                                <td>@item.CloseShiftStr</td>
+                                <td>@item.CashIn.CashInDate</td>
+                                <td>@String.Format("{0:N2}", item.CashIn.CashInUSD)</td>
+                                <td>@String.Format("{0:N2}", item.CashIn.CashInRiel)</td>
+                                <td>@item.CashOutDate</td>
+                                <td>@String.Format("{0:N2}", item.CashOutUSD)</td>
+                                <td>@String.Format("{0:N2}", item.CashOutRiel)</td>
+                                <td>@item.PayCodeMin</td>
+                                <td>@item.PayCodeMax</td>
+                                <td>@String.Format("{0:N2}", item.SaleAmount)</td>
+                                <td>@String.Format("{0:N2}", item.SaleAmountReil)</td>
+                            </tr>
+                                i++;
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="text-right">
+                                <td colspan="13"><span style="font-weight: bold;">Total Sale</span>  <span style="font-weight: bold;">$ @String.Format("{0:N2}", ViewData["SaleAmount"])</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+<!-- feather Awesome -->
+<link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/typicons-icons/css/typicons.min.css">
+<link rel="stylesheet" type="text/css" href="~/template/files/assets/icon/font-awesome/css/font-awesome.min.css">
+<script type="text/javascript">
+    $(document).ready(function() {
+        var groupColumn = 2;
+        var table = $('#simpletable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ],
+            "columnDefs": [
+                { "visible": false, "targets": groupColumn }
+            ],
+            "order": [[ groupColumn, 'desc' ]],
+            "displayLength": 25,
+            "drawCallback": function ( settings ) {
+                var api = this.api();
+                var rows = api.rows( {page:'current'} ).nodes();
+                var last=null;
+
+                api.column( groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                    if ( last !== group ) {
+                        $(rows).eq( i ).before(
+                            '<tr class="group bg-primary"><td colspan="13">'+group+'</td></tr>'
+                        );
+                        last = group;
+                    }
+                });
+            }
+        } );
+
+        // Order by the grouping
+        $('#simpletable tbody').on( 'click', 'tr.group', function () {
+            //var currentOrder = table.order()[0];
+            if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+                table.order( [ groupColumn, 'desc' ] ).draw();
+            }
+            else {
+                table.order( [ groupColumn, 'asc' ] ).draw();
+            }
+            
+        });
+    } );
+    function exportSaleReport() {
+       var from=$("#from").val();
+       var to=$("#to").val();
+       $.ajax({
+            url: "/report/booking?from="+from+"&to="+to,
+            type: "get",
+            datatype: "json",
+            async:false,
+            success: function (data) {
+                if(data == "404"){
+                    swal({
+                          title:"Export Fail!",
+                          text:"Your data export has been fail!",
+                          type:"error"
+                      });
+                }else{
+                    swal({
+                          title:"Export Successfully!",
+                          text:"Your data export has been success!",
+                          type:"success"
+                      });
+                }
+            },
+            error:function() {
+
+            }
+       });
+    }
+</script>

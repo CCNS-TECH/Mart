@@ -1,0 +1,104 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+@model IEnumerable<Item>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Inventory</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Inventory</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row" style="border-bottom:0px #00b0ff solid;">
+                    <div class="col-8"  hidden="hidden">
+                        <form asp-action="GoodsIssueReport" asp-controller="Reports" accept-charset="UTF-8" role="form" method="get">
+                            <div class="form-group row">
+                                <div class="col text-center">
+                                    <p>From</p>             
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="from" type="text" class="form-control birthdate" placeholder="from..." required="required" value="@ViewBag.From">
+                                </div>
+                                <div class="col text-center">
+                                    <p>To</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="to" type="text" class="form-control birthdate" placeholder="to..." required="required" value="@ViewBag.To">
+                                </div>
+                                <div class="col">
+                                    <input type="submit" class="btn btn-primary btn-sm" placeholder="col" value="Find">
+                                </div>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-block">
+                <div class="dt-responsive table-responsive">
+                    <table id="simpletable" class="table-striped table-sm table-bordered nowrap" width="100%">
+                        <thead>
+                        <tr>
+                            <th>N <sup>o</sup></th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                             <th>UoM</th>
+                            <th class="text-right">Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @{ int i = 1;}
+                        @foreach (var gdis in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@gdis.ItemCode</td>
+                                <td>@gdis.ItemStr</td>
+                                <td>@gdis.Category.Cate_En</td>
+                                <td>@gdis.CreatedDate?.ToString("MM/dd/yyyy")</td>
+                                <td>@gdis.CreatedDate?.ToString("hh:mm:ss")</td>
+                                <td>@gdis.InvUoMStr</td>
+                                <td class="text-right">@String.Format("{0:N2}", @gdis.InStock)</td>
+                                
+                            </tr>
+                            i++;
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+    

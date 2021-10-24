@@ -1,0 +1,35 @@
+@{
+    var genres =await CategoryService.GetCateList();
+}
+<div class="dt-responsive table-responsive">
+    <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Category List</h4>
+    <div class="col-sm-offset-2">
+        <table class="table table-striped table-bordered nowrap">
+            <thead>
+            <tr>
+                <th>N<sup>o</sup></th>
+                <th>Cate. Name</th>
+                <th>Cate. Str</th>
+                <th class="text-right">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int i = 1;}
+            @foreach (var sf in genres as List<Category>)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@sf.Cate_En</td>
+                    <td>@sf.Cate_Str</td>
+                    <td class="text-right">
+                        <a class="btn-info btn-sm text-white" asp-action="EditCate" asp-controller="Categories" asp-route-id="@sf.CateId">Edit</a>|
+                        <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deleteCate(@sf.CateId);">Delete</a>
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/category.js"></script>

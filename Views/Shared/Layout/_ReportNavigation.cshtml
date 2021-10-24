@@ -1,0 +1,218 @@
+﻿@{
+    var UserId = long.Parse(Context.Session.GetString("UserId"));
+    var MenuId = long.Parse(Context.Session.GetString("menu"));
+    var Func = (await UserAccountService.GetMenuPermissions(UserId)).Where(_ => _.Type == "Function" && _.ParentId == MenuId);
+    var SubFunc = (await UserAccountService.GetMenuPermissions(UserId)).Where(_ => _.Type == "Sub-Function");
+}
+
+
+<nav class="pcoded-navbar">
+    <div class="pcoded-inner-navbar main-menu">
+        <div class="pcoded-navigatio-lavel">Report</div>
+
+        <ul class="pcoded-item pcoded-left-item">
+            @foreach (var f in Func)
+            {
+
+                @if (SubFunc.Where(_ => _.ParentId == f.Id).Count() > 0)
+                {
+                    <li class="pcoded-hasmenu">
+                        <a href="javascript:void(0)">
+                            <span class="pcoded-micon"><i class="@f.Icon"></i></span>
+                            <span class="pcoded-mtext">@f.Name</span>
+                        </a>
+                        <ul class="pcoded-submenu">
+                            @foreach (var sf in SubFunc)
+                            {
+                                if (f.Id == sf.ParentId)
+                                {
+                                    <li class="">
+                                        <a asp-action="@sf.Action" asp-controller="@sf.Controller">
+                                            <span class="pcoded-mtext">@sf.Name</span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li href="javascript:void(0)">
+                        <a asp-action="@f.Action" asp-controller="@f.Controller">
+                            <span class="pcoded-micon"><i class="@f.Icon"></i></span>
+                            <span class="pcoded-mtext">@f.Name</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+
+
+
+        @*@if (Context.Session.GetString("Role") == "Admin")
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-credit-card"></i></span>
+                        <span class="pcoded-mtext">Sale Report</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/report/topsales">
+                                <span class="pcoded-mtext">Top Sales Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a asp-action="SaleAgingReport" asp-controller="Reports">
+                                <span class="pcoded-mtext">Sale Aging Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a href="/report/sales">
+                                <span class="pcoded-mtext">Sales Report</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-box"></i></span>
+                        <span class="pcoded-mtext">Banking</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/report/Aging">
+                                <span class="pcoded-mtext">Aging Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a asp-action="FindReportInvoice" asp-controller="Reports">
+                                <span class="pcoded-mtext">Invoice Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a asp-action="FindPaymentReport" asp-controller="Reports">
+                                <span class="pcoded-mtext">Payment Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-feather"></i></span>
+                        <span class="pcoded-mtext">Commission</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/commission/list">
+                                <span class="pcoded-mtext">Commossion List</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/report/booking">
+                                <span class="pcoded-mtext">Booking Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-inbox"></i></span>
+                        <span class="pcoded-mtext">Purchase Report</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a asp-action="PurchaseReport" asp-controller="Reports">
+                                <span class="pcoded-mtext">Purchased Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-server"></i></span>
+                        <span class="pcoded-mtext">Stock Report</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/report/inventory">
+                                <span class="pcoded-mtext">Inventory Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a href="/report/stock">
+                                <span class="pcoded-mtext">Stock Report</span>
+                            </a>
+                        </li>
+
+                        <li class=" ">
+                            <a href="/report/goodsissue">
+                                <span class="pcoded-mtext">Goods Issue Report</span>
+                            </a>
+                        </li>
+                        <li class=" ">
+                            <a href="/report/goodsreceipt">
+                                <span class="pcoded-mtext">Goods Receipt Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-credit-card"></i></span>
+                        <span class="pcoded-mtext">Cash In / Out Report</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class=" ">
+                            <a href="/report/cashinout">
+                                <span class="pcoded-mtext">Cash In / Out Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="pcoded-hasmenu" hidden>
+                    <a href="javascript:void(0)">
+                        <span class="pcoded-micon"><i class="feather icon-airplay"></i></span>
+                        <span class="pcoded-mtext">Expense Report</span>
+                    </a>
+                    <ul class="pcoded-submenu" hidden="hidden">
+                        <li class="">
+                            <a href="handson-appearance.htm">
+                                <span class="pcoded-mtext">Expenses Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        }
+        else
+        {
+            <ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu">
+                    <a href="/report/Aging">
+                        <span class="pcoded-mtext">Aging Report</span>
+                    </a>
+                </li>
+            </ul>
+        }*@
+    </div>
+</nav>
+
+
+
+<script type="text/javascript" src="~/template/files/bower_components/jquery/js/jquery.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/popper.js/js/popper.min.js"></script>
+<script type="text/javascript" src="~/template/files/bower_components/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="~/template/files/assets/pages/data-table/extensions/buttons/js/extension-btns-custom.js"></script>

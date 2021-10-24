@@ -1,0 +1,110 @@
+@model AsignUser
+@{
+    var users = await  UserAccountService.GetEmps();
+    var accs = await UserAccountService.GetUserAccs();
+}
+<div class="card">
+    <div class="card-header">
+        <div class="text-right no-padding">
+            <button type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#account-model">Create New</button>
+        </div>
+        
+        <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Account Lists</h4>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+            <table class="table table-striped table-bordered" role="grid" aria-describedby="simpletable_info">
+                <thead>
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 220px;">N<sup>o</sup></th>
+                    <th class="sorting" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 326px;">Emp Name</th>
+                    <th class="sorting" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 162px;">Username</th>
+                    <th class="sorting" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 83px;">Role</th>
+                    <th class="sorting" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 164px;">Date</th>
+                    <th class="sorting text-right" tabindex="0" aria-controls="simpletable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 117px;">Action</th>
+                </tr>
+            
+                </thead>
+                <tbody>
+                @{ int i = 1;}
+                @foreach (var us in ViewBag.AccList as List<UserAccount>)
+                {
+                    <tr role="row" class="odd">
+                        <td class="sorting_1">@i</td>
+                        <td>@us.Emp_Name</td>
+                        <td>@us.Username</td>
+                        <td>@us.UserRole.Role_En</td>
+                        <td>@us.CreateDate?.ToString("yyyy/MM/dd")</td>
+                        <td class="text-right"><a class="btn-info btn-sm text-white" data-toggle="modal" data-target="#sign-model">Asign</a></td>
+                    </tr>
+                    i++;
+                }
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="sign-model" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formchangeuserlogin">
+                    <fieldset>
+                        <div class="form-group row">
+                            <div class="col">
+                            </div>
+                            <div class="col-sm-10">
+                                <h4  class="sub-title" style="border-bottom:2px #00ACED solid ">Change User Login Form</h4>
+                               
+                                <div class="form-group row has-error">
+                                    <label class="col-sm-3 col-form-label">From User <span class="text-danger">*</span></label>
+                                    <div class="col-sm-9">
+                                        <input list="brow" placeholder="search..." asp-for="AsignStr" class="form-control"/>
+                                        <datalist id="brow">
+                                            @foreach (var d in users as List<Employee>)
+                                            {
+                                                <option value="@d.Id-@d.Emp_Name"></option>
+                                            }
+                                        </datalist>
+                                       
+                                    </div>
+                                </div>
+                                <div class="form-group row has-error">
+                                    <label class="col-sm-3 col-form-label">To User </label>
+                                    <div class="col-sm-9">
+                                        <select id="toUsr" class="form-control required" required="required">
+                                            @foreach (var u in accs as List<UserAccount>)
+                                            {
+                                                <option value="@u.Id">@u.Username</option>
+                                            }
+                                        </select>
+                                       
+                                    </div>
+                                </div>
+                                <div class="form-group row text-right">
+                                    <label class="col-sm-3"></label>
+                                    <div class="col-sm-9">
+                                        <button type="button" onclick="chagneuserLogin()" class="btn btn-primary m-b-0">Change</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/user.js"></script>

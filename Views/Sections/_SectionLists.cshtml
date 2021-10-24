@@ -1,0 +1,69 @@
+@{
+    var section =await SectionService.GetSections();
+}
+<div class="dt-responsive table-responsive">
+    <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Section List</h4>
+    <div class="col-sm-offset-2">
+        <table id="footer-select" class="table table-striped table-bordered nowrap" width="100%">
+            <thead>
+            <tr>
+                <th>N<sup>o</sup></th>
+                <th>Name</th>
+                <th>Foreign</th>
+                <th>Group</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th class="text-right">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int i = 1;}
+            @foreach (var sf in section)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@sf.SectionEn</td>
+                    <td>@sf.SectionStr</td>
+                    <td>@sf.GroupSection.GSectionStr</td>
+                    @if (sf.SectionType.Type == "VIP"){ <td><span class="label label-warning"> @sf.SectionType.Type</span></td>}
+                    else{ <td><span class="label label-primary"> @sf.SectionType.Type</span></td>}
+                    <td><span>@sf.Price </span></td>
+                    <td class="text-right">
+                        <a class="btn-info btn-sm text-white" asp-action="EditSection" asp-controller="Sections" asp-route-id="@sf.Id">Edit</a>|
+                        <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deleteSection(@sf.Id);">Delete</a>
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function deleteSection(val){
+    swal({
+            title: "Are you sure?",
+            text: "You'll to delete the section!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function(){
+            $.ajax({
+                url: "/section/delete/"+val,
+                type: 'post',
+                datatype: "json",
+                success:function(data){
+                    swal("Deleted!", "Your section has been deleted.", "success");
+                    window.setTimeout(function(){window.location.reload()}, 1500);
+                },
+                error:function (data) {
+                    swal("Error!", "Your section has been error deleted.", "error");
+                }
+            })
+        });
+}
+</script>

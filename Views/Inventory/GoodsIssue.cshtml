@@ -1,0 +1,971 @@
+﻿@{
+    Layout = "InvLayout/_PchLayout";
+}
+@model IEnumerable<Item>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Item Goods Issue</h4>
+                    <span>Item Lists</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                        <button type="button" class="btn btn-default waves-effect" data-toggle="modal" data-target="#default-Modal">Static</button>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Transfer</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Goods Issue</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="card">
+    <div class="card-header">
+        <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Goods Issue</h4>
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Vendor<span class="text-danger" style="display: initial;"> *</span></label>
+                    </div>
+                    <div class="col-md-9">
+                        <select class="form-control select floating" required="required" id="vendor">
+                            <option value="0">General Vender</option>
+                            @foreach (var p in ViewBag.Venders as IEnumerable<BusinessPartner>)
+                            {
+                                <option value="@p.VendorId">@p.VendorName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Date <span class="text-danger" style="display: initial;"> *</span></label>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="cal-icon">
+                            <input id="current_date" name="current_date" type="text" class="form-control birthdate" placeholder="to..." required="required">
+                            @*<input type="date" id="current_date" class="form-control valid" value="@DateTime.Now.ToString("dd/MM/yyyy")">*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Warehouse<span class="text-danger" style="display: initial;"> *</span></label>
+                    </div>
+                    <div class="col-md-9">
+                        <select id="warehouse" class="form-control select floating" required="required">
+                            @foreach (var w in ViewBag.Whs as List<Whs>)
+                            {
+                                <option value="@w.Id">@w.Whs_En</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Remark <span class="text-danger" style="display: initial;"> *</span></label>
+                    </div>
+                    <div class="col-md-9">
+                        <textarea rows="3" class="form-control" id="remark" placeholder="Remark"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="text-right no-padding">
+            <a class="btn-primary btn-sm waves-effect text-white" data-toggle="modal" data-target="#goods_issue_add_item"><i class="ti-plus"></i> Add Item</a>
+        </div>*@
+        <h5 class="sub-title" style="border-bottom:2px #808080 solid;width:100%;"></h5>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+            <table class="table-striped table-sm table-bordered nowrap" width="100%">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Qty</th>
+                        <th>Cost($)</th>
+                        <th>Disc(%)</th>
+                        <th>Amount($)</th>
+                        <th>UoM</th>
+                        <th>Warehouse</th>
+                        <th>Vendor</th>
+                        <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="item_issue"></tbody>
+                 <tfoot>
+                    <tr>
+                        <td colspan="10">
+                            <div class="text-right no-padding" style="float: left;">
+                                <a class="btn btn-outline-info btn-sm waves-effect" data-toggle="modal" data-target="#goods_issue_add_item"> Add Item</a>
+                            </div>
+                        </td>
+                    </tr>  
+                 </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="row card-block">
+        <div class="col-md-8 col-lg-8"></div>
+        <div class="col-md-4 col-lg-4">
+            <table class="table-striped table-sm table-bordered nowrap" width="100%">
+                <thead>
+                    <tr>
+                        <th class="text-right" width="30%">Amount ($)</th>
+                        <th class="text-right" id="sub_total">0.00</th>
+                    </tr>
+                    <tr hidden>
+                        <th class="text-right" width="30%">Discount (%)</th>
+                        <th class="text-right" contenteditable id="dis_total" onblur="calculate_total()">0.00</th>
+                    </tr>
+                    <tr hidden>
+                        <th class="text-right" width="30%">VAT (%)</th>
+                        <th class="text-right" contenteditable id="vat_total" onblur="calculate_total()">0.00</th>
+                    </tr>
+                    <tr hidden>
+                        <th class="text-right" width="30%">Grand Total ($)</th>
+                        <th class="text-right" id="grand_total">0.00</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer text-right">
+        <a class="btn-primary btn-sm waves-effect text-white" data-toggle="modal" onclick="click_save_goods_issue()"> Save</a>
+    </div>
+</div>
+@*popup item for Issue*@
+<div class="modal fade" id="goods_issue_add_item" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Goods Issue</b></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="footer-select" width="100%" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>N<sup>o</sup></th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>InStock</th>
+                            <th>UoM</th>
+                            <th hidden>ItemId</th>
+                            <th hidden>PchUomStr</th>
+                            <th hidden>PchUomId</th>
+                            <th hidden>GroupUoMId</th>
+                            <th hidden>GroupUomStr</th>
+                            <th hidden>ItemType</th>
+                            <th hidden>Manageby</th>
+                            <th hidden>Barcode</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list_item">
+                        @{ int i = 1;}
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.ItemCode</td>
+                                <td>@item.ItemEn</td>
+                                <td>@item.InStock</td>
+                                <td>@item.InvUoMStr</td>
+                                <td hidden>@item.Id</td>
+                                <td hidden>@item.PchUoMStr</td>
+                                <td hidden>@item.PchUoMId</td>
+                                <td hidden>@item.GUoMId</td>
+                                <td hidden>@item.GUoMStr</td>
+                                <td hidden>@item.ItemType</td>
+                                <td hidden>@item.ManageBy</td>
+                                <td hidden>@item.Barcode</td>
+                                <td class="text-right">
+                                    <a class="btn-info btn-sm waves-effect text-white btn_choose" style="padding: 5px;"><i class="ti-download"></i> choose</a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-danger btn-sm waves-effect text-white" data-dismiss="modal"> Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*change uom popup*@
+<div class="modal fade" id="change_uom_issue" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content  animated bounceln">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Change UoM</b></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="change_uom">
+                    <option value="0">UoM</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-primary btn-sm waves-effect text-white" onclick="click_save_uom()" data-dismiss="modal">Save</a>
+                    <a class="btn-danger btn-sm waves-effect text-white" data-dismiss="modal"> Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*change warehouse popup*@
+<div class="modal fade" id="change_warehouse_issue" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content  animated bounceln">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Change Warehouse</b></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="change_warehouse">
+                    @foreach (var w in ViewBag.Whs as List<Whs>)
+                    {
+                        <option value="@w.Id">@w.Whs_En</option>
+                    }
+                </select>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-primary btn-sm waves-effect text-white" onclick="click_save_warehouse()" data-dismiss="modal">Save</a>
+                    <a class="btn-danger btn-sm waves-effect text-white" data-dismiss="modal"> Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*set serail bacth uom popup*@
+<div class="modal fade" id="popup_serail_bacth" tabindex="-1" role="dialog" style="height:100%;">
+    <div class="dialog" role="document">
+        <div class="modal-content" id="height_dynamic">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Set Serial and Batch</b></h6>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="card-block">
+                    <!-- Row start -->
+                    <div class="row">
+                        <div class="col-lg-12 col-xl-12">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs md-tabs b-none" role="tablist">
+                                <li class="nav-item" id="tab_batch">
+                                    <a class="nav-link active" data-toggle="tab" href="#bacth" role="tab">Bacth</a>
+                                    <div class="slide"></div>
+                                </li>
+                                <li class="nav-item" id="tab_serail">
+                                    <a class="nav-link" data-toggle="tab" href="#serail" role="tab">Serail</a>
+                                    <div class="slide"></div>
+                                </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content card-block">
+                                <div class="tab-pane active" id="bacth" role="tabpanel">
+                                    <div class="col-md-12">
+                                        <table class="table table-hover table-sm table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Code</th>
+                                                    <th>Description</th>
+                                                    <th>Qty</th>
+                                                    <th width="10%" class="text-right">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="list_item_bacth"></tbody>
+                                        </table>
+                                        <br />
+                                        <h5 class="sub-title" style="border-bottom:2px #808080 solid;width:100%;"></h5>
+                                        <table class="table table-hover table-sm table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Bacth No</th>
+                                                    <th>Code</th>
+                                                    <th>Description</th>
+                                                    <th>Qty</th>
+                                                    <th hidden>Expire Date</th>
+                                                    <th width="10%" class="text-right">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="list_item_bacth_detail"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="serail" role="tabpanel">
+                                    <table class="table table-hover table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Description</th>
+                                                <th>Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list_item_serail"></tbody>
+                                    </table>
+                                    <br />
+                                    <h5 class="sub-title" style="border-bottom:2px #808080 solid;width:100%;"></h5>
+                                    <table class="table table-hover table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Serail No</th>
+                                                <th>Code</th>
+                                                <th>Description</th>
+                                                <th>Qty</th>
+                                                <th hidden>Expire Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list_item_serail_detail"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row end -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-primary btn-sm waves-effect text-white" onclick="click_save_batch_serail()" data-dismiss="modal">Save</a>
+                    <a class="btn-danger btn-sm waves-effect text-white" onclick="click_close_bacth_serail()">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*change expire date in batch and serial popup*@
+<div class="modal fade" id="change_expiredate_popup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content  animated bounceln">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Change Expire Date</b></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="date" class="form-control" value="@DateTime.Now" id="change_expiredate" />
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-primary btn-sm waves-effect text-white" onclick="click_save_expiredate()" data-dismiss="modal">Save</a>
+                    <a class="btn-danger btn-sm waves-effect text-white" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*change vendor popup*@
+<div class="modal fade" id="change_vendor_popup" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content  animated bounceln">
+            <div class="modal-header">
+                <h6 class="modal-title text-primary"><b>Form Change Vendor</b></h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group row">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Vendor</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select class="form-control select floating" required="required" id="vendor_change">
+                                <option value="0">General Vender</option>
+                                @foreach (var p in ViewBag.Venders as IEnumerable<BusinessPartner>)
+                                {
+                                    <option value="@p.VendorId">@p.VendorName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-right">
+                    <a class="btn-primary btn-sm waves-effect text-white" onclick="click_save_vendor()" data-dismiss="modal">Save</a>
+                    <a class="btn-danger btn-sm waves-effect text-white" data-dismiss="modal"> Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var item_id_public = 0;
+    $(document).ready(function () {
+        $("#list_item").on("click", ".btn_choose", function () {
+            var count = 0;
+            var whsid = $("#warehouse").val();
+            var whsname = $("#warehouse option:selected").text();
+            var venderid = $("#vendor").val();
+            var vendername = $("#vendor option:selected").text();
+
+            var currow = $(this).closest("tr");
+            var code = currow.find("td:eq(1)").text();
+            var desc = currow.find("td:eq(2)").text();
+            var stock = currow.find("td:eq(3)").text();
+            var invuom = currow.find("td:eq(4)").text();
+            var itemid = currow.find("td:eq(5)").text();
+            var pchuom = currow.find("td:eq(6)").text();
+            var pchuomid = parseInt(currow.find("td:eq(7)").text());
+            var guomid = parseInt(currow.find("td:eq(8)").text());
+            var guomstr = currow.find("td:eq(9)").text();
+            var itemtype = currow.find("td:eq(10)").text();
+            var manageby = currow.find("td:eq(11)").text();
+            var barcode = currow.find("td:eq(12)").text();
+
+            $("#item_issue").find("tr").each(function () {
+                var item_id = $(this).find("td:eq(8)").text();
+                if (item_id == itemid) {
+                    count++;
+                }
+            });
+            if (count > 0)
+                return;
+            var out = "<tr><td>" + code
+                + "</td><td>" + desc
+                + "</td><td contenteditable onblur='calculator_value(this," + itemid + ")'>1.00"
+                + "</td><td contenteditable onblur='calculator_value(this," + itemid + ")'>0.00"
+                + "</td><td contenteditable onblur='calculator_value(this," + itemid + ")'>0.00"
+                + "</td><td>0.00"
+                + "</td><td data-toggle='modal' data-target='#change_uom_issue' onclick='change_selected_uom(" + guomid + "," + itemid + ")'>" + pchuom
+                + "</td><td data-toggle='modal' data-target='#change_warehouse_issue' onclick='change_selected_warehouse(" + itemid + ")'>" + whsname
+                + "</td><td hidden>" + itemid
+                + "</td><td hidden>" + pchuomid
+                + "</td><td hidden>" + guomid
+                + "</td><td hidden>" + whsid
+                + "</td><td hidden>" + guomstr
+                + "</td><td hidden>" + itemtype
+                + "</td><td hidden>" + manageby
+                + "</td><td hidden>" + barcode
+                + "</td><td hidden>" + venderid
+                + "</td><td data-toggle='modal' data-target='#change_vendor_popup' onclick='change_selected_vendor(" + itemid + ")'>" + vendername
+                + "</td><td class='text-right' id='remove_item_pch'><a class='btn-danger btn-sm waves-effect text-white' style='padding: 5px;'><i class='ti-trash'></i> Remove</a>"
+                + "</td></tr>";
+
+
+            $("#item_issue").append(out);
+        });
+        $("#item_issue").on("click", "#remove_item_pch", function () {
+            var currow = $(this).closest("tr");
+
+            swal({
+                title: "Are you sure?",
+                text: "You'll to remove the Item!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, remove it!",
+                closeOnConfirm: true
+            },
+                function () {
+                    currow.remove();
+                    calculate_total();
+                });
+        });
+    });
+    function calculator_value(val, itemid) {
+        var value = parseFloat($(val).text());
+        if (isNaN(value)) {
+            $(val).text("0.00");
+        }
+        var amount = 0;
+        $("#item_issue").find("tr").each(function () {
+            var item_id = $(this).find("td:eq(8)").text();
+            if (item_id == itemid) {
+                var qty = parseFloat($(this).find("td:eq(2)").text());
+                var cost = parseFloat($(this).find("td:eq(3)").text());
+                var disc = parseFloat($(this).find("td:eq(4)").text());
+
+                var total = qty * cost;
+                var total_line = total - (total * disc) / 100;
+
+                $(this).find("td:eq(2)").text(qty.toFixed(2));
+                $(this).find("td:eq(3)").text(cost.toFixed(2));
+                $(this).find("td:eq(4)").text(disc.toFixed(2));
+                $(this).find("td:eq(5)").text(total_line.toFixed(2));
+            }
+            amount += parseFloat($(this).find("td:eq(5)").text());
+        });
+        $("#sub_total").text(amount.toFixed(2));
+        calculate_total();
+    }
+    function calculate_total() {
+        var sub_total = 0;
+        $("#item_issue").find("tr").each(function () {
+            sub_total += parseFloat($(this).find("td:eq(5)").text());
+        });
+
+        $("#sub_total").text(sub_total.toFixed(2));
+        var disc_ = parseFloat($("#dis_total").text());
+        if (isNaN(disc_)) {
+            disc_ = 0;
+        }
+        $("#dis_total").text(disc_.toFixed(2));
+        var vat_ = parseFloat($("#vat_total").text());
+        if (isNaN(vat_)) {
+            vat_ = 0;
+        }
+        $("#vat_total").text(vat_.toFixed(2));
+        var total = parseFloat(sub_total) - (sub_total * disc_) / 100;
+        var amount = total + (total * vat_) / 100;
+
+        $("#grand_total").text(amount.toFixed(2));
+    }
+
+    function change_selected_uom(guomid, itemid) {
+        item_id_public = itemid;
+        $.ajax({
+            url: "/uom/define/" + guomid,
+            datatype: "json",
+            type: "get",
+            data: {},
+            success: function (response) {
+                var out = "";
+                $.each(response, function (i, item) {
+                    out += "<option value=" + item.UoM_Id + ">" + item.AltUoMName + "</option>";
+                });
+                $("#change_uom").html(out);
+            },
+            error: function (error) {
+                console.log("Error :" + error);
+            }
+        });
+
+    }
+    function change_selected_warehouse(itemid) {
+        item_id_public = itemid;
+    }
+    function change_selected_vendor(itemid) {
+        item_id_public = itemid;
+    }
+    function click_save_uom() {
+        var puomid = $("#change_uom").val();
+        var puomname = $("#change_uom option:selected").text();
+
+        $("#item_issue").find("tr").each(function () {
+            var item_id = $(this).find("td:eq(8)").text();
+            if (item_id == item_id_public) {
+                $(this).find("td:eq(6)").text(puomname);
+                $(this).find("td:eq(9)").text(puomid);
+            }
+        });
+        item_id_public = 0;
+    }
+    function click_save_warehouse() {
+        var warehouseid = $("#change_warehouse").val();
+        var warehousename = $("#change_warehouse option:selected").text();        
+
+        $("#item_issue").find("tr").each(function () {
+            var item_id = $(this).find("td:eq(8)").text();
+            if (item_id == item_id_public) {
+                $(this).find("td:eq(7)").text(warehousename);
+                $(this).find("td:eq(10)").text(warehouseid);
+            }
+        });
+        item_id_public = 0;
+    }
+    function click_save_vendor() {
+        var vendorid = $("#vendor_change").val();
+        var vendorname = $("#vendor_change option:selected").text();
+
+        $("#item_issue").find("tr").each(function () {
+            var item_id = $(this).find("td:eq(8)").text();
+            if (item_id == item_id_public) {
+                $(this).find("td:eq(16)").text(vendorid);
+                $(this).find("td:eq(17)").text(vendorname);
+            }
+        });
+        item_id_public = 0;
+    }
+
+    function click_save_goods_issue() {
+        var count = 0;
+        var vendorid = $("#vendor").val();
+        var current_date = $("#current_date").val();
+
+        if (current_date.trim() == "") return;
+
+        var vendorname = $("#vendor option:selected").text();
+        var item = [];
+        var bacth = "";
+        var serail = "";
+        var serail_detail = "";
+        $("#item_issue").find("tr").each(function () {
+            var code = $(this).find("td:eq(0)").text();
+            var name = $(this).find("td:eq(1)").text();
+            var qty = $(this).find("td:eq(2)").text();
+            var cost = $(this).find("td:eq(3)").text();
+            var disc = $(this).find("td:eq(4)").text();
+            var amount = $(this).find("td:eq(5)").text();
+            var puom = $(this).find("td:eq(6)").text();
+            var warehouse = $(this).find("td:eq(7)").text();
+            var id = $(this).find("td:eq(8)").text();
+            var puomid = $(this).find("td:eq(9)").text();
+            var guomid = $(this).find("td:eq(10)").text();
+            var whsid = $(this).find("td:eq(11)").text();
+            var guomname = $(this).find("td:eq(12)").text();
+            var type = $(this).find("td:eq(13)").text();
+            var manageby = $(this).find("td:eq(14)").text();
+            var barcode = $(this).find("td:eq(15)").text();
+
+            if (manageby != "N") {
+                if (manageby == "B") {
+                    bacth += "<tr><td hidden>" + id
+                        + "</td><td>" + code
+                        + "</td><td>" + name
+                        + "</td><td>" + qty
+                        + "</td><td hidden>" + puomid
+                        + "</td><td hidden>" + guomid
+                        + "</td><td class='text-right'><a class='btn-info btn-sm waves-effect text-white btn_choose' style='padding: 5px;'><i class='ti-download'></i> choose</a>"
+                        + "</td></tr>";
+                }
+                if (manageby == "S") {
+                    serail += "<tr><td hidden>" + id
+                        + "</td><td>" + code
+                        + "</td><td>" + name
+                        + "</td><td>" + qty
+                        + "</td></tr>";
+                    for (var i = 0; i < qty; i++) {
+                        serail_detail += "<tr><td hidden>" + id
+                            + "</td><td contenteditable onblur='blur_serial(this,"+id+")'>"
+                            + "</td><td>" + code
+                            + "</td><td>" + name
+                            + "</td><td>" + 1
+                            + "</td><td hidden data-toggle='modal' data-target='#change_expiredate_popup' onclick='change_expiredate(this)'>" + current_date
+                            + "</td></tr>";
+                    }
+                }
+
+                count++;
+            }
+        });
+        if (count > 0) {
+            var height = $(window).height();
+
+            $("#height_dynamic").css("height", height);
+            $("#popup_serail_bacth").modal();
+
+            $("#list_item_bacth").html(bacth);
+            $("#list_item_serail").html(serail);
+            $("#list_item_serail_detail").html(serail_detail);
+        }
+        else {
+            save_goods_issue(item, null, null);
+        }
+
+    }
+    function click_save_batch_serail() {
+        var batch = [];
+        var serial = [];
+        var check_serial = 0;
+        var check_batch = 0;
+        var check_all = 0;
+        $("#list_item_serail_detail").find("tr").each(function () {
+            var itemid = $(this).find("td:eq(0)").text();
+            var serialNum = $(this).find("td:eq(1)").text();
+            var code = $(this).find("td:eq(2)").text();
+            var desc = $(this).find("td:eq(3)").text();
+            var qty = $(this).find("td:eq(4)").text();
+            var expire = $(this).find("td:eq(5)").text();
+            if (serialNum.trim() == "") check_serial++;
+            var serialdetail = {
+                ItemId: itemid,
+                SerailNum: serialNum,
+                ItemName: desc,
+                Quantity: qty,
+                MFG: expire
+            };
+            serial.push(serialdetail);
+        });
+
+        if (check_serial > 0) {
+            $("#tab_serail").css("background", "#ff758847");
+            check_all++;
+        } else { $("#tab_serail").css("background", ""); }
+
+        var qty_batch = 0;
+        var qty_batch_detail = 0;
+        $("#list_item_bacth").find("tr").each(function () {
+            var qty = parseFloat($(this).find("td:eq(3)").text());
+            qty_batch += qty;
+        });
+
+        $("#list_item_bacth_detail").find("tr").each(function () {
+            var itemid = $(this).find("td:eq(0)").text();
+            var batchNum = $(this).find("td:eq(1)").text();
+            var code = $(this).find("td:eq(2)").text();
+            var desc = $(this).find("td:eq(3)").text();
+            var qty = parseFloat($(this).find("td:eq(4)").text());
+            var expire = $(this).find("td:eq(5)").text();
+            var uomid = $(this).find("td:eq(6)").text();
+            var guomid = $(this).find("td:eq(7)").text();
+
+            qty_batch_detail += qty;
+            if (batchNum.trim() == "") check_batch++;
+            var batchdetail = {
+                ItemId: itemid,
+                BatchNum: batchNum,
+                ItemName: desc,
+                Quantity: qty,
+                MFG: expire,
+                UoMId: uomid,
+                GUoMId: guomid
+            };
+            batch.push(batchdetail);
+        });
+        if (qty_batch != qty_batch_detail || check_batch > 0) {
+            $("#tab_batch").css("background", "#ff758847");
+            check_all++;
+        } else { $("#tab_batch").css("background", ""); }
+        if (check_all > 0) return;
+
+        save_goods_issue(batch, serial);
+    }
+
+    function save_goods_issue(batch, serial) {
+
+        var issuedetail = [];
+        var issue = {
+            Description: $("#remark").val(),
+            Amount: $("#sub_total").text()
+        };
+        $("#item_issue").find("tr").each(function () {
+            var code = $(this).find("td:eq(0)").text();
+            var name = $(this).find("td:eq(1)").text();
+            var qty = $(this).find("td:eq(2)").text();
+            var cost = $(this).find("td:eq(3)").text();
+            var disc = $(this).find("td:eq(4)").text();
+            var amount = $(this).find("td:eq(5)").text();
+            var puom = $(this).find("td:eq(6)").text();
+            var warehouse = $(this).find("td:eq(7)").text();
+            var id = $(this).find("td:eq(8)").text();
+            var puomid = $(this).find("td:eq(9)").text();
+            var guomid = $(this).find("td:eq(10)").text();
+            var whsid = $(this).find("td:eq(11)").text();
+            var guomname = $(this).find("td:eq(12)").text();
+            var type = $(this).find("td:eq(13)").text();
+            var manageby = $(this).find("td:eq(14)").text();
+            var barcode = $(this).find("td:eq(15)").text();
+            var vendorid = $(this).find("td:eq(16)").text();
+            var vendorname= $(this).find("td:eq(17)").text();
+
+            var item = {
+                ItemId: id,
+                ItemCode: code,
+                ItemStr: name,
+                Quantity: qty,
+                Cost: cost,
+                UoMId: puomid,
+                UoMStr: puom,
+                GUoMId: guomid,
+                GUoMStr: guomname,
+                WhsId: whsid,
+                WhsStr: warehouse,
+                TotalLine: amount,
+                VendorId: vendorid,
+                VendorStr: vendorname
+            };
+            issuedetail.push(item);
+        });
+        
+        issue.GoodsIssue01s = issuedetail;
+        
+
+        $.ajax({
+            url: "/inventory/save_issue",
+            type: "post",
+            dataType: "json",
+            data: { goodsIssue: issue, Batchs: batch, Serials: serial },
+            success: function (response) {
+                location.reload();
+            },
+            complete: function () {
+                location.reload();
+            },
+            error: function (error) {
+                console.log("error save issue :" + error);
+            }
+        });
+    }
+
+    function click_close_bacth_serail() {
+        location.reload();
+    }
+
+    function check_qty_itembacth(currow) {
+        var id = currow.find("td:eq(0)").text();
+        var qty = parseFloat(currow.find("td:eq(3)").text());
+        var total_qty = 0;
+
+        $("#list_item_bacth_detail").find("tr").each(function () {
+            var id_d = $(this).find("td:eq(0)").text();
+            var qty_d = parseFloat($(this).find("td:eq(4)").text());
+
+            if (id == id_d) total_qty += qty_d;
+        });
+
+        if (total_qty >= qty) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    $(document).ready(function () {
+        $("#list_item_bacth").on("click", ".btn_choose", function () {
+
+            var current_date = $("#current_date").val();
+            var currow = $(this).closest("tr");
+            if (check_qty_itembacth(currow)) {
+                var id = currow.find("td:eq(0)").text();
+                var code = currow.find("td:eq(1)").text();
+                var name = currow.find("td:eq(2)").text();
+                var puomid = currow.find("td:eq(4)").text();
+                var guomid = currow.find("td:eq(5)").text();
+
+                var out = "<tr><td hidden>" + id
+                    + "</td><td contenteditable onblur='blur_batch(this,"+id+")'>"
+                    + "</td><td>" + code
+                    + "</td><td>" + name
+                    + "</td><td contenteditable class='qty_batch'>1.00"
+                    + "</td><td hidden>" + current_date
+                    + "</td><td hidden>" + puomid
+                    + "</td><td hidden>" + guomid
+                    + "</td><td class='text-right'><a class='btn-danger btn-sm waves-effect text-white btn_remove' style='padding: 5px;'><i class='ti-trash'></i> remove</a>"
+                    + "</td></tr>";
+
+                $("#list_item_bacth_detail").append(out);
+            }
+        });
+        $("#list_item_bacth_detail").on("click", ".btn_remove", function () {
+            var currow = $(this).closest("tr");
+            currow.remove();
+        });
+
+        $("#list_item_bacth_detail").on("blur", ".qty_batch", function () {
+            var currow = $(this).closest("tr");
+            var qty_blur = parseFloat($(this).text());
+            if (isNaN(qty_blur)) {
+                qty_blur = 1;
+                $(this).text("1.00");
+            }
+            $(this).text(qty_blur.toFixed(2));
+            var id_d = currow.find("td:eq(0)").text();
+            var qty = 0;
+            var total_qty = 0;
+            $("#list_item_bacth").find("tr").each(function () {
+                var id = $(this).find("td:eq(0)").text();
+                if (id == id_d) qty = parseFloat($(this).find("td:eq(3)").text());
+            });
+            $("#list_item_bacth_detail").find("tr").each(function () {
+                var id = $(this).find("td:eq(0)").text();
+                var qty_d = parseFloat($(this).find("td:eq(4)").text());
+
+                if (id == id_d) total_qty += qty_d;
+            });
+            if (total_qty > qty) {
+                currow.find("td:eq(4)").text((qty - (total_qty - qty_blur)).toFixed(2));
+            }
+        });
+    })
+
+    var this_ = null;
+    function change_expiredate(expire) {
+        this_ = expire;
+    }
+
+    function click_save_expiredate() {
+        var expire = $("#change_expiredate").val();
+        $(this_).text(expire);
+    }
+
+    function blur_batch(val,itemid) {
+        var batch = $(val).text();
+        $.ajax({
+            url: "/inventory/checkBatch",
+            type: "get",
+            dataType: "json",
+            data: { itemid: itemid, batch: batch },
+            success: function (response) {
+                if (response + "" == "undefined") {
+                    alert("Number of Batch is invail...!");
+                    $(val).text("");                    
+                }
+            },
+            error: function (ex) {
+                alert("Error :" + ex);
+            }
+        });
+    }
+
+    function blur_serial(val, itemid) {
+        var serial = $(val).text();
+        $.ajax({
+            url: "/inventory/checkSerial",
+            type: "get",
+            dataType: "json",
+            data: { itemid: itemid, serial: serial },
+            success: function (response) {
+                if (response + "" == "undefined") {
+                    alert("Number of Serial is invail...!");
+                    $(val).text("");                    
+                }
+            },
+            error: function (ex) {
+                alert("Error :" + ex);
+            }
+        });
+    }
+
+</script>

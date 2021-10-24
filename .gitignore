@@ -1,0 +1,10 @@
+
+.vs
+bin/
+obj/
+.Migrations
+
+#ignore folders in any directory
+**/.vscode
+**/bin
+**/.vs

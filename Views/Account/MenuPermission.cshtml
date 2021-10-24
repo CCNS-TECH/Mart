@@ -1,0 +1,352 @@
+﻿
+@model MenuPermission
+
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Menu</h4>
+                    <span>Menu Function</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Account</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Menu</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        @*<h5>User Account Lists</h5>
+            <span>This is a table user account lists.</span>*@
+        <div class="text-right no-padding">
+            <a class="btn btn-primary btn-sm text-white text-center" data-toggle="modal" data-target="#menu" onclick="click_reset()" style="width:10%">Add</a>
+        </div>
+
+        <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">User Permission List</h4>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+            <table class="table table-striped table-bordered nowrap">
+                <thead>
+                    <tr>
+                        <th>N<sup>o</sup></th>
+                        <th>Name</th>
+                        <th>Controller</th>
+                        <th>Function</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th class="text-center" width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1;}
+                    @foreach (var m in ViewBag.Menu as List<MenuPermission>)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@m.Name</td>
+                            <td>@m.Controller</td>
+                            <td>@m.Action</td>
+                            <td>@m.Type</td>
+                            @*<td>
+                                <div class="checkbox-zoom zoom-success">
+                                    <label>
+                                        <input type="checkbox">
+                                        <span class="cr">
+                                            <i class="cr-icon icofont icofont-ui-check txt-success"></i>
+                                        </span>
+                                    </label>
+                                </div>
+                            </td>*@
+                            <td>
+                                @if(m.Status == "A") { <span class="label label-primary">Active</span> }
+                                else { <span class="label label-warning">Inactive</span> }
+                            </td>
+                            <td class="text-right">
+                                <a class="btn-info btn-sm text-white" data-toggle="modal" data-target="#menu" onclick="edit_menu(@m.Id)">Edit</a>
+                                <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="delete_menu(@m.Id)">Delete</a>
+                            </td>
+                        </tr>
+                    i++;
+                    }
+                </tbody>          
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="menu" tabindex="-1" role="dialog">
+    <form asp-action="MenuPermission" asp-controller="Account" method="post">
+        <div class="modal-lg modal-dialog" style="max-width:70vw" role="document">
+            <div class="modal-content container">
+                <div class="modal-header">
+                    <h6 class="modal-title">Menu</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Type</label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" asp-for="Type" onchange="change_type()" required>
+                                    <option value="Module">Module</option>
+                                    <option value="Function">Function</option>
+                                    <option value="Sub-Function">Sub Function</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row m-t-15" id="module" hidden>
+                            <div class="col-3">
+                                <label id="lbl_main">Module</label>
+                            </div>
+                            <div class="col-9">
+                                <select class="form-control" asp-for="ParentId">
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" placeholder="Name" asp-for="Name" required/>
+                            </div>
+                        </div>
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Controller</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" placeholder="Controller" asp-for="Controller" required/>
+                            </div>
+                        </div>
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Action</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" placeholder="Action" asp-for="Action" required/>
+                            </div>
+                        </div>
+
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Icon</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" class="form-control" placeholder="Icon" asp-for="Icon" />
+                            </div>
+                        </div>
+
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Order By</label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" class="form-control" placeholder="Order by" asp-for="OrderBy" />
+                            </div>
+                        </div>
+
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                                <label>Description</label>
+                            </div>
+                            <div class="col-9">
+                                <textarea class="form-control" rows="3" asp-for="Description" placeholder="Description"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row m-t-15">
+                            <div class="col-3">
+                            </div>
+                            <div class="col-9">
+                                <div class="checkbox-zoom zoom-success">
+                                    <label>
+                                        <input type="checkbox" checked asp-for="Status">
+                                        <span class="cr">
+                                            <i class="cr-icon icofont icofont-ui-check txt-success"></i>
+                                        </span> Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                    <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function delete_menu(val) {
+        swal({
+            title: "Are you sure?",
+            text: "You'll to delete the function!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+            function () {
+                var menu = {
+                    Id: val,
+                    Status: "D"
+                };
+                $.ajax({
+                    url: "/account/MenuPermission",
+                    type: "post",
+                    datatype: "json",
+                    data: { menu: menu },
+                    success: function (data) {
+                        swal("Deleted!", "Your function has been deleted.", "success");
+                        window.setTimeout(function () { window.location.reload() }, 1500);
+                    },
+                    error: function (error) {
+                        swal("Error!", "Your function has been error deleted." + JSON.stringify(error), "error");
+                    }
+                });
+            }
+        );
+
+        @*swal({
+            title: "Are you sure?",
+            text: "You'll to delete the function!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }
+            function () {
+               
+                $.ajax({
+                    url: "/account/MenuPermission",
+                    type: 'post',
+                    datatype: "json",
+                    data: { menu: menu}
+                    success: function (data) {
+                        swal("Deleted!", "Your function has been deleted.", "success");
+                        window.setTimeout(function () { window.location.reload() }, 1500);
+                    },
+                    error: function (data) {
+                        swal("Error!", "Your function has been error deleted.", "error");
+                    }
+                })
+            });*@
+    }
+
+
+    function edit_menu(id) {
+
+        $.ajax({
+            url: "/account/GetMenubyId",
+            type: "get",
+            datatype: "json",
+            data: { Id: id },
+            success: function (value) {
+
+                $("#Id").val(value.id);
+                $("#Type").val(value.type);
+                $("#Name").val(value.name);
+                $("#Controller").val(value.controller);
+                $("#Action").val(value.action);
+                $("#Icon").val(value.icon);
+                $("#OrderBy").val(value.orderBy);
+                $("#Description").val(value.description);
+                if (value.status == "A") {
+                    $("#Status").attr("checked", "checked");
+                } else {
+                    $("#Status").removeAttr("checked");
+                }
+                change_type();
+
+                $("#ParentId").val(value.parentId);
+
+            },
+            error: function (error) {
+                console.log("Error:" + JSON.stringify(error));
+            }
+        });
+           
+    }
+    function click_reset() {
+        $("#Id").val(0);
+        $("#Type").val("");
+
+        $("#Name").val("");
+        $("#Controller").val("");
+        $("#Action").val("");
+        $("#Icon").val("");
+        $("#OrderBy").val("");
+        $("#Description").val("");
+        $("#Status").attr("checked", "checked");
+
+        $("#ParentId").val("");
+        $("#module").attr("hidden", "hidden");
+    }
+
+    function change_type() {
+        var type = $("#Type").val();
+        var main = "";
+        if (type != "Module") {
+            $("#module").removeAttr("hidden");
+            if (type == "Function") {
+                $("#lbl_main").text("Module");
+                main = "Module";
+            } else {
+                $("#lbl_main").text("Function");
+                main = "Function";
+            }
+        } else {
+            $("#module").attr("hidden","hidden");
+        }
+
+        $.ajax({
+            url: "/account/get_parent_menu",
+            type: "get",
+            datatype: "json",
+            data: { type: main },
+            success: function (response) {
+                var out = "";
+                $.each(response, function (i, value) {
+                    out += "<option value=" + value.id + ">" + value.name + "</option>";
+                });
+                $("#ParentId").html(out);
+            },
+            error: function (error) {
+                console.log("Error" + error);
+            }
+        });
+    }
+</script>

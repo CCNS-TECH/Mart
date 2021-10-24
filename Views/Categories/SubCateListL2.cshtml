@@ -1,0 +1,38 @@
+﻿
+@{
+    var subcatel2 =await CategoryService.GetSubcateL2();
+}
+<div class="dt-responsive table-responsive">
+    <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Subcategory L1 Lists</h4>
+    <div class="col-sm-offset-2">
+        <table id="subcatel2table" class="table table-striped table-bordered nowrap">
+            <thead>
+            <tr>
+                <th>N<sup>o</sup></th>
+                <th>SubCate L1. Name</th>
+                <th>SubCate. Str</th>
+                <th>Category</th>
+                <th class="text-right">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int i = 1;}
+            @foreach (var sf in subcatel2 as List<SubCategoryL2>)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@sf.SubCateL2_En</td>
+                    <td>@sf.SubCategoryL1.SubCateL1_Str</td>
+                    <td>@sf.SubCategoryL1.Category.Cate_En</td>
+                    <td class="text-right">
+                        <a class="btn-info btn-sm text-white" asp-action="EditSubCateL2" asp-controller="Categories" asp-route-id="@sf.SubCateL2_Id">Edit</a>|
+                        <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deleteSubCateL1(@sf.SubCateL2_Id);">Delete</a>
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/category.js"></script>

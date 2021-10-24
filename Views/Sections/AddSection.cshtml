@@ -1,0 +1,108 @@
+@{
+    var grsection = await SectionService.GetGroupSections();
+    var sectionType = await SectionService.GetSectionTypes();
+}
+@model Section
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Section</h4>
+                    <span>Section Lists</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Section</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="card">
+    <div class="card-block">
+        <div class="text-right">
+            <button type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#section-model">Create New</button>
+        </div>
+         @{await Html.RenderPartialAsync("_SectionLists");}
+    </div>
+</div>
+
+
+<!-- Modal large-->
+
+<div class="modal fade" id="section-model" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="" asp-action="AddSection" asp-controller="Sections" role="form" method="post">
+                    <fieldset>
+                        <div class="form-group row">
+                            <div class="col">
+                            </div>
+                            <div class="col-sm-8">
+                                <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Section Form</h4>
+                                <div class="form-group">
+                                    <input type="text" asp-for="SectionEn" class="form-control" placeholder="section name" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" asp-for="SectionStr" class="form-control" placeholder="section foreign" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <select asp-for="GSectionId" class="form-control select2">
+                                        <option value="0" class="text-gray">group section</option>
+                                        @foreach (var gs in grsection)
+                                        {
+                                            <option value="@gs.Id">@gs.GSectionEn</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" asp-for="Price" class="form-control" placeholder="Price/Hour" required="required">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <select asp-for="TypeId" class="form-control select2">
+                                        <option value="0" class="text-gray">Type</option>
+                                        @foreach (var gs in sectionType)
+                                        {
+                                            <option value="@gs.Id">@gs.Type</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="text-right">
+                                        <input type="submit" class="btn btn-primary" value="Submit"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

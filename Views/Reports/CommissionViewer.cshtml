@@ -1,0 +1,232 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+@model Payment
+<!-- Invoice card start -->
+<div class="card">
+    <div class="row invoice-contact">
+        <div class="col-md-8">
+            <div class="invoice-box row">
+                <div class="col-md-6 col-sm-12">
+                    <table class="table table-responsive invoice-table table-borderless">
+                        <tbody>
+                        <tr>
+                            <td><img src="~/images/logo/@Context.Session.GetString("Logo")" style="width:125px; height: 125px;" class="m-b-10" alt=""></td>
+                        </tr>
+                        <tr>
+                            <td><b>Company :</b> <b>@Context.Session.GetString("CompanyName")</b></td>
+                        </tr>
+                        <tr>
+                            <td><b> Address :</b> 
+                                @Context.Session.GetString("St_Num") St. 
+                                @Context.Session.GetString("Sangkat") ,
+                                <br/> @Context.Session.GetString("Khan") ,
+                                @Context.Session.GetString("City") ,
+                                <br/>@Context.Session.GetString("Province") 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b> Email :</b> @Context.Session.GetString("Email") 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Phone :</b> @Context.Session.GetString("Phone") </td>
+                        </tr>
+                        <tr>
+                            <td><b>Mobile :</b> @Context.Session.GetString("Mobile") </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="row payment-info">
+                <h5 style="border-bottom: 2px solid #ccc;"><b>Payment Viewer gggg</b></h5>
+                <table class="table table-responsive invoice-table invoice-order table-borderless" id="tb-head-invoice">
+                    <tbody>
+                        <tr>
+                            <td class="payment-code" style="font-weight: bold;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th hidden="hidden">
+                                <span class="m-b-20">Invoice N<sup>o</sup> : </span>
+                            </th>
+                            <td class="invoice-code" style="font-weight: bold;">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <span class="m-b-20">Payment N<sup>o</sup> : </span>
+                            </th>
+                            <td style="font-weight: bold;" class="payment-code">
+                                #@Model.PaymentCode
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Paid Date : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                                @Model.PaymentDate?.ToString("yyyy/MM/dd")
+                            </td>
+                        </tr>
+                        <tr hidden="hidden">
+                            <th>Bill Date : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                            </td>
+                        </tr>
+                        @*<tr>
+            <th>Doc Date : </th>
+            <td style="font-weight: bold;"> <span> @DateTime.Now.ToString("yyyy/MM/dd") </span></td>
+        </tr>*@
+                        <tr>
+                            <th>Status : </th>
+                            <td style="font-weight: bold;">
+                                @if (Model.DocStatus == "O")
+                                {<span class="label label-info">Open</span>}
+                                else
+                                {<span class="label label-warning">Close</span>}
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Time In : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                                @ViewBag.TimeIn
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Time Out : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                                @ViewBag.TimeOut
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table" id="table_print_payment">
+                        <thead>
+                        <tr class="thead-default h6">
+                            <th>N<sup>o</sup></th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Disc</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inv in Model.Invoices)
+                            {
+                                <tr>
+                                    <td>1</td>
+                                    <td>@inv.SectionStr</td>
+                                    <td class='text-left'>@inv.SectionStr</td>
+                                    <td class=''>@String.Format("{0:N2}", @inv.TotalHour)</td>
+                                    <td class=''>@String.Format("{0:N2}", @inv.SectionPrice)</td>
+                                    <td class=''>0.00</td>
+                                    <td class='text-right' style='font-weight: bold;'><b>$ @String.Format("{0:N2}", @inv.SectionAmount)</b></td>
+                                </tr>
+                            }
+                            @{ int i = 2;}
+                            @foreach (var inv in Model.PaymentDetails)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@inv.ItemCode</td>
+                                    <td class='text-left'>@inv.ItemStr</td>
+                                    <td class=''>@String.Format("{0:N2}", @inv.Quantity)</td>
+                                    <td class=''>@String.Format("{0:N2}", @inv.UnitPrice)</td>
+                                    <td class=''>@String.Format("{0:N2}", @inv.DiscPrcnt)</td>
+                                    <td class='text-right' style='font-weight: bold;'><b>$ @String.Format("{0:N2}", @inv.TotalLine)</b></td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <hr style="border: 3px #ccc solid"/>
+                <div class="text-right">
+                    <h5><b>Total Due</b></h5>
+                </div>
+                <table class="table table-responsive invoice-table invoice-total" id="payment_total">
+
+                    <tr>
+                        <td style="font-weight: bold;">Sub Total / សរុប ($)</td>
+                        <td class="text-right sub_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.SubTotalUSD)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Discount / បញ្ខុះតម្លៃ (%)</td>
+                        <td class="text-right discount_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.DiscPrcnt)</td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                        <td class="text-right vat_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.TaxPrcnt)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
+                        <td class="text-right service_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ServiceChargeUSD)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
+                        <td class="text-right charg_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.OtherChargeUSD)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
+                        <td class="text-right grand_dollar_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.GrandTotalUSD)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ (៛)</td>
+                        <td class="text-right grand_riel_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.GrandTotalRiel)</td>
+                    </tr>
+                    @if (Model.PayType == "W")
+                    {
+                        <tr>
+                            <td style="font-weight: bold;">Recieved Dollars / ប្រាក់ទទួល ($)</td>
+                            <td class="text-right received_dollar_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ReceivedUSD)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #ccc">
+                            <td style="font-weight: bold;">Received Riel / ប្រាក់ទទួល (៛)</td>
+                            <td class="text-right received_riel_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ReceivedRiel)</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td style="font-weight: bold;">Recieved Dollars / ប្រាក់ទទួល ($)</td>
+                            <td class="text-right received_dollar_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.Received_USD)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #ccc">
+                            <td style="font-weight: bold;">Received Riel / ប្រាក់ទទួល (៛)</td>
+                            <td class="text-right received_riel_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.Received_Riel)</td>
+                        </tr>
+                    }
+
+                    <tr hidden="hidden">
+                        <td style="font-weight: bold;">Exchange Dollars / ប្រាក់អាប់ ($)</td>
+                        <td class="text-right exchange_dollar_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ExchangeRate)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Exchange Rate / អត្រាប្ដូរប្រាក់ $1</td>
+                        <td class="text-right" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ExchangeRate)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

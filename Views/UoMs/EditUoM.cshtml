@@ -1,0 +1,64 @@
+@{
+    Layout = "InvLayout/_InvLayout";
+}
+@model UoM
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Unit Of Measure</h4>
+                    <span>Edit UoM</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>UoM</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="card">
+    <div class="card-header">
+        <div class="no-padding">
+            <form class="" asp-action="EditsUoM" asp-controller="UoMs" role="form" method="post">
+                <fieldset>
+                    <div class="form-group row">
+                        <div class="col">
+                            <input type="hidden" asp-for="UoM_Id"/>
+                        </div>
+                        <div class="col-sm-8">
+                            <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Edit UoM Form</h4>
+                            <div class="form-group">
+                                <input type="text" asp-for="UoM_Name" class="form-control" placeholder="uom name" required="required">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" asp-for="UoM_Foreign" class="form-control" placeholder="uom foreign" required="required">
+                            </div>
+                            <div class="form-group">
+                                <div class="text-right">
+                                    <input type="submit" class="btn btn-success btn-sm" value="Update"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

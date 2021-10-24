@@ -1,0 +1,101 @@
+@model Exchange
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Exchange Rate</h4>
+                    <span>Edit Exchange Rate</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Exchange Rate</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <!-- Basic Form Inputs card start -->
+        <div class="card">
+            <div class="card-block">
+                <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Edit Exchange Rate Form</h4>
+                <form asp-action="Edit" asp-controller="ExchRates" role="form" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id"/>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="ExStr">Description <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="ExStr" class="form-control" required="required"/>
+                        </div>
+                    </div>
+                                   
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Dollar">Dollar<span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="Dollar" class="form-control" value="1.000000" required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Riel">Riel <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <input type="text" asp-for="Riel" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Started">Start Date <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <input asp-for="Started"  value="@Model.Started?.ToString("MM/dd/yyyy")" type="text" class="form-control birthdate"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Start_Time">Start Time <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="input-group date datetimepicker3">
+                                <input type="text" class="form-control" asp-for="Start_Time" required="required"/>
+                                <span class="input-group-addon ">
+                                    <span class="icofont icofont-ui-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="End">End Date <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <input asp-for="End"  value="@Model.End?.ToString("MM/dd/yyyy")" type="text" class="form-control birthdate"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="End_Time">End Time <span class="text-danger">*</span></label>
+                        <div class="col-sm-10">
+                            <div class="input-group date datetimepicker3">
+                                <input type="text" class="form-control" asp-for="End_Time" required="required"/>
+                                <span class="input-group-addon ">
+                                    <span class="icofont icofont-ui-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

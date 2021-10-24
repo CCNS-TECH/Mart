@@ -1,0 +1,329 @@
+@{
+    var invoice = ViewBag.Invoice;
+    var custs = await DashboardService.GetCustomers();
+}
+<form id="frm-total-payment-footer" style="background-color: #ffffff;padding: 5px 5px;">
+    <fieldset>
+        <legend>Credit</legend>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Sub Total / សរុប </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_sub_total" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}", @invoice.SubTotalUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Free Hour / Free ម៉ោង</label>
+            <label class="col-sm-1 text-right">(h)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_free-hour" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",invoice.FreeHour)">
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Discount / បញ្ខុះតម្លៃ </label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_discount_percent" readonly="readonly" onblur="credit_blur_discount_percent(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.DiscPrcnt)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total Discount / បញ្ខុះតម្លៃ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_discount_dollar" readonly="readonly" onblur="credit_blur_discount(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TotalDiscUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">VAT / ពន្ធ </label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_vat_percent" readonly="readonly" onblur="credit_blur_vat_percent(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.TaxPrcnt)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Total VAT / ពន្ធ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_vat_dollar" readonly="readonly" onblur="credit_blur_vat(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Other Charge / ការចំណាយផ្សេងៗ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_other_charge" readonly="readonly" onblur="credit_blur_charge(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.OtherChargeUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Service Charge / សេវាកម្ម </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_service_charge" readonly="readonly" onblur="credit_blur_charge(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.ServiceChargeUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Grand Total / សរុបទាំងអស់ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_grand_total" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.GrandTotalUSD)">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Grand Total / សរុបទាំងអស់</label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_grand_total_riel" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@String.Format("{0:N2}",@invoice.GrandTotalRiel)">
+            </div>
+        </div>
+
+    </fieldset>
+    <fieldset hidden="hidden">
+        <legend>Total Receive / ប្រាក់ទទួល </legend>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Received Dollars / ប្រាក់ទទួល </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_receive_dollar" onblur="blur_receive(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Received Riels / ប្រាក់ទទួល </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_receive_reil" onblur="blur_receive(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset hidden="hidden">
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Dollars / ប្រាក់អាប់ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_exchange" readonly="readonly" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Riels / ប្រាក់អាប់ </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_exchange_reil" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Exchange Rate / អត្រាប្ដូរប្រាក់ 1$ = </label>
+            <label class="col-sm-1 text-right">(៛)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_exchange_rate" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="@Convert.ToDecimal(Context.Session.GetString("Riel")).ToString("0.00")">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Description / ចំណាំ </label>
+            <label class="col-sm-1 text-right"><i class="feather icon-edit-1"></i></label>
+            <div class="col-sm-6">
+                <textarea type="text" rows="3" id="credit_description" required="required"  class="form-control form-control-sm form-bg-info text-dark" placeholder="Reason..."></textarea>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row commission">
+            <label class="col-sm-5 col-form-label">Commission / ប្រាក់កម្រៃជើងសារ </label>
+            <label class="col-sm-1 text-right">(%)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_commission" @ViewBag.CommissionCheck onblur="credit_blur_commission(this)" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row commission">
+            <label class="col-sm-5 col-form-label">Commission Amount / ប្រាក់កម្រៃជើងសារ </label>
+            <label class="col-sm-1 text-right">($)</label>
+            <div class="col-sm-6">
+                <input type="text" id="credit_commission_amount" readonly="readonly"  style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark" value="0.00">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Guest Name / ឈ្មោះអតិថជន </label>
+            <label class="col-sm-1 text-right"><i class="feather icon-user"></i></label>
+            <div class="col-sm-6">
+                <select class="form-control form-control-sm text-right form-bg-info text-dark" required="required" id="VendorId">
+                    @*<option value="0">Guest Name</option>*@
+                    @foreach (var p in custs)
+                    {
+                        <option value="@p.VendorId">@p.VendorName</option>
+                    }
+                </select>
+            </div>
+            
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Return Date / ថ្ងៃត្រូវបង់ </label>
+            <label class="col-sm-1 text-right"><i class="feather icon-calendar"></i></label>
+            <div class="col-sm-6">
+                <input type="text" id="Pay_Date" style="font-weight: bold;" class="form-control form-control-sm text-right form-bg-info text-dark birthdate">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-5 col-form-label">Description / ចំណាំ </label>
+            <label class="col-sm-1 text-right"><i class="feather icon-edit-1"></i></label>
+            <div class="col-sm-6">
+                <textarea type="text" rows="3" id="descriptionCreditPayment" required="required"  class="form-control form-control-sm form-bg-info text-dark" placeholder="Reason..."></textarea>
+            </div>
+        </div>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <div class="form-group">
+            <div class="pull-right">
+            @*data-toggle="modal" data-target="#modal-print-payment"*@
+                <a  role="button" class="btn btn-primary text-white" onclick="onClickCreditPayment();">Credit</a>
+                <a asp-action="Pos" asp-controller="Poss" role="button" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<script>
+    function credit_blur_commission(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) value = 0;
+
+        $(val).val(value.toFixed(2));
+
+        var grandtottal = $("#credit_grand_total").val();
+        var other_charge = parseFloat($("#credit_other_charge").val());
+
+        $("#credit_commission_amount").val(parseFloat((grandtottal - other_charge) * (value / 100)).toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function credit_blur_commission_amount(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) value = 0;
+
+        $(val).val(value.toFixed(2));
+        
+        var grandtottal = parseFloat($("#credit_grand_total").val());
+        var other_charge = parseFloat($("#credit_other_charge").val());
+        
+        console.log(grandtottal+" | "+other_charge);
+        
+        $("#credit_commission").val(parseFloat((value * 100)/(grandtottal-other_charge)).toFixed(2));
+        if(grandtottal ==0){
+         $("#credit_commission").val("0.00");
+        }
+        credit_calculate_payment();
+    }
+    
+    function credit_blur_charge(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) {
+            value = 0;
+        }
+        $(val).val(value.toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function credit_blur_vat_percent(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+        
+        var sub_total = parseFloat($("#credit_sub_total").val());
+        var dis_dollar = parseFloat($("#credit_discount_dollar").val());
+        var total = sub_total - dis_dollar;
+        var vat_value = (total * value) / 100;
+
+        $("#credit_vat_dollar").val(vat_value.toFixed(2));
+        $("#credit_vat_percent").val(value.toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function credit_blur_vat(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#credit_sub_total").val());
+        var dis_dollar = parseFloat($("#credit_discount_dollar").val());
+        var total = sub_total - dis_dollar;
+        var vat_percent = (value * 100) / total;
+
+        $("#credit_vat_dollar").val(value.toFixed(2));
+        $("#credit_vat_percent").val(vat_percent.toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function blur_discount_percent(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#credit_sub_total").val());
+        var dis_dollar = (sub_total * value) / 100;
+
+        $("#credit_discount_dollar").val(dis_dollar.toFixed(2));
+        $("#credit_discount_percent").val(value.toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function credit_blur_discount(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#credit_sub_total").val());
+        var dis_percent = (value * 100) / sub_total;
+
+        $("#credit_discount_dollar").val(value.toFixed(2));
+        $("#credit_discount_percent").val(dis_percent.toFixed(2));
+
+        credit_calculate_payment();
+    }
+    function credit_calculate_payment() {
+        var sub_total = parseFloat($("#credit_sub_total").val());
+        var discount_percent = parseFloat($("#credit_discount_percent").val());
+        var discount_dollar = parseFloat($("#credit_discount_dollar").val());
+        var vat_percent = parseFloat($("#credit_vat_percent").val());
+        var vat_dollar = parseFloat($("#credit_vat_dollar").val());
+        var other_charge = parseFloat($("#credit_other_charge").val());
+        var service_charge = parseFloat($("#credit_service_charge").val());
+
+        var receive_dollar = parseFloat($("#credit_receive_dollar").val());
+        var receive_reil = parseFloat($("#credit_receive_reil").val());
+        
+        var commissionprcnt  =  $("#credit_commission").val();
+        
+        var exchange_rate = parseFloat($("#credit_exchange_rate").val());
+
+        var amount = sub_total - discount_dollar + vat_dollar + other_charge + service_charge;
+        var amount_reil = amount * exchange_rate;
+
+        $("#credit_grand_total").val(amount.toFixed(2));
+        $("#credit_grand_total_riel").val(amount_reil.toFixed(2));
+
+        var change = (receive_dollar + (receive_reil/exchange_rate)) - amount;
+        var change_reil = change * exchange_rate;
+        $("#credit_exchange").val(change.toFixed(2));
+        $("#credit_exchange_reil").val(change_reil.toFixed(2));
+        
+        $("#credit_commission_amount").val(parseFloat((amount-other_charge)*(commissionprcnt/100)).toFixed(2));
+
+        var change_check = parseFloat($("#credit_exchange_rate").val());
+        if (change_check < 0) {
+            $("#credit_exchange").removeClass("form-bg-info");
+            $("#credit_exchange").addClass("form-bg-danger");
+            $("#credit_exchange").css("background-color", "rgb(254, 93, 112)");
+
+            $("#credit_exchange_reil").removeClass("form-bg-info");
+            $("#credit_exchange_reil").addClass("form-bg-danger");
+            $("#credit_exchange_reil").css("background-color", "rgb(254, 93, 112)");
+        }
+        else {
+            $("#credit_exchange").addClass("form-bg-info");
+            $("#credit_exchange").removeClass("form-bg-danger");
+            $("#credit_exchange").css("background-color", "");
+
+            $("#credit_exchange_reil").addClass("form-bg-info");
+            $("#credit_exchange_reil").removeClass("form-bg-danger");
+            $("#credit_exchange_reil").css("background-color", "");
+        }
+    }
+</script>

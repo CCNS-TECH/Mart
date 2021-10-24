@@ -1,0 +1,110 @@
+@model UserAccount
+@{
+    var roles = await UserAccountService.GetUserRoles();
+    var perms = await UserAccountService.GetUserPermission();
+}
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>User Account</h4>
+                    <span>User Account Lists</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>User Account</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+ @{await Html.RenderPartialAsync("List");}
+
+ <!-- Modal large-->
+           
+<div class="modal fade" id="account-model" tabindex="-1" role="dialog">
+   <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title">User Account</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+           </div>
+        <div class="modal-body">
+               <div class="row">
+                   <div class="col-sm-12">
+                       <!-- Basic Form Inputs card start -->
+                       <div class="card">
+                           <div class="card-block">
+                               <h4 class="sub-title" style="border-bottom:2px #00ACED solid">Account Form</h4>
+                               <form asp-action="CreateUserAccount" asp-controller="Account" role="form" method="post" enctype="multipart/form-data">
+                                   <div class="form-group row">
+                                       <label class="col-sm-2 col-form-label" asp-for="Username">Username <span class="text-danger">*</span></label>
+                                       <div class="col-sm-10">
+                                           <input type="text" asp-for="Username" class="form-control" required="required">
+                                       </div>
+                                   </div>
+                                   <div class="form-group row">
+                                       <label class="col-sm-2 col-form-label" asp-for="Password">Password <span class="text-danger">*</span></label>
+                                       <div class="col-sm-10">
+                                           <input type="password" asp-for="Password" class="form-control" required="required"/>
+                                       </div>
+                                   </div>
+                                   <div class="form-group row">
+                                       <label class="col-sm-2 col-form-label" asp-for="ConfirmPass">ConfirmPass <span class="text-danger">*</span></label>
+                                       <div class="col-sm-10">
+                                           <input type="password" class="form-control" asp-for="ConfirmPass" required="required"/>
+                                           <div class="text-danger" id="confirmpassword">The password and confirmation password do not match.</div>
+                                       </div>
+                                   </div>
+                                   <div class="form-group row">
+                                       <label class="col-sm-2 col-form-label" asp-for="ConfirmPass">Role <span class="text-danger">*</span></label>
+                                       <div class="col-sm-10">
+                                           <select asp-for="Role_Id" class="form-control required">
+                                               @foreach (var r in roles as List<UserRole>)
+                                               {
+                                                   <option value="@r.Id">@r.Role_En</option>
+                                               }
+                                           </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group row">
+                                       <label class="col-sm-2 col-form-label" asp-for="ConfirmPass">Permission <span class="text-danger">*</span></label>
+                                       <div class="col-sm-10">
+                                           <select asp-for="Permis_Id" class="form-control required">
+                                               @foreach (var r in perms as List<UserPermission>)
+                                               {
+                                                   <option value="@r.Id">@r.Permis_En - Level @r.Level</option>
+                                               }
+                                           </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group text-right">
+                                       <button type="submit" id="btnSubmit" class="btn btn-primary">Submit</button>
+                                   </div>
+                               </form>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script src="~/js/validation.js"></script>

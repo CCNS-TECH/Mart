@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sing In</title>
+    <link rel="icon" href="~/login.ico" type="image/x-icon">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/css/util.css">
+    <link rel="stylesheet" type="text/css" href="~/template/Login_v18/css/main.css">
+    <!--===============================================================================================-->
+    
+   <link rel="stylesheet" type="text/css" href="~/template/files/assets/css/style.css">
+</head>
+
+<body class="login-container login-cover">
+<!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- Pre-loader end -->
+<!-- Page container -->
+<div class="content pb-20">
+    @RenderBody()
+</div>
+<!--===============================================================================================-->
+    <script src="~/template/Login_v18/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/template/Login_v18/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/template/Login_v18/vendor/bootstrap/js/popper.js"></script>
+    <script src="~/template/Login_v18/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/template/Login_v18/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/template/Login_v18/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/template/Login_v18/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/template/Login_v18/js/main.js"></script>        
+
+    <script type="text/javascript" src="~/template/files/assets/js/script.js"></script>
+<script>
+    $(document).ready(function(){
+        
+        $("#alert-info").fadeTo(2000, 1500).slideUp(1500, function () {
+        $("#alert-info").slideUp(1500);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1540 @@
+﻿@{
+    Layout = "OrderLayout/_Layout";
+    var cates = await CategoryService.GetCateList();
+    var items = await ItemService.ItemLists();
+    var subcats = await CategoryService.GetSubCateL1ALL();
+    var order = ViewBag.Order;
+    var invoice = ViewBag.Inv;
+}
+
+<div class="content">
+    <!-- row -->
+    <div class="row">
+        <!-- col-md-4 -->
+        <div class="col-md-4">
+            <div class="wraper">
+                <div class="row">
+                    @*header ordered*@
+                    <div class="col-md-12 col-sm-12">
+                        <div class="d-flex" style="margin-left: 2px; height: 100px; background-color: #ffffff">
+                            <div class="p-2 bd-highlight">
+                                <table id="sectionInfo">
+                                    <tr hidden>
+                                        <td>Section Id </td>
+                                        <td> <span class="text-primary data-section-id"><b> @ViewBag.section.Id </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Section </td>
+                                        <td> <span class="text-primary data-section-name"><b> @ViewBag.section.SectionEn</b></span></td>
+                                    </tr>
+                                    <tr hidden="hidden">
+                                        <td>Booking Id </td>
+                                        <td> <span class="text-primary data-section-bookingId"><b> @ViewBag.section.BookingId </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Group Id </td>
+                                        <td> <span class="text-primary data-gsection-id"><b> @ViewBag.section.GSectionId </b></span></td>
+                                    </tr>
+
+                                    <tr hidden>
+                                        <td>Type Id </td>
+                                        <td><span class="text-primary data-section-type-id"><b> @ViewBag.section.SectionType.Id </b></span></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Type </td>
+                                        <td><span class="text-primary data-section-type-name"><b> @ViewBag.section.SectionType.Type </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>User </td>
+                                        <td><span class="text-primary data-check-in-name"><b> @ViewBag.section.SectionCheckIn.CheckedInByStr </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>User Id </td>
+                                        <td><span class="text-primary data-check-in-id"><b> @ViewBag.section.SectionCheckIn.CheckedInById </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Order Id </td>
+                                        <td><span class="text-primary data-orderby-id"><b> @Context.Session.GetString("OwnnerId") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Order Name </td>
+                                        <td><span class="text-primary data-orderby-name"><b> @Context.Session.GetString("OwnnerName") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Exchange </td>
+                                        <td><span class="text-primary data-exchange-riel"><b> @Context.Session.GetString("Riel") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>Shift Id </td>
+                                        <td><span class="text-primary data-shift-id"><b> @Context.Session.GetString("ShiftId") </b></span></td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td>ShiftStr </td>
+                                        <td><span class="text-primary data-shift-name"><b> @Context.Session.GetString("ShiftStr") </b></span></td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="ml-auto p-2 bd-highlight">
+                                <input type="hidden" value="@String.Format("{0:N2}", @ViewBag.section.Price)" id="sectionPrice" />
+                                <input type="hidden" id="totalhoursbeforefree" />
+                                <input type="hidden" id="totalhoursafterfree" />
+                                <table id="sectionPriceInfo">
+                                    <tr>
+                                        <td>Price </td>
+                                        <td><span class="text-primary price"><b>$ @String.Format("{0:N2}", @ViewBag.section.Price) </b></span></td>
+                                    </tr>
+                                    <tr hidden="hidden">
+                                        <td>Date </td>
+                                        <td><span class="text-primary data-StartDate"><b> @ViewBag.section.SectionCheckIn.StartDate.ToString("yyyy-MM-dd") </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Time In</td>
+                                        <td class="text-primary"><span class="TimeIn Time-in-@ViewBag.section.Id"><b>@ViewBag.section.SectionCheckIn.StartTime?.ToString("HH:mm:ss tt")</b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Duration </td>
+                                        <td><span class="TrackHours text-primary" style="font-weight: bold">N/A</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="ml-auto p-2 bd-highlight">
+                                <input type="hidden" id="TotalTime" />
+                                <table id="timeInfo">
+                                    @if (@order != null)
+                                    {
+                                        <tr hidden>
+                                            <td>DocEntry</td>
+                                            <td> <span class="text-primary data-docEntry"><b> @order.DocEntry </b></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Order N<sup>o</sup></td>
+                                            <td> <span class="text-primary data-order-code"><b> @order.OrderCode </b></span></td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>Time-In</td>
+                                            <td><span class="text-primary data-StartTime"><b> @ViewBag.section.SectionCheckIn.StartTime.ToString("HH:mm:ss tt ") </b></span></td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>Date </td>
+                                        <td><span class="text-primary data-StartDate"><b> @ViewBag.section.SectionCheckIn.StartDate.ToString("yyyy-MM-dd") </b></span></td>
+                                    </tr>
+
+                                    <tr hidden="hidden">
+                                        <td>Member </td>
+                                        <td> <span class="text-primary data-Pax"><b> @ViewBag.section.SectionCheckIn.Pax </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Section Amount </td>
+                                        <td> <span class="text-primary data-Room-Amount" style="font-weight: bold;">$ <b> 0.00 </b></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" id="check__room_free" /> មិនគិតថ្លៃបន្ទប់ </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @*list ordered*@
+                    <div class="col-sm-12">
+                        <div id="item__ordered_style" class="scrollbar-v1">
+                            <ul style="padding: 20px;" id="item_ordered">
+                                @if (order != null)
+                                {
+                                    @foreach (var item in order.OrderDetails)
+                                    {
+                                        <li style="padding: 0 10px;background-color: #ffffff" class="item-list"
+                                            data-item_id='@item.ItemId' data-uom_id='@item.UoMId' data-guom_id='@item.GUoMId'
+                                            data-item_code='@item.ItemCode' data-item_type='@item.ItemTypeStr'
+                                            data-item_guom_name='@item.GUoMStr' data-item_uom_name='@item.UoMStr' data-item_cost='@item.Cost' data-status-free='@item.LineFree'>
+                                            <div class="d-flex flex-row">
+                                                <div class="p-2 mr-auto">
+                                                    <p class="font-weight-bold item_name" style="margin: 0;max-width:110px;overflow: auto;">@item.ItemStr</p>
+                                                    Price : $ <span class="text-muted price">@String.Format("{0:N2}", @item.UnitPrice)</span>
+                                                </div>
+                                                @if (item.LineFree == "Y")
+                                                {
+                                                    <div class="p-2 align-self-center">
+                                                        <div class="pull-left">
+                                                            <p style="margin: 0; padding: 5px 10px 0">Qty </p>
+                                                        </div>
+                                                        <div class="pull-right" style="align-items: center;">
+                                                            <div class="number-input">
+                                                                <button onclick="this.parentNode.querySelector('.quantity').stepDown(),change_qty(-1,@item.ItemId)"></button>
+                                                                <input class="quantity" max="-1" name="quantity" value="@String.Format("{0:N0}", @item.Quantity)" type="number" />
+                                                                <button onclick="this.parentNode.querySelector('.quantity').stepUp(),change_qty(1,@item.ItemId)" class="plus"></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-2 mr-auto">
+                                                        <p class="font-weight-bold item_free status-free-item label label-danger text-white" style="margin: 0;color: #00af94;">Free</p>
+                                                        <p class="font-weight-bold item_free status-free-item" style="margin: 0;color: #00af94;"></p>
+                                                        Disc. % <input type="number" class="item_disc" style="width:35px; border:none;" value="@String.Format("{0:N0}", @item.DiscPrcnt)" readonly />
+                                                        @*Disc. % <span class="item_disc" style="margin: 0">0.00</span>*@
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="p-2 align-self-center">
+                                                        <div class="pull-left">
+                                                            <p style="margin: 0; padding: 5px 10px 0">Qty </p>
+                                                        </div>
+                                                        <div class="pull-right" style="align-items: center;">
+                                                            <div class="number-input">
+                                                                <button onclick="this.parentNode.querySelector('.quantity').stepDown(),change_qty(-1,@item.ItemId)"></button>
+                                                                <input class="quantity" min="1" name="quantity" value="@String.Format("{0:N0}", @item.Quantity)" type="number" readonly />
+                                                                <button onclick="this.parentNode.querySelector('.quantity').stepUp(),change_qty(1,@item.ItemId)" class="plus"></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-2 mr-auto">
+                                                        <p class="font-weight-bold item_free status-free-item" style="margin: 0;color: #00af94;"></p>
+                                                        Disc. % <input type="number" class="item_disc" style="width:35px; border:none;" value="@String.Format("{0:N0}", @item.DiscPrcnt)" onblur="discount_item_onblur(this,@item.ItemId)" /> @*<span class="discount" style="margin: 0">@String.Format("{0:N2}", @item.DiscPrcnt)</span>*@
+                                                    </div>
+                                                }
+                                                <div class="p-2 align-self-center">
+                                                    $ <span class="font-weight-bold item_total" style="margin: 0">@String.Format("{0:N2}", @item.TotalLine)</span>
+                                                </div>
+                                                <div class="p-2 align-self-center">
+                                                    <a href="#" onclick="remove_item_order(@item.ItemId,'@item.LineFree')" class="text-danger pull-right"><i class="icofont icofont-bin" style="font-size: 32px"></i></a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row">
+                        <div class="col-sm-12">
+
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <!-- /col-md-4 -->
+        <div class="sub-footer-bottom col-md-4 col-sm-12" style="background-color: #ffffff">
+            <table width="100%" id="table_calculate">
+                @if (order != null)
+                {
+                    <tr>
+                        <th style="font-weight: bold;">Sub Total / សរុប ($)</th>
+                        <td class="text-right sub_total" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.SubTotalUSD)</td>
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold;"> Free Hour / Free ម៉ោង (h)</th>
+                        <td class="text-right free_hour_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.FreeHour)</td>
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold;">Discount / បញ្ចុះតម្លៃ (%)</th>
+                        <td class="text-right discount_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.DiscPrcnt)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                        <td class="text-right vat_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.TaxPrcnt)</td>
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold;">Service / សេវាកម្ម ($)</th>
+                        <td class="text-right service_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.ServiceChargeUSD)</td>
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</th>
+                        <td class="text-right charg_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.OtherChargeUSD)</td>
+                    </tr>
+                    <tr>
+                        <th style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</th>
+                        <td class="text-right grand_total" style="font-weight: bold;border-bottom: 1px #ccc dashed;">@String.Format("{0:N2}", @order.GrandTotalUSD)</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td style="font-weight: bold;">Sub Total / សរុប ($)</td>
+                        <td class="text-right sub_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Free Hour / Free ម៉ោង  (h)</td>
+                        <td class="text-right free_hour_total" contenteditable onblur="calculate_free_hour(this)" style="font-weight: bold;">0</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Discount / បញ្ចុះតម្លៃ  (%)</td>
+                        <td class="text-right discount_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                        <td class="text-right vat_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
+                        <td class="text-right service_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
+                        <td class="text-right charg_total" contenteditable onblur="calculate_order(this)" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
+                        <td class="text-right grand_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                }
+            </table>
+            <hr style="border: 2px #00b0ff solid;" />
+            <div class="text-right">
+                @*<a class="btn btn-lg btn-info" asp-controller="payments" asp-action="payment" asp-route-id="@ViewBag.section.Id">Payment</a>*@
+                <button class="btn btn-lg btn-success" id="sendOrder" onclick="click_order_item('B','0','0')">Order</button>
+                @if (order != null)
+                {
+                    <button class="btn btn-lg btn-primary waves-effect" data-toggle="modal" data-target="#modal-print-bill" onclick="onClickPrintBill()">Print Bill</button>
+                }
+                @*else
+                    {
+                        <button class="btn btn-lg btn-primary waves-effect" data-toggle="modal" data-target="#modal-print-bill">Print Bill</button>
+                    }*@
+                @*<button class="btn btn-lg btn-warning">Transfer</button>*@
+                @*<button class="btn btn-lg btn-danger">Split</button>*@
+                <a class="btn btn-lg btn-secondary" asp-action="pos" asp-controller="POSs">Back</a>
+            </div>
+        </div>
+        <!-- col-md-8 -->
+        <div class="col-md-8 col-sm-12" style="padding-left:0;">
+            <ul class="nav nav-tabs md-tabs" role="tablist" id="list_category" style="height: 100px;background-color: #ffffff">
+                <li class="nav-item active">
+
+                    <div class="displayChatbox">
+                        <a class="nav-link btn btn-active btn-default" style="color: #00ACED;" href="#home7" onclick="findSubCateByCateId(0,this)" data-toggle="tab" role="tab"><b>All/ទាំងអស់</b></a>
+                    </div>
+                    @*<div class="slide"></div>*@
+                </li>
+                <li id="item_for_free" class="nav-item">
+                    <div class="displayChatbox">
+                        <a class="nav-link btn btn-active btn-default" style="color: #00ACED;" href="#home7" onclick="findSubCateByCateId(0,this)" data-toggle="tab" role="tab"><b>Free/មិនគិតថ្លៃ</b></a>
+                    </div>
+                </li>
+                @foreach (var cate in cates)
+                {
+                    <li class="nav-item">
+                        <div class="displayChatbox">
+                            <a class="nav-link btn btn-active btn-default" style="color: #00ACED;" data-toggle="tab" href="#home7" role="tab" onclick="findSubCateByCateId(@cate.CateId,this)"><b>@cate.Cate_En</b></a>
+                        </div>
+                        @*<div class="slide"></div>*@
+                    </li>
+                }
+                <li class="nav-item" style="float:right">
+                    <div class="displayChatbox">
+                        <input type="text" class="form-control" id="Search" onkeyup="Search_Item()" placeholder="Search item..." />
+                    </div>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content card-block item_scrollbar scrollbar-v1">
+                <div class="tab-pane active" role="tabpanel">
+                    <div class="row" id="list_items">
+                        @foreach (var item in items)
+                        {
+
+                            <div onclick="orderitem(this)" class="target text-center col-xl-2 col-lg-3 col-sm-3 col-xs-12 cate-@item.CateId sub-cate-@item.SubCateL0Id list_items"
+                                 data-cate="cate-@item.CateId" data-subCate="sub-cate-@item.SubCateL0Id">
+                                <div class="card item-panel">
+                                    <span class="pricetag">$ @String.Format("{0:N2}", @item.SalePrice)</span>
+                                    <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text" style="background-color: #fff">
+                                        <img src="~/images/products/@item.Img" class="img items" alt="Image" />
+                                        <div class="cardcontainer" style="padding-top: 5px">
+                                            <p>@item.ItemCode <br /> @item.ItemEn</p>
+                                        </div>
+                                    </a>
+
+                                </div>
+
+                                <span hidden class="item_id">@item.Id</span>
+                                <span hidden class="item_code">@item.ItemCode</span>
+                                <span hidden class="item_name">@item.ItemStr</span>
+                                <span hidden class="item_price">@item.SalePrice.ToString("0.00")</span>
+                                <span hidden class="item_type">@item.ItemType</span>
+                                <span hidden class="item_uom_id">@item.SaleUoMId</span>
+                                <span hidden class="item_uom_name">@item.SaleUoMStr</span>
+                                <span hidden class="item_guom_id">@item.GUoMId</span>
+                                <span hidden class="item_guom_name">@item.GUoMStr</span>
+                                <span hidden class="item_cost">@item.Cost</span>
+                            </div>
+                        }
+                    </div>
+                    @*<div class="col-sm-12">
+                            <div class="grid">
+                                <figure class="effect-goliath" style="width:100px;height: auto;" >
+                                    <img src="~/template/files/assets/images/light-box/l3.jpg" style="width:auto;height: 180px;" class="img img-circle" alt="img23">
+                                    <figcaption>
+                                        <h2>Thoughtful <span>Goliath</span></h2>
+                                        <p>When Goliath comes out, you should run.</p>
+                                        <a href="#">View more</a>
+                                    </figcaption>
+                                </figure>
+                                <figure class="effect-goliath" style="width:100px;height: auto;" >
+                                    <img src="~/template/files/assets/images/light-box/l4.jpg" alt="img24">
+                                    <figcaption>
+                                        <h2>Thoughtful <span>Goliath</span></h2>
+                                        <p>When Goliath comes out, you should run.</p>
+                                        <a href="#">View more</a>
+                                    </figcaption>
+                                </figure>
+                                <figure class="effect-goliath" style="width:100px;height: auto;" >
+                                    <img src="~/template/files/assets/images/light-box/l3.jpg" style="width:auto;height: 180px;" class="img img-circle" alt="img23">
+                                    <figcaption>
+                                        <h2>Thoughtful <span>Goliath</span></h2>
+                                        <p>When Goliath comes out, you should run.</p>
+                                        <a href="#">View more</a>
+                                    </figcaption>
+                                </figure>
+
+                                <figure class="effect-goliath" style="width:100px;height: auto;" >
+                                    <img src="~/template/files/assets/images/light-box/l4.jpg" alt="img24">
+                                    <figcaption>
+                                        <h2>Thoughtful <span>Goliath</span></h2>
+                                        <p>When Goliath comes out, you should run.</p>
+                                        <a href="#">View more</a>
+                                    </figcaption>
+                                </figure>
+
+                            </div>
+                        </div>*@
+
+                </div>
+                <div class="tab-pane" id="profile7" role="tabpanel">
+                    <div class="row">
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BBTEbqP.img?h=516&w=799&m=6&q=60&o=f&l=f&x=571&y=359" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane" id="messages7" role="tabpanel">
+                    <div class="row">
+
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-sm-3 col-xs-12">
+                            <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                <img src="https://img.taste.com.au/VNgrMNnn/w720-h480-cfill-q80/taste/2016/11/chicken-fried-rice-28524-1.jpeg" class="img-fluid m-b-10" alt="" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /col-md-8 -->
+        <!-- Sidebar chat start showChat -->
+        <div id="sidebar" class="show-cat users p-chat-user animated" style="display:none;">
+            <div class="had-container">
+                <div class="card card_main food-category p-fixed users-main">
+                    <div class="user-box">
+                        <div class="chat-inner-header">
+                            <div class="btn-sm btn-block btn-danger search-close" onclick="click_close_subcate()" style="margin-bottom:8px;"><i class="feather icon-x"></i> close</div>
+
+                            @*<div class="back_chatBox">
+                                    <div class="right-icon-control">
+                                        <input type="text" class="form-control  search-text" placeholder="Search category" id="search-friends" />
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="sub_cate scrollbar-v1">
+                            @*class="main-friend-list"*@
+                            @foreach (var sc in subcats)
+                            {
+                                <div class="food-cat-lst media cate-@sc.Cate_Id sub_category" onclick="click_sub_cate(@sc.SubCateL1_Id)" data-id="1" data-status="online" data-username="Josephin Doe" data-toggle="tooltip" data-placement="left">
+                                    <a href="#" data-toggle="lightbox" data-title="A random title" data-footer="A custom footer text">
+                                        <img src="../../images.jpeg" class="img-fluid m-b-10" alt="" />
+                                    </a>
+                                    <div class="cat-caption">
+                                        <h6 class="item-title">
+                                            @sc.SubCateL1_En
+                                        </h6>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /row -->
+</div>
+<!-- Modal print bill-->
+<div class="modal fade modal-flex" id="modal-print-bill" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 950px">
+        <div class="modal-content">
+            <div class="modal-body model-container">
+                <div>
+                    <!-- Invoice card start -->
+                    <div class="" id="print_general_invoice" style="font-family:'Khmer OS' !important">
+                        <div class="row invoice-contact">
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xl-8 col-xs-8">
+                                <div class="invoice-box row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <table class="table invoice-table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td><img src="~/images/logo/@Context.Session.GetString("Logo")" style="width:125px; height: 125px;" class="m-b-10" alt=""></td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Company :</b> <b>@Context.Session.GetString("CompanyName")</b></td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td>
+                                                        <b> Address :</b>
+                                                        @Context.Session.GetString("St_Num") St.
+                                                        @Context.Session.GetString("Sangkat") ,
+                                                        <br /> @Context.Session.GetString("Khan") ,
+                                                        @Context.Session.GetString("City") ,
+                                                        <br />@Context.Session.GetString("Province")
+                                                    </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td>
+                                                        <b> Email :</b> @Context.Session.GetString("Email")
+                                                    </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Phone :</b> @Context.Session.GetString("Phone") </td>
+                                                </tr>
+                                                <tr class="h6">
+                                                    <td><b>Mobile :</b> @Context.Session.GetString("Mobile") </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xl-4 col-xs-4">
+                                <div class="row invoive-info">
+                                    <h5 style="border-bottom: 2px solid #ccc;"><b>Bill Information</b></h5>
+                                    <table class="table invoice-table invoice-order table-borderless" id="tbInvoice">
+                                        <tbody>
+                                            <tr class="h6" hidden="hidden">
+                                                <th>
+                                                    <span class="m-b-20">Order N<sup>o</sup> : </span>
+                                                </th>
+                                                <td>
+                                                    @if (@order != null)
+                                                    {<span>#@order.OrderCode</span>}
+                                                </td>
+                                            </tr>
+                                            <tr class="h6" hidden="hidden">
+                                                <th>
+                                                    <span class="m-b-20">Bill N<sup>o</sup> : </span>
+                                                </th>
+                                                @if (@invoice != null)
+                                                {
+                                                    <td style="font-weight: bold;" class="invoice-docEntry" hidden="hidden">
+                                                        <span>@invoice.DocEntry</span>
+                                                    </td>
+                                                    <td style="font-weight: bold;" class="invoice-code">
+                                                        <span>#@invoice.InvCode</span>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td style="font-weight: bold;" class="invoice_no">
+                                                    </td>
+                                                }
+                                            </tr>
+
+                                            <tr class="h6">
+                                                <th>Order Date : </th>
+                                                <td style="font-weight: bold;"><span> @ViewBag.section.SectionCheckIn.StartDate.ToString("yyyy/MM/dd") </span></td>
+                                            </tr>
+                                            <tr class="h6">
+                                                <th>Doc Date : </th>
+                                                <td style="font-weight: bold;"> <span> @DateTime.Now.ToString("yyyy/MM/dd") </span></td>
+                                            </tr>
+
+                                            <tr class="h6">
+                                                <th>Status : </th>
+                                                <td style="font-weight: bold;">
+                                                    <span> Bill</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="h6">
+                                                <th>Time In : </th>
+                                                <td style="font-weight: bold;">
+                                                    <span id="time_in_bill"> </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="h6">
+                                                <th>Time Out : </th>
+                                                <td style="font-weight: bold;">
+                                                    <span id="time_out_bill"> </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="table" id="table_print_bill">
+                                            <thead>
+                                                <tr class="thead-default h6">
+                                                    <th>N<sup>o</sup> <br /> ល.រ</th>
+                                                    <th>Description <br />ទំនិញ</th>
+                                                    <th>Quantity <br /> ចំនួន</th>
+                                                    <th>Price <br /> តម្លៃ</th>
+                                                    <th>Disc <br /> បញ្ខុះតម្លៃ</th>
+                                                    <th class="text-right">Amount <br /> សរុប</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbbod-print-bill">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <hr style="border: 2px #ccc solid" />
+                                    <div class="text-right">
+                                        <h5><b>Total Due</b></h5>
+                                    </div>
+
+                                    <table class="table table-responsive invoice-table invoice-total" id="invoice_total">
+                                        <tr>
+                                            <td style="font-weight: bold;">Sub Total / សរុប ($)</td>
+                                            <td class="text-right sub_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Free Hour / Free ម៉ោង (h)</td>
+                                            <td class="text-right free_hour_total" style="font-weight: bold;">0</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Discount / បញ្ខុះតម្លៃ (%)</td>
+                                            <td class="text-right discount_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                                            <td class="text-right vat_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
+                                            <td class="text-right service_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
+                                            <td class="text-right charg_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
+                                            <td class="text-right grand_total" style="font-weight: bold;">0.00</td>
+                                        </tr>
+
+                                    </table>
+                                    <div>
+                                        <h4 class="text-center">
+                                            <span>@Context.Session.GetString("Description")</span>
+                                        </h4>
+                                        <p class="text-center">
+                                            <span style="color: #cce5ff">Develop by CCNS Solution</span>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Invoice card end -->
+                    <div class="row text-center">
+                        <div class="col-sm-12 invoice-btn-group text-right">
+                            <button type="button" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" onclick="printbill(this);">Print</button>
+                            <button type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal print bill end -->
+@*<div class="row">
+        <div class="col-12">
+
+            <select id="group">
+                <option value="All">All</option>
+            </select>
+        </div>
+    </div>*@
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/notification.js"></script>
+@*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>*@
+<script type="text/javascript" src="~/template/files/bower_components/jquery/js/jquery.min.js"></script>
+
+<style>
+    .sub_cate {
+        height: 77vh;
+        overflow-y: auto;
+    }
+    .food-cat-lst:hover {
+        background-color: #e6f4ff;
+        box-shadow: 8px 8px 16px 0px #b1b1b1;
+        border-radius: 7% 7%;
+    }
+    #item__ordered_style {
+        max-height: 53vh;
+        overflow-y: auto;
+    }
+
+    .item_scrollbar {
+        height: 79vh;
+        overflow-y: auto;
+    }
+    /* width */
+    .scrollbar-v1::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    /* Track */
+
+    .scrollbar-v1::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    .scrollbar-v1::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+        /* Handle on hover */
+        .scrollbar-v1::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .active {
+        color: #00AEEF;
+    }
+
+    .pricetag {
+        position: absolute;
+        top: 10px;
+        font-weight: bold;
+        direction: ltr;
+        padding: 5px;
+        transform: rotate(-45deg);
+        color: #ffffff;
+        background-color: rgba(255,0,0,0.8);
+        z-index: 1;
+        border-radius: 50%;
+    }
+
+    img.items {
+        position: relative;
+        width: 100%;
+        height: 130px;
+    }
+
+    .title {
+        margin: 0;
+    }
+
+    .item-panel {
+        border-width: 1px;
+        border-color: red;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin: 5px;
+    }
+
+    .sub-footer-bottom {
+        position: absolute;
+        bottom: 25px;
+        left: 2px;
+    }
+
+    .md-tabs .nav-item a {
+        padding: 5px 0 !important;
+        color: #404E67;
+    }
+</style>
+<script src="~/js/activeclass.js"></script>
+<script>
+    var section_amount = "";
+    var sub_total = 0;
+    var credit_sub_total = 0;
+
+    $(document).ready(function () {
+        var time = $("#TotalTime").val();
+        $(".sectioniteme").val(time);
+
+
+    });
+    function Search_Item() {
+        var input = document.getElementById("Search");
+        var filter = input.value.toLowerCase();
+        var nodes = document.getElementsByClassName('target');
+
+        for (i = 0; i < nodes.length; i++) {
+            if (nodes[i].innerText.toLowerCase().includes(filter)) {
+                nodes[i].style.display = "block";
+            } else {
+                nodes[i].style.display = "none";
+            }
+        }
+    }
+
+    function click_order_item(parm, parm1, parm2) {
+        var d = new Date();
+        var strDate = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate();
+
+        var loop_item_ordered = $("#item_ordered").find("li");
+        var loop_section_info = $("#sectionInfo").find("tr");
+        var loop_time_info = $("#timeInfo").find("tr");
+        var loop_section_price_info = $("#sectionPriceInfo").find("tr");
+        var currow = $("#table_calculate");
+
+        var exchange = parseFloat(loop_section_info.find("td span.data-exchange-riel").text());
+        var subtotal = currow.find("td.sub_total").text();
+        var dis = parseFloat(currow.find("td.discount_total").text());
+        var vat = parseFloat(currow.find("td.vat_total").text());
+        var service = parseFloat(currow.find("td.service_total").text());
+        var charge = parseFloat(currow.find("td.charg_total").text());
+        var freehour = currow.find("td.free_hour_total").text();
+        var totalhour = $("#totalhoursafterfree").val();
+        var totalhours = totalhour.toString().split(":");
+        if (totalhours[1] == "undefined") {
+            totalhours[1] = 1;
+        }
+        if (isNaN(parseFloat(freehour))) {
+            freehour = 0.00;
+        }
+        var total_dis = subtotal - (subtotal * dis) / 100;
+        var total_vat = total_dis + (total_dis * vat) / 100;
+
+        var grandtotal = total_vat + service + charge;
+        var secamount = loop_time_info.find("td span.data-Room-Amount").text();
+        var sectionamount = secamount.split("$");
+        var order = {};
+        order.OrderCode = loop_time_info.find("td span.data-order-code").text();
+        order.DocEntry = loop_time_info.find("td span.data-docEntry").text();
+        order.SectionPrice = $("#sectionPrice").val();
+
+        var check = $("#check__room_free").prop("checked");
+        if (check)
+            order.SectionAmount = "0.00";
+
+        else
+            order.SectionAmount = sectionamount[1];
+
+        order.Duration = loop_section_price_info.find("td span.TrackHours").text();
+
+        if (order.OrderCode === "") {
+            order.OrderCode = "0";
+            order.DocEntry = "0";
+        }
+        order.FreeHour = freehour;
+        order.TotalHour = parseFloat(totalhours[0] + "." + totalhours[1]);
+        order.CheckInId = loop_section_info.find("td span.data-check-in-id").text();
+        order.CheckInStr = loop_section_info.find("td span.data-check-in-name").text();
+        order.Floor = "0";
+        order.SectionId = loop_section_info.find("td span.data-section-id").text();
+        order.SectionStr = loop_section_info.find("td span.data-section-name").text();
+        order.GSectoinId = loop_section_info.find("td span.data-gsection-id").text();
+        order.GSectoinStr = "";
+        order.SectionTypeId = loop_section_info.find("td span.data-section-type-id").text();
+        order.SectionTypeStr = loop_section_info.find("td span.data-section-type-name").text();
+        order.BookingId = loop_section_info.find("td span.data-section-bookingId").text();
+
+        if (order.BookingId == 0) {
+            order.BookingStatus = "N";
+        } else {
+            order.BookingStatus = "Y";
+        }
+        order.DiscPrcnt = dis;
+        order.ExchangeRate = exchange;
+        order.TotalDiscUSD = (subtotal * dis) / 100;
+        order.TotalDiscRiel = (exchange * ((subtotal * dis) / 100));
+        order.TaxPrcnt = vat;
+        order.TotalTaxUSD = (total_dis * vat) / 100;
+        order.TotalTaxRiel = (exchange * ((total_dis * vat) / 100));
+        order.SubTotalUSD = subtotal;
+        order.SubTotalRiel = subtotal * exchange;
+        order.ServiceChargeUSD = service;
+        order.ServiceChargeRiel = service * exchange;
+        order.OtherChargeUSD = charge;
+        order.OtherChargeRiel = charge * exchange;
+        order.GrandTotalUSD = grandtotal;
+        order.GrandTotalRiel = grandtotal * exchange;
+        order.OrderById = loop_section_info.find("td span.data-orderby-id").text();
+        order.OrderByStr = loop_section_info.find("td span.data-orderby-name").text();
+        order.CancelStatus = "N";
+        order.DocStatus = "O";
+        order.Deleted = "N";
+        order.OrderStatus = "O";
+        order.ShiftId = loop_section_info.find("td span.data-shift-id").text();
+        order.ShiftStr = loop_section_info.find("td span.data-shift-name").text();
+        order.Description = "This is order item by user id" + loop_section_info.find("td span.data-orderby-id").text() + "-" + loop_section_info.find("td span.data-orderby-name").text() + "date: " + strDate;
+        var timein = ($("tr td span.TimeIn").text()).split(' ');
+        order.TimeIn = timein[0];
+        order.TimeOut = $("#time_out_bill").text();
+
+        var itemordered = [];
+        loop_item_ordered.each(function () {
+            var itemid = $(this).attr("data-item_id");
+            var itemcode = $(this).attr("data-item_code");
+            var itemname = $(this).find("p.item_name").text();
+            var qty = $(this).find("input.quantity").val();
+            var price = $(this).find("span.price").text();
+            var dis = $(this).find("span.discount").text();
+            var total = $(this).find("span.item_total").text();
+            var uomid = $(this).attr("data-uom_id");
+            var guomid = $(this).attr("data-guom_id");
+            var uomname = $(this).attr("data-item_uom_name");
+            var guomname = $(this).attr("data-item_guom_name");
+            var cost = $(this).attr("data-item_cost");
+            var type = $(this).attr("data-item_type");
+            var statusfree = $(this).attr("data-status-free");
+            var disc_item = $(this).find("input.item_disc").val();
+            var item = {
+                ItemId: itemid,
+                ItemCode: itemcode,
+                ItemStr: itemname,
+                ItemType: type,
+                Quantity: qty,
+                Cost: cost,
+                UnitPrice: price,
+                Currency: "USD",
+                UoMId: uomid,
+                UoMStr: uomname,
+                GUoMId: guomid,
+                GUoMStr: guomname,
+                DiscPrcnt: dis,
+                TotalLine: total,
+                Deleted: "N",
+                BillStatus: "N",
+                LineStatus: "O",
+                LineFree: statusfree,
+                CancelStatus: "N",
+                DiscPrcnt: disc_item
+            };
+            itemordered.push(item);
+        });
+        order.OrderDetails = itemordered;
+        //console.log(JSON.stringify(order));
+        $.ajax({
+            url: "/order/create",
+            type: "post",
+            datatype: "json",
+            async: false,
+            data: { "order": order },
+            success: function (data) {
+                if (data === 1) {
+                    if (parm === "B") {
+                        swal({
+                            title: "Order Successful!",
+                            text: "Your order has been confirm!",
+                            type: "success"
+                        });
+                        window.location.replace('/pos/sections')
+                    } else {
+                        var tbinvoice = $("#tbInvoice").find("tr");
+                        $.ajax({
+                            url: "/invoice/create",
+                            type: "post",
+                            datatype: "json",
+                            async: false,
+                            data: { "order": order, "invoiceCode": parm1, "docEntry": parm2 },
+                            success: function (data) {
+                                if (data !== 0) {
+                                    tbinvoice.find("td.invoice_no").text("#" + data);
+                                    //function print bill
+                                    var printContents = document.getElementById("print_general_invoice").innerHTML;
+                                    var originalContents = document.body.innerHTML;
+                                    document.body.innerHTML = printContents;
+                                    window.print();
+                                    document.body.innerHTML = originalContents;
+                                    window.location.replace('/pos/sections')
+
+                                } else {
+                                    swal({
+                                        title: "Order Fail!",
+                                        text: "Your invoice number has been fail!",
+                                        type: "error"
+                                    });
+                                }
+                            }
+
+                        });
+                    }
+                } else {
+                    swal({
+                        title: "Order Fail!",
+                        text: "Your order has been fail!",
+                        type: "error"
+                    });
+                }
+            }
+
+        });
+
+    }
+
+    function remove_item_order(itemid, parm1) {
+        var loop_item_ordered = $("#item_ordered").find("li");
+        loop_item_ordered.each(function () {
+            var id_click = $(this).attr("data-item_id");
+            var statusfree = $(this).attr("data-status-free");
+            if (id_click == itemid && parm1 == statusfree) {
+                $(this).remove();
+                calculate_value();
+            }
+        });
+    }
+    function change_qty(val, itemid) {
+        var loop_item_ordered = $("#item_ordered").find("li");
+        loop_item_ordered.each(function () {
+            var id_click = $(this).attr("data-item_id");
+            if (id_click == itemid) {
+                var qty_item = parseFloat($(this).find("input.quantity").val());
+                var price = parseFloat($(this).find("span.price").text());
+                var disc = parseFloat($(this).find("input.item_disc").val());
+
+                var total = (qty_item * price);
+                total = parseFloat(total - (total * disc) / 100);
+                $(this).find("span.item_total").text(total.toFixed(2));
+                calculate_value();
+            }
+        });
+    }
+    function discount_item_onblur(v_this,itemid) {
+        @*$(v_this).find(".item_disc");*@
+
+        var disc_val = parseFloat($(v_this).val());
+        if (isNaN(disc_val) || disc_val == 0 ) {
+            $(v_this).val(0);
+            disc_val = 0;
+        }
+        if (disc_val >= 100) { disc_val = 100; $(v_this).val(100); }
+
+        var loop_item_ordered = $("#item_ordered").find("li");
+        loop_item_ordered.each(function () {
+            var id_click = $(this).attr("data-item_id");
+            if (id_click == itemid) {
+                var qty_item = parseFloat($(this).find("input.quantity").val());
+                var price = parseFloat($(this).find("span.price").text());
+                var total = (qty_item * price);
+
+                total = parseFloat(total - (total * disc_val) / 100);
+
+                $(this).find("span.item_total").text(total.toFixed(2));
+                calculate_value();
+            }
+        });
+
+    }
+
+    function calculate_order(parm) {
+        var value = parseFloat($(parm).text());
+        if (isNaN(value)) {
+            value = 0;
+        }
+        $(parm).text(value.toFixed(2));
+        calculate_value();
+    }
+    function calculate_value() {
+        var loop_item_ordered = $("#item_ordered").find("li");
+        var loop_time_info = $("#timeInfo").find("tr");
+        var sectionAmount = (loop_time_info.find("td span.data-Room-Amount").text()).split("$");
+
+        var total = 0;
+        var check = $("#check__room_free").prop("checked");
+        if (check)
+            total = 0;
+        else
+            total = parseFloat(sectionAmount[1]);
+        //console.log("total"+total);
+        loop_item_ordered.each(function () {
+            var statusfree = $(this).attr("data-status-free");
+            if (statusfree === "N") {
+                total += parseFloat($(this).find("span.item_total").text());
+            }
+        });
+
+        var currow = $("#table_calculate");
+
+        currow.find("td.sub_total").text(total.toFixed(2));
+
+        var sub_total = parseFloat(total);
+        var dis = parseFloat(currow.find("td.discount_total").text());
+        var vat = parseFloat(currow.find("td.vat_total").text());
+        var service = parseFloat(currow.find("td.service_total").text());
+        var charge = parseFloat(currow.find("td.charg_total").text());
+
+        var total_dis = sub_total - (sub_total * dis) / 100;
+        var total_vat = total_dis + (total_dis * vat) / 100;
+
+        var amount = total_vat + service + charge;
+
+        currow.find("td.grand_total").text(amount.toFixed(2));
+
+    }
+    function orderitem(parm) {
+        var count = 0;
+        var id = $(parm).find("span.item_id").text();
+        var code = $(parm).find("span.item_code").text();
+        var name = $(parm).find("span.item_name").text();
+        var price = $(parm).find("span.item_price").text();
+        var uom_id = $(parm).find("span.item_uom_id").text();
+        var uom_name = $(parm).find("span.item_uom_name").text();
+        var guom_id = $(parm).find("span.item_guom_id").text();
+        var item_type = $(parm).find("span.item_type").text();
+        var guom_name = $(parm).find("span.item_guom_name").text();
+        var cost = $(parm).find("span.item_cost").text();
+        var statusfree = "N";
+        var qtyFree = 1;
+        var qty_order = '<input class="quantity" min="1" name="quantity" value="1" type="number" readonly />';
+        var status = '<p class="font-weight-bold item_free status-free-item" style="margin: 0;color: #00af94;"></p>';
+        var input_type = "'input[type=number]'";
+        var disc_readonly = "";
+
+        if ($("#item_for_free").find("a").hasClass("active")) {
+            qty_order = '<input class="quantity" max="-1" name="quantity" value="-1" type="number" />';
+            status = '<p class="font-weight-bold item_free status-free-item label label-danger text-white" style="margin: 0;color: #00af94;">Free</p>';
+            statusfree = "Y";
+            disc_readonly = "readonly";
+            qtyFree = -1;
+        }
+        var loop_item_ordered = $("#item_ordered").find("li");
+        loop_item_ordered.each(function () {
+            var id_click = $(this).attr("data-item_id");
+            var qty_item = parseFloat($(this).find("input.quantity").val());
+            var check_status = $(this).find("p.status-free-item").text();
+            if ($("#item_for_free").find("a").hasClass("active")) {
+                if (id_click == id && check_status == "Free") {
+                    var qty = qty_item - 1;
+                    var total = (qty * price).toFixed(2);
+                    $(this).find("input.quantity").val(qty);
+                    $(this).find("span.item_total").text(total);
+                    count++;
+                }
+            }
+            else {
+                if (id_click == id && check_status == "") {
+                    var qty = qty_item + 1;
+                    var disc = parseFloat($(this).find("input.item_disc").val());
+                    var total = (qty * price);
+                    total = parseFloat(total - (total * disc) / 100);
+
+                    $(this).find("input.quantity").val(qty);
+                    $(this).find("span.item_total").text(total.toFixed(2));
+
+                    count++;
+                }
+            }
+        });
+        if (count > 0) {
+            calculate_value();
+            return;
+        }
+        var out = '<li style="padding: 0 10px; background-color: #ffffff" class="item-list" '
+            + 'data-item_id=' + id + ' data-uom_id=' + uom_id + ' data-guom_id=' + guom_id + ' data-item_code=' + code + ' data-item_type=' + item_type
+            + ' data-item_guom_name=' + guom_name + ' data-item_uom_name=' + uom_name + ' data-item_cost=' + cost + ' data-status-free=' + statusfree + '> '
+            + '<div class="d-flex flex-row">'
+            + '<div class="p-2 mr-auto">'
+            + '<p class="font-weight-bold item_name" style="margin: 0;max-width:110px;overflow-x: auto;">' + name + '</p>'
+            + 'Price : $ <span class="text-muted price">' + price + '</span>'
+            + '</div>'
+            + '<div class="p-2 align-self-center">'
+            + '<div class="pull-left">'
+            + '<p style="margin: 0; padding: 5px 10px 0"> Qty </p>'
+            + '</div>'
+
+            + '<div class="pull-right" style="align-items: center;">'
+            + '<div class="number-input">'
+            + '<button onclick="this.parentNode.querySelector(' + input_type + ').stepDown(),change_qty(-1,' + id + ')""></button>'
+            + qty_order
+            + '<button onclick="this.parentNode.querySelector(' + input_type + ').stepUp(),change_qty(1,' + id + ')" class="plus"></button>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + '<div class="p-2 mr-auto">'
+            + status
+            //+'<p class="font-weight-bold item_free status-free-item" style="margin: 0;color: #00af94;"></p>'
+
+            + 'Disc. % <input type="number" class="item_disc" style="width:35px; border:none;" value="0" onblur="discount_item_onblur(this,' + id + ')" ' + disc_readonly +' />'
+            + '</div>'
+            + '<div class="p-2 align-self-center">'
+            + '$ <span class="font-weight-bold item_total" style="margin: 0">' + parseFloat(qtyFree * price).toFixed(2) + '</span>'
+            + '</div>'
+            + '<div class="p-2 align-self-center">'
+            + '<a href="#" onclick="remove_item_order(' + id + ',' + "'" + statusfree + "'" + ')" class="text-danger pull-right"><i class="icofont icofont-bin" style="font-size: 32px"></i></a>'
+
+            + '</div>'
+
+            + '</div>'
+            + '</li>';
+        $("#item_ordered").append(out);
+        calculate_value();
+    }
+    function findSubCateByCateId(parm, val) {
+        let v_sidebar = $("#sidebar");
+        $("#list_category").find("a").removeClass("active");
+        $("#list_category").find("a").css("background", "");
+        $(val).addClass("active");
+        $(val).css("background", "#c9f2f8");
+
+        var cate_click = ".cate-" + parm;
+
+        $('#list_items').find('.list_items').hide();
+        $(".sub_category").hide();
+        if (parm != 0) {
+            $('#list_items').find('.cate-' + parm).show();
+            $(cate_click).show();
+        } else {
+            $('#list_items').find('.list_items').show();
+            $(".sub_category").show();
+        }
+
+        v_sidebar.removeClass("bounceOutRight");
+        v_sidebar.addClass("bounceInRight");
+        v_sidebar.css("display", "block");
+
+    }
+    //function findSubCateByCateId(parm,val) {
+    //    $("#list_category").find("a").removeClass("active");
+    //    $("#list_category").find("a").css("background","");
+    //    $(val).addClass("active");
+    //    $(val).css("background","#c9f2f8");
+
+    //    var cate_click = "cate-" + parm;
+    //    $("#list_items").find("div.list_items").each(function () {
+    //        var cate_item = $(this).attr("data-cate");
+    //        if (cate_item == cate_click) {
+    //            $("." + cate_item).show();
+    //        }
+    //        else {
+    //            $("." + cate_item).hide();
+    //        }
+    //        if (parm == 0) {
+    //            $("." + cate_item).show();
+    //        }
+    //    });
+    //    $("#sidebar").removeClass("bounceOutRight");
+    //    $("#sidebar").addClass("bounceInRight");
+    //    $("#sidebar").css("display", "block");
+    //}
+    function click_close_subcate() {
+        $("#sidebar").removeClass("bounceInRight");
+        $("#sidebar").addClass("bounceOutRight");
+        //$("#sidebar").css("display", "none");
+    }
+    function click_sub_cate(parm) {
+        var sub_cate_click = "sub-cate-" + parm;
+        $("#list_items").find("div.list_items").each(function () {
+            var sub_cate_item = $(this).attr("data-subCate");
+            if (sub_cate_item == sub_cate_click) {
+                $("." + sub_cate_item).show();
+            }
+            else {
+                $("." + sub_cate_item).hide();
+            }
+        });
+    }
+    function calculate_time(time_track) {
+        var price = $("#sectionPrice").val();
+        var table_calculate_info = $("#table_calculate").find("tr");
+        var freehour = table_calculate_info.find("td.free_hour_total").text();
+        if (isNaN(parseFloat(freehour))) {
+            freehour = 0.00;
+        }
+
+        $("#sectionPriceInfo").each(function () {
+            var date = new Date();
+            var datein = $(this).find("tr td span.data-StartDate").text();
+            //console.log("console - " + datein);
+            var date_in = datein.split("-");
+            var current_date = date.getDate();
+
+            var time_in = $(this).find("tr td span.TimeIn").text();
+            var time1 = time_in.split(':'), time2 = time_track.split(':');
+            var hours1 = parseInt(time1[0], 10),
+                hours2 = parseInt(time2[0], 10),
+                mins1 = parseInt(time1[1], 10),
+                mins2 = parseInt(time2[1], 10);
+            var hours = 0;
+            if (date_in[2] != current_date) {
+                //var day =parseInt(current_date) - parseInt(date_in[2]);
+                hours = 24 + hours2 - hours1;
+                //console.log("different day");
+            }
+            else {
+                hours = hours2 - hours1;
+                //console.log("the same day"+hours);
+            }
+            var mins = 0;
+            //if(hours <= 0) hours = 24 + hours;
+            if (mins2 >= mins1) {
+                mins = mins2 - mins1;
+            }
+            else {
+                mins = (mins2 + 60) - mins1;
+                hours--;
+            }
+
+            mins = mins / 60; // take percentage in 60
+            hours += mins;
+
+            var total_free_hour = freehour.split(".");
+            var hm = hours.toString().split(".");
+
+            var minuts = parseInt(parseFloat("0." + hm[1]) * 60) + " min";
+
+            hours = hm[0] + " h : " + minuts;
+
+            var total_hour = 0;
+            if (parseInt(minuts) < 10) {
+                total_hour = parseFloat(hm[0] + '.0' + minuts);
+            } else {
+                total_hour = parseFloat(hm[0] + '.' + minuts);
+            }
+
+            //console.log("Minus :"+total_hour);
+
+            //var total_hour = parseFloat(hm[0]+'.'+minuts);
+            var total_free_hours = parseFloat(total_free_hour[0] + '.' + (total_free_hour[1] * 0.1) * 60);
+
+
+            var total_hours = (parseFloat(total_hour) - parseFloat(total_free_hours)).toFixed(2);
+            $(this).find(".TrackHours").text(hours);
+
+
+
+            if (total_hours == 0) {
+                total_hours = parseFloat(0.00).toFixed(2);
+            }
+            var totalhours = total_hours.toString().split(".");
+
+
+            $("#totalhoursbeforefree").val(hm[0] + ":" + parseInt(parseFloat("0." + hm[1]) * 60));
+            $("#totalhoursafterfree").val(totalhours[0] + ":" + totalhours[1]);
+
+            var minus = parseFloat(totalhours[1]).toFixed(2);
+            var totalsectinamount = parseFloat((totalhours[0] * price) + ((minus / 60) * price)).toFixed(2);
+
+            console.log("price minus :" + totalhours[1]);
+
+            $("#timeInfo").find("tr td span.data-Room-Amount").text('$ ' + totalsectinamount);
+            $("#TotalTime").val(total_hour);
+
+        });
+    }
+    setInterval("date_function();", 100);
+    function date_function() {
+        var d = new Date();
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+        var second = d.getSeconds();
+
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minute < 10) {
+            minute = "0" + minute;
+        }
+        if (second < 10) {
+            second = "0" + second;
+        }
+        var html = "";
+        var htmltime = "";
+        html += year + "-" + month + "-" + day;
+        htmltime += hour + ":" + minute + ":" + second;
+        $(".TrackTime").html(htmltime);
+        calculate_time(htmltime);
+        calculate_value();
+    }
+
+    function onClickPrintBill() {
+        var total_invoice_footer = $("#invoice_total").find("tr");
+        var currow = $("#table_calculate");
+        var subtotal = currow.find("td.sub_total").text();
+        var dis = parseFloat(currow.find("td.discount_total").text());
+        var vat = parseFloat(currow.find("td.vat_total").text());
+        var service = parseFloat(currow.find("td.service_total").text());
+        var charge = parseFloat(currow.find("td.charg_total").text());
+        var freehour = currow.find("td.free_hour_total").text();
+        var grandtotal = currow.find("td.grand_total").text();
+        var time_in = $("tr td span.TimeIn").text();
+
+        var out = ""
+            + "<tr class='h6'>"
+            + "<td>1</td>"
+            + "<td class='text-left sectionname'style='font-weight: bold;'>Room Name:</td>"
+            + "<td class='sectionhours' style='font-weight: bold;'>0.00</td>"
+            + "<td class='sectionprice' style='font-weight: bold;'>0.00</td>"
+            + "<td class='sectionhourfree' style='font-weight: bold;'>0 %</td>"
+            + "<td class='text-right sectionamount' style='font-weight: bold;'><b>$ 0.00</b></td>"
+            + "</tr>";
+        $("#tbbod-print-bill").html(out);
+
+        var table_calculate_info = $("#table_calculate").find("tr");
+        var sectionInfoPrice = $("#sectionPriceInfo").find("tr");
+        var tbprintbill = $("#table_print_bill").find("tr");
+        var tbinvoicetotal = $("#invoice_total").find("tr");
+        var tbsectionInfo = $("#sectionInfo").find("tr");
+
+
+        var hourfree = table_calculate_info.find("td.free_hour_total").text();
+        var duration = sectionInfoPrice.find("td span.TrackHours").text();
+        var price = sectionInfoPrice.find("td span.price").text();
+        
+        var hourbeforefree = $("#totalhoursbeforefree").val();
+        var hourafterfree = $("#totalhoursafterfree").val();
+        var sectionamount = $("#timeInfo").find("tr td span.data-Room-Amount").text();
+
+        var sectName = tbsectionInfo.find("td span.data-section-name").text();
+
+        tbprintbill.find("td.sectionname").text("Section Name" + sectName);
+        tbprintbill.find("td.sectionprice").text(price);
+        tbprintbill.find("td.sectionhours").text(hourafterfree + " min");
+        $("#time_in_bill").text(time_in);
+        $("#time_out_bill").text(getActualHour());
+
+        var check = $("#check__room_free").prop("checked");
+        if (check) sectionamount = "$ 0";
+
+        tbprintbill.find("td.sectionamount").text(sectionamount);
+        tbinvoicetotal.find("td.bill-hour-free").text(hourfree);
+
+        total_invoice_footer.find("td.sub_total").text(subtotal);
+        total_invoice_footer.find("td.discount_total").text(parseFloat(dis).toFixed(2));
+        total_invoice_footer.find("td.vat_total").text(parseFloat(vat).toFixed(2));
+        total_invoice_footer.find("td.service_total").text(parseFloat(service).toFixed(2));
+        total_invoice_footer.find("td.charg_total").text(parseFloat(charge).toFixed(2));
+        total_invoice_footer.find("td.free_hour_total").text(parseFloat(freehour).toFixed(2));
+        total_invoice_footer.find("td.grand_total").text(parseFloat(grandtotal).toFixed(2));
+
+        get_item_print_bill();
+    }
+    function getActualHour() {
+        var d = new Date();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var s = d.getSeconds();
+        return h + ":" + m + ":" + s;
+    }
+    function get_item_print_bill() {
+        var loop_item_ordered = $("#item_ordered").find("li");
+        var i = 2;
+        var out = "";
+
+        loop_item_ordered.each(function () {
+            var itemid = $(this).attr("data-item_id");
+            var itemcode = $(this).attr("data-item_code");
+            var itemname = $(this).find("p.item_name").text();
+            var qty = $(this).find("input.quantity").val();
+            var price = $(this).find("span.price").text();
+            var dis = $(this).find("input.item_disc").val();
+            var total = $(this).find("span.item_total").text();
+            var uomid = $(this).attr("data-uom_id");
+            var guomid = $(this).attr("data-guom_id");
+            var uomname = $(this).attr("data-item_uom_name");
+            var guomname = $(this).attr("data-item_guom_name");
+            var cost = $(this).attr("data-item_cost");
+            var type = $(this).attr("data-item_type");
+            var statusfree = $(this).attr("data-status-free");
+            var labelfree = "";
+            if (statusfree == "Y") {
+                labelfree = "   <span class='label label-danger text-right'>Free<span>";
+            } else {
+                labelfree = "";
+            }
+            out +=
+                "<tr class='h6'>"
+                + "<td>" + i + "</td>"
+                + "<td class='text-left'><b>" + itemname + "</b>" + labelfree + "</td>"
+                + "<td class=''><b>" + parseFloat(qty).toFixed(2) + "</b></td>"
+                + "<td class=''><b>$ " + price + "</b></td>"
+                + "<td class=''><b>" + dis + " %</b></td>"
+                + "<td class='text-right' style='font-weight: bold;'><b>$ " + total + "</b></td>"
+                + "</tr>";
+            i++;
+        });
+
+        $("#tbbod-print-bill").append(out);
+    }
+    function printbill() {
+        var tbinvoice = $("#tbInvoice").find("tr");
+        var docEntry = tbinvoice.find("td.invoice-docEntry").text();
+        var invcode = tbinvoice.find("td.invoice-code").text();
+        click_order_item("C", invcode, docEntry);
+    }
+
+</script>

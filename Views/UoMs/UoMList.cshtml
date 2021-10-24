@@ -1,0 +1,36 @@
+@{
+    var uoms = await UoMService.GetUoMList();
+}
+<div class="dt-responsive table-responsive">
+    <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">UoM Lists</h4>
+    <div class="col-sm-offset-2">
+        <table class="table table-striped table-bordered nowrap">
+            <thead>
+            <tr>
+                <th>N<sup>o</sup></th>
+                <th>UoM. Name</th>
+                <th>UoM. Str</th>
+                <th class="text-right">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int i = 1;}
+            @foreach (var sf in uoms as List<UoM>)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@sf.UoM_Name</td>
+                    <td>@sf.UoM_Foreign</td>
+                    <td class="text-right">
+                        <a class="btn-info btn-sm text-white" asp-action="EditUoM" asp-controller="UoMs" asp-route-id="@sf.UoM_Id">Edit</a>|
+                        <a class="btn-danger btn-sm waves-effect md-trigger text-white" onclick="deleteUoM(@sf.UoM_Id);">Delete</a>
+                    </td>
+                </tr>
+                i++;
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/js/uom.js"></script>

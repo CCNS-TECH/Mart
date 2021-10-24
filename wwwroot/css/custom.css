@@ -1,0 +1,343 @@
+/* CSS  By Sovannrath 2019.07.06  */
+/* Custom CSS For Restaurant and KTV Management */
+html, body {
+    min-height:100%;/* make sure it is at least as tall as the viewport */
+    position:relative;
+}
+body{
+    height: 100%;
+}
+
+.content{
+    height: 100%;
+}
+/* Navbar*/
+
+
+nav.pos-order-header
+{
+    top: 0;
+    position: fixed;
+    color: #ffffff;
+    background-color: #2296F3;
+}
+div.pos-nav
+{
+    color: #ffffff;
+}
+ul.nav-left a
+{
+    color: #ffffff;
+}
+ul.pos-ribbon {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #1C7CD5;
+}
+
+ul.pos-ribbon li {
+    float: left;
+}
+
+.pcoded .pcoded-navbar .pcoded-item>li.menu>a{
+    
+}
+ul.pcoded-item .pcoded-left-item .my>li>a{
+    color: #000000;
+}
+
+ul.pos-ribbon li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+ul.pos-ribbon li a:hover {
+    background-color: #01549B;
+}
+ul.pos-ribbon li.active
+{
+    background-color: #01549B;
+}
+
+/* Custom Ribbon*/
+
+.pos-ribbon
+{
+    
+    background-color: #1C7CD5;
+}
+
+/* Custom Card */
+
+.card .pos-card-header
+{
+    padding-top: 12px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.card .pos-card-body
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.card .pos-card-footer
+{
+    padding-top: 0px;
+}
+.badge-circle
+{
+    padding-top: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.filter-button
+{
+    padding-bottom: 10px;
+}
+
+
+
+/*  My Custom Style */
+
+.custom-nav{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: #42A5E5;
+}
+.btn-nav{
+    width: 110px;
+    margin-right: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0, .2);
+}
+
+.pull-right-content{
+    float: right;
+}
+
+button.active{
+    background-color: #01549B;
+}
+.btn-group{
+    margin-bottom: 20px;
+}
+ul li a.active{
+    background-color: #01549B;
+}
+
+.card{
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+}
+
+.badge-vip{
+    float: right;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    padding: 7px;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0, .2);
+}
+
+.invoice-header{
+    height: 70px;
+    padding-top: 5px;
+    background-color: #42A5E5;
+}
+.invoice-body{
+    padding:10px;
+}
+ul.list-item{
+    padding: 0;
+}
+
+.wraper{
+    height: 100%;
+    position: relative;
+    top: 0;
+}
+
+.float-bottom{
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+}
+
+.box{
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0, .2);
+}
+.content-middle{
+    background-color: #0ac282;
+    vertical-align: middle;
+}
+
+ul li.item-list{
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+}
+
+img.caption-image
+{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+}
+
+/* Input Number*/
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.number-input {
+    
+    border: 1px solid #ddd;
+    display: inline-flex;
+}
+
+.number-input,
+.number-input * {
+    box-sizing: border-box;
+}
+.number-input div{
+    box-sizing: unset;
+}
+
+.number-input button {
+    outline:none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+}
+
+.number-input button:before,
+.number-input button:after {
+    display: inline-block;
+    position: absolute;
+    content: '';
+    width: 10px;
+    height: 1px;
+    background-color: #212121;
+    transform: translate(-50%, -50%);
+}
+.number-input button.plus:after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.number-input input[type=number] {
+    font-family: sans-serif;
+    max-width: 2.5rem;
+    padding: .3rem;
+    border: solid #ddd;
+    border-width: 0 1px;
+    font-size: 1rem;
+    height: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.show-cat{
+    width: 200px;
+    height:100%;
+}
+.food-category{
+    width: 200px;
+}
+.food-cat-lst{
+    padding: 0 15px;
+}
+.cat-caption{
+    padding: 10px 15px;
+    bottom:0;
+    left:0;
+    width:100%;
+    position: absolute;
+}
+.cat-caption .item-title
+{
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 10px;
+    height: 30px;
+    background-color: #ffffff;
+    opacity: 0.7;
+}
+
+.item-caption{
+    padding: 10px 15px;
+    bottom:0;
+    left:0;
+    width:100%;
+    position: absolute;
+}
+.item-caption .item-title
+{
+    text-align: center;
+    font-weight: bold;
+    margin: 0;
+    padding-top: 10px;
+    height: 30px;
+    background-color: #ffffff;
+    opacity: 0.7;
+}
+#paymentarea{
+    width: auto; 
+    margin-right: 400px; 
+    padding: 20px; 
+    border:1px solid #eee;
+}
+#paymentarea .form-group{
+    margin-bottom: 0;
+}
+#paymentarea .col-form-label{
+    border-bottom: 1px solid #eee;
+}
+#numberinputbtn{
+    width: 350px; 
+    height: auto; 
+    background-color: #2296F3; 
+    margin-right: 20px; 
+    position: absolute; 
+    top: 85px; right: 0; 
+    padding: 10px 20px;
+}
+.div-button{
+    text-align: center;
+    padding: 5px 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+.div-button:hover{
+    background-color: antiquewhite;
+}

@@ -1,0 +1,87 @@
+@model SectionCheckIn
+@*@{
+    var types = await SectionService.GetSectionTypes();
+    var section = await SectionService.GetSections();
+    var gsection = await SectionService.GetGroupSections();
+    var sectionbygroup = await SectionService.GetSectionByGroupId(2);
+}*@
+<form class="form-horizontal" asp-action="CheckInSection" asp-controller="POSs" method="post" role="form">
+    <fieldset>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Section Type</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" asp-for="TypeId" class="checkInTypeId"/>
+                        <input type="text" asp-for="TypeStr" class="form-control form-control-normal checkInTypeStr b" placeholder="Section Type" readonly="readonly" style="background-color: #d0e9c6">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Group Section</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" asp-for="GSectionId" class="checkInGSectionId"/>
+                        <input type="text" asp-for="GSectionStr" class="form-control form-control-normal checkInGSectionStr b" placeholder="Section Type" readonly="readonly" style="background-color: #d0e9c6">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Section</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" asp-for="SectionId" class="checkInSectionId"/>
+                        <input type="text" asp-for="SectionStr" class="form-control form-control-normal checkInSectionStr b" placeholder="Section" readonly="readonly" style="background-color:#d0e9c6">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Member</label>
+                    <div class="col-sm-8">
+                        <input type="number" asp-for="Pax" min="0" max="100" class="form-control form-control-normal" placeholder="Member" required="required">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Check By</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" class="form-control form-control-normal" value="@Context.Session.GetString("OwnnerId")" placeholder="Check by" readonly="readonly">
+                        <input type="text" class="form-control form-control-normal" value="@Context.Session.GetString("OwnnerName")" placeholder="Check by" readonly="readonly">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Date</label>
+                    <div class="col-sm-8">
+                        <input type="text" asp-for="StartDate" class="form-control form-control-normal" value="@DateTime.Now.ToString("MM/dd/yyyy")" placeholder="Date" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Start Date</label>
+                    <div class="col-sm-8">
+                        <input type="text" asp-for="StartDate" class="form-control form-control-normal" value="@DateTime.Now.ToString("MM/dd/yyyy")" placeholder="Start Date" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Start Time</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control form-control-normal checkInStartTime" asp-for="StartTime" placeholder="Start Time" readonly="readonly">
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+                            
+    </fieldset>
+    <fieldset>
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="submit" class="btn bg-primary">Check In</button>
+                <button type="button" class="btn btn-default waves-effect md-close">Close</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

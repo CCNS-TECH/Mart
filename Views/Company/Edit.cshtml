@@ -1,0 +1,120 @@
+@model Company
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Company</h4>
+                    <span>Edit Company</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Company</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end --> 
+
+<div class="row">
+    <div class="col-sm-12">
+        <!-- Basic Form Inputs card start -->
+        <div class="card">
+            <div class="card-block">
+                <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Company Form</h4>
+                <form asp-action="Edit" asp-controller="Company" role="form" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id"/>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Company_En">Com.Name <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Company_En" class="form-control" required="required">
+                        </div>
+                        <label class="col-sm-2 col-form-label" asp-for="No_Num">No.</label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="No_Num" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Company_Str">Com.Foriegn</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" asp-for="Company_Str">
+                        </div>
+
+                        <label class="col-sm-2 col-form-label" asp-for="St_Num">St.No </label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="St_Num" class="form-control">
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Phone1">Phone 1 <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" asp-for="Phone1" required="required">
+                        </div>
+
+
+                        <label class="col-sm-2 col-form-label" asp-for="Sangkat">Commune <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Sangkat" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Phone2">Phone 2</label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Phone2" class="form-control">
+                        </div>
+                        <label class="col-sm-2 col-form-label" asp-for="Khan">District <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Khan" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Email">Email</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" asp-for="Email">
+                        </div>
+
+
+                        <label class="col-sm-2 col-form-label" asp-for="Province">Province <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Province" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="Wifi">Wifi</label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Wifi" class="form-control">
+                        </div>
+                        <div class="col-sm-2 col-form-label text-center"></div>
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <img src="~/images/logo/@Model.Img" id="image_profile" style="width: 100px;height:100px;" class="img img-circle"/>
+                            </div>
+                            <br/>
+                            <input type="hidden" asp-for="Old_Img" class="form-control">
+                            <input type="file" asp-for="Img" onchange="Change_Image(this);" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

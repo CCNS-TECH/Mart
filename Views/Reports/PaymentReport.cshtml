@@ -1,0 +1,100 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+@model IEnumerable<Payment>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Payment</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Payment</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row" style="border-bottom:2px #00b0ff solid;">
+                    <div class="col-8">
+                        <form asp-action="FindReportInvoice" asp-controller="Reports" accept-charset="UTF-8" role="form" method="get">
+                            <div class="form-group row">
+                                <div class="col text-center">
+                                    <p>From</p>             
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="from" type="text" class="form-control birthdate" placeholder="from..." required="required" value="@ViewBag.From">
+                                </div>
+                                <div class="col text-center">
+                                    <p>To</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="to" type="text" class="form-control birthdate" placeholder="to..." required="required" value="@ViewBag.To">
+                                </div>
+                                <div class="col">
+                                    <input type="submit" class="btn btn-primary btn-sm" placeholder="col" value="Find">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-block">
+                <div class="dt-responsive table-responsive">
+                    <table id="basic-btn" class="table-striped table-sm table-bordered nowrap" width="100%">
+                        <thead>
+                        <tr>
+                            <th>N <sup>o</sup></th>
+                            <th>Payment Code</th>
+                            <th>Date</th>
+                            <th class="text-right">Total</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @{ int i = 1;}
+                        @foreach (var pay in Model)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@pay.PaymentCode</td>
+                                <td>@pay.PaymentDate?.ToString("yyyy/MM/dd")</td>
+                                <td class="text-right">$ @String.Format("{0:N6}", @pay.GrandTotalUSD)</td>
+                                <td class="text-right">
+                                    <a href="/invoice/viewer/@pay.Invoices" class="text-info"><i class="icofont icofont-eye"></i> View</a>
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+    
+    

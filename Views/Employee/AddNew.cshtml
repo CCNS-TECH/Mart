@@ -1,0 +1,221 @@
+@model Employee
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>User</h4>
+                    <span>Create User Account</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>User</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Create New</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end --> 
+
+<div class="card">
+    <div class="card-header">
+        <h4> Form Registration</h4>
+        <span>Create user account with form wizard</span>
+
+    </div>
+    <div class="card-block">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="wizard2">
+                    <section>
+                    <form  role="form" class="wizard-form"  id="create-user-form" enctype="multipart/form-data" method="post">
+                        <h3> General information </h3>
+                        <fieldset>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Emp_Code" class="block">Code <span class="text-danger"></span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Emp_Code" maxlength="4" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Emp_Name" class="block">Full name <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Emp_Name"  type="text" class="required form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">Gender </div>
+                                    <div class="col-sm-12">
+                                        <select asp-for="Gender" class="form-control required">
+                                            <option>Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="DoB">Date Of Birth</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="DoB" type="text" class="form-control birthdate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Phone1">Phone 1 <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Phone1" maxlength="10"  type="tel" class="required form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Phone2">Phone 2</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Phone2" maxlength="10" type="tel" class="form-control phone">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12">Dept <span class="text-danger"></span></div>
+                                    <div class="col-sm-12">
+                                        <select asp-for="Dept_Id" onchange="select_change_Dept();" class="form-control required">
+                                            @foreach (var dept in ViewBag.Dept as List<Dept>)
+                                            {
+                                                <option value="@dept.Id">@dept.Dept_En</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12">Position <span class="text-danger"></span></div>
+                                    <div class="col-sm-12">
+                                        <select asp-for="Post_Id" class="form-control required">
+                                            <option value="0"> None</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">Shift <span class="text-danger">*</span></div>
+                                    <div class="col-sm-12">
+                                        <select asp-for="Shift_Id" class="form-control required">
+                                            @foreach (var shf in ViewBag.Shift as List<Shift>)
+                                            {
+                                                <option value="@shf.Id">@shf.Shift_Str</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </fieldset>
+                        <h3> Address </h3>
+                        <fieldset>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="No_Num" class="block">No.</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="No_Num" type="text" class="form-control phone">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="St_Num" class="block">St No.</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="St_Num" type="text" class="form-control phone">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Sangkat" class="block">Commune/Sangkat <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Sangkat" type="text" class="form-control required">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Khan" class="block">City/District <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Khan" type="text" class="form-control required">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="col-sm-12">
+                                        <label asp-for="Province" class="block">Province <span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input asp-for="Province" type="text" class="form-control required">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="col-sm-12">
+                                        <label class="block">Country</label>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <input type="text" readonly="readonly" class="form-control" value="Cambodian">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <h3> Profile </h3>
+                        <fieldset>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                   
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="col-sm-12 text-center">
+                                        <img src="~/images/profiles/user-200.png" id="image_profile" alt="profile" width="120" height="120" class="img img-circle"/>
+                                        <hr style="border:#007bff 2px solid;"/>
+                                        <input id="files" name="files" onchange="Change_Image(this)" type="file" class="form-control">
+                                    </div>                
+                                </div>
+                                <div class="col-md-4">
+                                    
+                                </div>
+                            </div>                  
+                        </fieldset>
+                    </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

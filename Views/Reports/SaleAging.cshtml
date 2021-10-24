@@ -1,0 +1,247 @@
+@{
+    Layout = "Layout/_ReportLayout";
+}
+@model IEnumerable<Invoice>
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Report</h4>
+                    <span>Sale Aging</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Sale Aging</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Lists</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <!-- HTML5 Export Buttons table start -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row" style="border-bottom:2px #00b0ff solid;">
+                    <div class="col-8">
+                        <form accept-charset="UTF-8" role="form">
+                            <div class="form-group row">
+                                <div class="col text-center">
+                                    <p>From</p>             
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="from" id="from" type="text" class="form-control birthdate" placeholder="from..." required="required" value="@ViewBag.From">
+                                </div>
+                                <div class="col text-center">
+                                    <p>To</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input name="to" id="to" type="text" class="form-control birthdate" placeholder="to..." required="required" value="@ViewBag.To">
+                                </div>
+                                <div class="col">
+                                    <a onclick="CallSaleAging();" class="btn btn-primary text-white" placeholder="col" value="Find">Find</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-block">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="saleAgingList" class="table-striped table-sm table-bordered nowrap display" width="100%">
+                                <thead>
+                                <tr>
+                                    <th width="100"></th>
+                                    <th>Code</th>
+                                    <th>Customer Name</th>
+                                    <th>Aging Date</th>
+                                    <th>Aging Time</th>
+                                    <th>Return Date</th>
+                                    <th>Section Amount</th>
+                                    <th class="text-right">Grand Total</th>
+                                    <th class="text-right">Grand Total</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- HTML5 Export Buttons end -->
+    </div>
+</div>
+<script>
+ $(document).ready(function(){
+     CallSaleAging();
+ });
+     function format (d) {
+         var output = "";
+                 for(var i in d.InvoiceDetails){
+                     output +="<tr>"
+                     +'<td>'+d.InvoiceDetails[i].LineNum
+                     +'</td><td>'+"<span class='custom-badge status-orange'>"+d.InvoiceDetails[i].ItemStr+"</span>"
+                     +'</td><td>'+"<span class='custom-badge status-red'>"+d.InvoiceDetails[i].Quantity.toFixed(2)+"</span>"
+                     +'</td><td class="text-right">'+"<span class='custom-badge status-green'>"+d.InvoiceDetails[i].UnitPrice.toFixed(2)+"</span>"
+                     +'</td><td class="text-right">'+"<span class='custom-badge status-green'>"+d.InvoiceDetails[i].TotalLine.toFixed(2)+"</span>"
+                     +"</td></tr>";
+                 };
+                 return '<table class="table-striped table-sm table-hover table-bordered nowrap" style="float: right" width="90%">'
+                         +'<thead>'
+                            +'<tr>'
+                                 +'<th>N<sup>o</sup></th>'
+                                 +'<th>Item Name</th>'
+                                 +'<th class="text-left">Quantity</th>'
+                                 +'<th class="text-right">Price</th>'
+                                 +'<th class="text-right">Amount</th>'
+                             +'</tr>'
+                         +'</thead>'
+                         +'<tbody>'
+                             + output
+                         +'</tbody>'
+                     +'</table>';
+     }
+     function CallSaleAging() {
+        $('#saleAgingList').DataTable().destroy();
+        
+         var from=$("#from").val();
+         var to=$("#to").val();
+         var dt = $('#saleAgingList').DataTable({
+                 "processing": true,
+                 "serverSide": false,
+                 "ajax": "/get/sale/aging?from="+from+"&to="+to,
+                 dom: 'Bfrtip',
+                 buttons: [
+                    'excel', 'pdf', 'print'
+                 ],
+                 "columns": [
+                     {
+                         "class":"details-control",
+                         "orderable":false,
+                         "data":null,
+                         "defaultContent": ""
+                     },
+                     {
+                        "data": "invCode",
+                        "className": 'text-left',
+                         "render" : function(data){
+                             return "<span> #"+data+"</span>";
+                         } 
+                    },
+                     {"data":  "businessPartner.vendorName"},
+                     { 
+                         data: "createDate",
+                         render: function(data, type, row){
+                             if(type === "sort" || type === "type"){
+                                 return data;
+                             }
+                             return moment(data).format("MM/DD/YYYY");
+                         }
+                     },
+                      { 
+                          data: "createDate",
+                          render: function(data, type, row){
+                              if(type === "sort" || type === "type"){
+                                  return data;
+                              }
+                              return moment(data).format("HH:mm");
+                          }
+                      },
+                      { 
+                          data: "payDate",
+                          render: function(data, type, row){
+                              if(type === "sort" || type === "type"){
+                                  return data;
+                              }
+                              return moment(data).format("MM/DD/YYYY");
+                          }
+                      },
+                      {
+                           "data": "sectionAmount",
+                           "className": 'text-right',
+                            "render" : function(data){
+                                return "<span>$"+data.toFixed(2)+"</span>";
+                            } 
+                       },
+                       
+                     {
+                         "data": "grandTotalUSD",
+                         "className": 'text-right',
+                          "render" : function(data){
+                              return "<span>$"+data.toFixed(2)+"</span>";
+                          }  
+                     },
+                     {
+                         "data": "grandTotalRiel" ,
+                         "className": 'text-right',
+                         "render" : function(data){
+                             return "<span>៛"+data.toFixed(2)+"</span>";
+                         }  
+                     },
+                     {
+                         'data': 'docEntry', 'render': function (data, type, row, meta) {
+                             return '<a href="/payment/credit/pay/' + data + '" class="text-warning btn-sm"><i class="icofont icofont-money-bag"></i> Pay </a>'
+                                // |  +'<a href="/payment/credit/pay/'+data+'" class="text-info btn-sm"><i class="icofont icofont-eye"></i> View</a>'
+                          }
+                      }
+                      
+                 ],
+                 "order": [[1, 'asc']]
+             });
+           // Array to track the ids of the details displayed rows
+           //console.log("Hey");
+              var detailRows = [];
+             $('#saleAgingList tbody').on( 'click', 'tr td.details-control', function () {
+                 var tr = $(this).closest('tr');
+                 var row = dt.row( tr );
+                 var idx = $.inArray( tr.attr('id'), detailRows );
+                 if ( row.child.isShown() ) {
+                     tr.removeClass( 'details' );
+                     row.child.hide();
+                     // Remove from the 'open' array
+                     detailRows.splice( idx, 1 );
+                 }
+                 else {
+                     tr.addClass( 'details' );
+                     row.child( format( row.data() ) ).show();
+                     // Add to the 'open' array
+                     if ( idx === -1 ) {
+                         detailRows.push( tr.attr('id'));
+                     }
+                 }
+             });
+             // On each draw, loop over the `detailRows` array and show any child rows
+             dt.on('docEntry', function () {
+                 $.each( detailRows, function ( i, id ) {
+                     $('#'+id+' td.details-control').trigger( 'click' );
+                 } );
+             });
+     }  
+     </script>
+<style>
+    td.details-control {
+        background: url('/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.details td.details-control {
+        background: url('/images/details_close.png') no-repeat center center;
+    }
+</style>

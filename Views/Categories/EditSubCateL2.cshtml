@@ -1,0 +1,95 @@
+@model SubCategoryL2
+@{
+    Layout = "InvLayout/_InvLayout";
+    var subcate2 = await CategoryService.GetSubcateL1();
+}
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Subcategory L1</h4>
+                    <span>Edit Subcategory L1</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Subcategory L1</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end -->
+<div class="card">
+    <div class="card-header">
+        <div class="no-padding">
+            <form class="" asp-action="CreateSubCateL2" asp-controller="Categories" role="form" method="post">
+                <fieldset>
+                    <div class="form-group row">
+                        <div class="col">
+                            <input type="hidden" asp-for="SubCateL2_Id" />
+                        </div>
+                        <div class="col-sm-8">
+                            <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Edit Subcategory L1 Form</h4>
+                            <div class="form-group row has-error">
+                                <label class="col-sm-3 col-form-label">SubCate L1 Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-danger" asp-for="SubCateL2_En" placeholder="Subcategory L1 Input Name">
+                                    <span class="text-danger labelstr" asp-validation-for="SubCateL2_En"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row has-error">
+                                <label class="col-sm-3 col-form-label">SubCate L1 Foreign</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-danger" asp-for="SubCateL2_Str" placeholder="Subcategory L1 Input Foreign" required="required">
+                                    <span asp-validation-for="SubCateL2_Str"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row has-error">
+                                <label class="col-sm-3 col-form-label">Subcategory</label>
+                                <div class="col-sm-9">
+                                    <select asp-for="SubCateL1_Id" onchange="getcategorybyid();" class="form-control">
+                                        <option value="0">Select</option>
+                                        @foreach (var subcatel2 in subcate2 as List<SubCategoryL1>)
+                                        {
+                                            <option value="@subcatel2.SubCateL1_Id">@subcatel2.SubCateL1_Str</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" class="form-control input-danger hidden" id="Category_Id" asp-for="SubCategoryL1.Category.CateId" placeholder="Subcategory Input Foreign" required="required">
+                               
+                            <div class="form-group row has-error">
+                                <label class="col-sm-3 col-form-label">Category</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control input-danger" id="Category_En" asp-for="SubCategoryL1.Category.Cate_En" placeholder="Category" readonly="readonly">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row text-right">
+                                <label class="col-sm-3"></label>
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-success m-b-0">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

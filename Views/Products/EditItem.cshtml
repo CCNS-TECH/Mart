@@ -1,0 +1,420 @@
+@model Item
+@{
+    Layout = "InvLayout/_InvLayout";
+    var guoms = await UoMService.GetGUoMList();
+    var txs = await TaxService.GetTaxs();
+    var pls = await PriceListService.GetPricelists();
+    var kds = await KdsService.GetKdss();
+    var cates = await CategoryService.GetCateList();
+    var subs = await CategoryService.GetSubcateByCate(Model.CateId);
+    var uoms = await UoMService.GetUoMByGroup(Model.GUoMId);
+}
+
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Item Master Data</h4>
+                    <span>Edit</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Item Master Data</a>
+                    </li>
+                     <li class="breadcrumb-item">
+                        <a href="#!">Edit</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end --> 
+
+<div class="row">
+    <div class="col-sm-12">
+        <!-- Basic Form Inputs card start -->
+        <div class="card">
+            <div class="card-block">
+                <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">Edit Item Master Data Form</h4>
+                <form asp-action="EditItem" asp-controller="Products" role="form" method="post" enctype="multipart/form-data">
+                <div class="form-group row">
+                    <input type="hidden" asp-for="Id"/>
+                    <label class="col-sm-2 col-form-label" asp-for="ItemCode" >Item Code</label>
+                    <div class="col-sm-4">
+                        <input type="text" asp-for="ItemCode" class="form-control" disabled="disabled" required="required">
+                    </div>
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-4">
+                        <div class="border-checkbox-section">
+                            <div class="border-checkbox-group border-checkbox-group-info">
+                                <input asp-for="Inv" type="checkbox"> @*class="border-checkbox"*@
+                                <label for="checkbox0">Inventory</label>@* class="border-checkbox-label"*@
+                            </div>
+                            <div class="border-checkbox-group border-checkbox-group-info">
+                                <input  asp-for="InvSale" type="checkbox">
+                                <label  for="checkbox1">Sale</label>
+                            </div>
+                            <div class="border-checkbox-group border-checkbox-group-info">
+                                <input asp-for="InvPch"  type="checkbox">
+                                <label for="checkbox2">Purchase</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="ItemEn">Descriptoin <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" asp-for="ItemEn">
+                            <div asp-validation="ItemEn"></div>
+                        </div>
+                        <label class="col-sm-2 col-form-label" asp-for="GUoMId">Group UoM <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="hidden" asp-for="GUoMStr"/>
+                            <select class="form-control" asp-for="GUoMId" disabled="disabled">
+                                @foreach (var gu in guoms)
+                                {
+                                    <option value="@gu.GUoM_Id">@gu.GUoM_Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                     <label class="col-sm-2 col-form-label" asp-for="ItemStr">Foriegn Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" asp-for="ItemStr">
+                    </div>
+                    <label class="col-sm-2 col-form-label">Barcode</label>
+                        <div class="col-sm-4">
+                            <input type="text" asp-for="Barcode" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="CateId">Category <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="hidden" asp-for="CateStr"/>
+                            <select class="form-control" asp-for="CateId" onchange="onchange_category();">
+                                @foreach (var c in cates)
+                                {
+                                    <option value="@c.CateId">@c.Cate_En</option>
+                                }
+                            </select>
+                        </div>
+                        <label class="col-sm-2 col-form-label" hidden>QR-Code</label>
+                        <div class="col-sm-4" hidden>    
+                            <input type="hidden" asp-for="QrCodeId"/>
+                            
+                            @if (Model.QrCodeId != 0)
+                            {
+                                <input type="checkbox" checked="checked" name="QrCode" class="js-single" id="QrCodeId" onchange="checkQrCode();">
+                            }
+                            else
+                            {
+                                <input type="checkbox" checked="checked" name="QrCode" class="js-single" id="QrCodeId" onchange="checkQrCode();">
+                            }
+                        </div>
+                        
+                        
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" asp-for="SubCateL0Id">SubCategory <span class="text-danger">*</span></label>
+                        <div class="col-sm-4">
+                            <input type="hidden" asp-for="SubCateL0Str"/>
+                            <select class="form-control" asp-for="SubCateL0Id"  onchange ="onchange_subcategory();">
+                                @foreach (var sb in subs)
+                               {
+                                <option value="@sb.SubCateL1_Id">@sb.SubCateL1_En</option>   
+                               }
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- Material tab card start -->
+                            <div class="card">
+                                <div class="card-block">
+                                    <!-- Row start -->
+                                    <div class="row m-b-30">
+                                        <div class="col-lg-12 col-xl-12">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs md-tabs" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#General" role="tab">General</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#UoM" role="tab">UoM</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#Picture" role="tab">Picture</a>
+                                                    <div class="slide"></div>
+                                                </li>
+                                            </ul>
+                                            <!-- Tab panes -->
+                                            <div class="tab-content card-block">
+                                                <div class="tab-pane active" id="General" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Type <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <select  class="form-control" asp-for="ItemType">
+                                                                        <option value="I">Item</option>
+                                                                        <option value="S">Service</option>
+                                                                        <option value="A">AddOn</option>
+                                                                        <option value="M">Modify</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">PriceList <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="hidden" asp-for="PriceListStr"/>
+                                                                    <select class="form-control" asp-for="PriceListId" onchange="onchange_pricelist();">
+                                                                        @foreach (var p in pls)
+                                                                        {
+                                                                            <option value="@p.Id">@p.PriceList_En</option>
+                                                                        }
+                                                                                                                                 
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Manage By <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <select  class="form-control" asp-for="ManageBy">
+                                                                        <option value="N">None</option>
+                                                                        <option value="B">Batch</option>
+                                                                        <option value="S">Serial</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-md-4">
+                                                                  
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Tax (%) <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="hidden" asp-for="TaxStr"/>
+                                                                    <select class="form-control" asp-for="TaxId" onchange="onchange_tax();">
+                                                                        @foreach (var t in txs)
+                                                                        {
+                                                                            <option value="@t.Id">@t.TaxStr</option>
+                                                                        }
+
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-4">
+                                                            
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Sale Price <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" class="form-control" asp-for="SalePrice" required="required"/>
+                                                                </div>
+                                                            </div>   
+                                                            
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Print To <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-control" asp-for="PrintTo">
+                                                                        @foreach (var k in kds)
+                                                                        {
+                                                                            <option value="@k.Id">@k.GKdsStr</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                                                                            
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="UoM" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Sale UoM <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="hidden" asp-for="SaleUoMStr"/>
+                                                                    <select class="form-control" asp-for="SaleUoMId"  onchange="onchange_saleuom();">
+                                                                        @foreach (var sb in uoms)
+                                                                        {
+                                                                            <option value="@sb.UoM_Id">@sb.AltUoMName</option>   
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                                                                                                                                
+                                                        </div><div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Pch UoM <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="hidden" asp-for="PchUoMStr"/>
+                                                                    <select class="form-control" asp-for="PchUoMId" onchange="onchange_pchuom();">
+                                                                         @foreach (var sb in uoms)
+                                                                           {
+                                                                            <option value="@sb.UoM_Id">@sb.AltUoMName</option>   
+                                                                           }
+                                                                        </select>
+                                                                </div>
+                                                            </div>
+                                                                                                                                                                                                                              
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-4">
+                                                            <div class="form-group row has-error">
+                                                                <label class="col-sm-4 col-form-label">Inv UoM <span class="text-danger">*</span></label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="hidden" asp-for="InvUoMId"/>
+                                                                    <input type="hidden" asp-for="InvUoMStr"/>
+                                                                    <select class="form-control" asp-for="InvUoMId" disabled="disabled">
+                                                                     @foreach (var gu in guoms.Where(g=>g.GUoM_Id == Model.GUoMId))
+                                                                        {
+                                                                            <option value="@gu.GUoM_Id">@gu.GUoM_Name</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                                                                                                                                                                                        
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="tab-pane" id="Picture" role="tabpanel">
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-3"></div>
+                                                        <div class="col-sm-6">
+                                                            <div class="text-center">
+                                                                <img src="~/images/products/@Model.Img" id="image_profile" style="width: 100px;height:100px;" class="img img-circle"/>
+                                                                <hr style="border: 2px #3399ff solid"/>
+                                                            </div>
+                                                            <br/>
+                                                            <input type="hidden" asp-for="OldImg" value="@Model.Img" class="form-control">
+                                                            <input type="file" asp-for="Img" onchange="Change_Image(this);" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-3"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn btn-success">Update</button>
+                                    </div>
+                                    
+                                    <!-- Row end -->
+                                </div>
+                            </div>
+                            <!-- Material tab card end -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Switch component css -->
+<link rel="stylesheet" type="text/css" href="~/template/files/bower_components/switchery/css/switchery.min.css">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<!-- Switch component js -->
+<script type="text/javascript" src="~/template/files/bower_components/switchery/js/switchery.min.js"></script>
+
+<script type="text/javascript" src="~/template/files/assets/pages/advance-elements/swithces.js"></script>
+
+<script>
+    $(function () {
+        var pricelistStr=$("#PriceListId option:selected").text();
+        var taxStr=$("#TaxId option:selected").text();
+        
+        $("#PriceListStr").val(pricelistStr);
+        $("#TaxStr").val(taxStr);
+    
+        var groupStr = $("#GUoMId option:selected").text();
+        $("#GUoMStr").val(groupStr);
+    
+        var subcateStr = $("#SubCateL0Id option:selected").text();
+        $("#SubCateL0Str").val(subcateStr);
+    });
+    function onchange_category() {
+        var cateid = $("#CateId").val();
+        var cateStr = $("#CateId option:selected").text();
+        $("#CateStr").val(cateStr);
+        $.ajax({
+            url: "/sub/l1/cate/id/"+cateid,
+            type: "get",
+            datatype: "json",
+            success: function (data) {
+                var out = "";
+                $.each(data, function (i, sub) {
+                    
+                    out += "<option value=" + sub.subCateL1_Id + ">" + sub.subCateL1_En + "</option>";
+                });
+                $("#SubCateL0Id").html(out);
+                var subStr = $("#SubCateL0Id option:selected").text();
+                $("#SubCateL0Str").val(subStr);
+            }
+        });
+    }
+    function onchange_subcategory() {
+        var subcateid = $("#SubCateL0Id").val();
+        var subcateStr = $("#SubCateL0Id option:selected").text();
+        $("#SubCateL0Str").val(subcateStr);
+    }
+    
+    
+    function onchange_pricelist() {
+        var pricelistid = $("#PriceListId").val();
+        var pricelistStr = $("#PriceListId option:selected").text();
+        $("#PriceListStr").val(pricelistStr);
+    }
+    function onchange_tax() {
+        var taxid = $("#TaxId").val();
+        var taxStr = $("#TaxId option:selected").text();
+        $("#TaxId").val(taxid);
+        $("#TaxStr").val(taxStr);
+    }
+    function onchange_saleuom() {
+        var saleUoMStr = $("#SaleUoMId option:selected").text();
+        $("#SaleUoMStr").val(saleUoMStr);
+        
+    }
+    function onchange_pchuom() {
+        var pchUoMStr = $("#PchUoMId option:selected").text();
+        $("#PchUoMStr").val(pchUoMStr);
+    }
+    function onchange_invuom() {
+        var invUoMStr = $("#InvUoMId option:selected").text();
+        $("#InvUoMStr").val(invUoMStr);
+    }
+    function checkQrCode() {
+        $('[name="QrCode"]').each( function (){
+            if($(this).prop('checked') == true){
+                $("#QrCodeId").val(1);
+            }else{
+                $("#QrCodeId").val(0);
+            }
+        });
+    }
+</script>

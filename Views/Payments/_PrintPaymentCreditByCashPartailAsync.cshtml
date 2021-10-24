@@ -1,0 +1,219 @@
+@{
+    var invoice = ViewBag.CreditInvoice;
+    
+}
+<!-- Invoice card start -->
+<div class="card" id="print_payment">
+    <div class="row invoice-contact">
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xl-8 col-xs-8">
+            <div class="invoice-box row">
+                <div class="col-md-12 col-sm-12">
+                    <table class="table invoice-table table-borderless">
+                        <tbody>
+                        <tr>
+                            <td><img src="~/images/logo/@Context.Session.GetString("Logo")" style="width:125px; height: 125px;" class="m-b-10" alt=""></td>
+                        </tr>
+                        <tr class="h6">
+                            <td><b>Company :</b> <b>@Context.Session.GetString("CompanyName")</b></td>
+                        </tr>
+                        <tr class="h6">
+                            <td><b> Address :</b> 
+                                @Context.Session.GetString("St_Num") St. 
+                                @Context.Session.GetString("Sangkat") ,
+                                <br/> @Context.Session.GetString("Khan") ,
+                                @Context.Session.GetString("City") ,
+                                <br/>@Context.Session.GetString("Province") 
+                            </td>
+                        </tr>
+                        <tr class="h6">
+                            <td>
+                                <b> Email :</b> @Context.Session.GetString("Email") 
+                            </td>
+                        </tr>
+                        <tr class="h6">
+                            <td><b>Phone :</b> @Context.Session.GetString("Phone") </td>
+                        </tr>
+                        <tr class="h6">
+                            <td><b>Mobile :</b> @Context.Session.GetString("Mobile") </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xl-4 col-xs-4">
+            <div class="row payment-info">
+                <h5 style="border-bottom: 2px solid #ccc;"><b>Reciept Information</b></h5>
+                <table class="table invoice-table invoice-order table-borderless" id="tb-head-invoice">
+                    <tbody>
+                        <tr class="h6" hidden>
+                            <th>
+                                <span class="m-b-20">Payment N<sup>o</sup> : </span>
+                            </th>
+                            <td class="payment-code" style="font-weight: bold;">
+                            </td>
+                        </tr>
+                        <tr class="h6" hidden>
+                            <th>
+                                <span class="m-b-20">Bill N<sup>o</sup> : </span>
+                            </th>
+                            <td class="invoice-code" style="font-weight: bold;">
+                                #@invoice.InvCode
+                            </td>
+                        </tr>
+
+                        <tr class="h6" hidden="hidden">
+                            <th>
+                                <span class="m-b-20">Payment N<sup>o</sup> : </span>
+                            </th>
+                            <td style="font-weight: bold;" class="payment-code">
+                            </td>
+                        </tr>
+
+                        <tr class="h6">
+                            <th>Order Date : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                                @invoice.CreateDate.ToString("yyyy/MM/dd")
+                            </td>
+                        </tr>
+                        <tr class="h6">
+                            <th>Bill Date : </th>
+                            <td class="order-date" style="font-weight: bold;">
+                                @invoice.CreateDate.ToString("yyyy/MM/dd")
+                            </td>
+                        </tr>
+
+                        <tr class="h6">
+                            <th>Doc Date : </th>
+                            <td style="font-weight: bold;"> <span> @DateTime.Now.ToString("yyyy/MM/dd") </span></td>
+                        </tr>
+
+                        <tr class="h6">
+                            <th>Status : </th>
+                            <td style="font-weight: bold;">
+                                <span>Paid</span>
+                            </td>
+                        </tr>
+                        <tr class="h6">
+                            <th>Time In : </th>
+                            <td style="font-weight: bold;">
+                                <span>@invoice.TimeIn</span>
+                            </td>
+                        </tr>
+                        <tr class="h6">
+                            <th>Time Out : </th>
+                            <td style="font-weight: bold;">
+                                <span>@invoice.TimeOut</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-block">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table" id="table_print_payment">
+                        <thead>
+                            <tr class="thead-default h6">
+                                <th>N<sup>o</sup> <br /> ល.រ</th>
+                                <th>Description <br />ទំនិញ</th>
+                                <th>Quantity <br /> ចំនួន</th>
+                                <th>Price <br /> តម្លៃ</th>
+                                <th>Disc <br /> បញ្ខុះតម្លៃ</th>
+                                <th class="text-right">Amount <br /> សរុប</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="tbbod-print-payment">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <hr style="border: 3px #ccc solid"/>
+                <div class="text-right">
+                    <h5><b>Total Due / ទូរទាត់ប្រាក់ </b></h5>
+                </div>
+                <table class="table table-responsive invoice-table invoice-total" id="payment_total">
+                                         
+                    <tr>
+                        <td style="font-weight: bold;">Sub Total / សរុប ($)</td>
+                        <td class="text-right sub_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Free Hour / Free ម៉ោង (h)</td>
+                        <td class="text-right free_hour_total" style="font-weight: bold;">0</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Discount / បញ្ខុះតម្លៃ (%)</td>
+                        <td class="text-right discount_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
+                        <td class="text-right vat_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
+                        <td class="text-right service_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
+                        <td class="text-right charg_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
+                        <td class="text-right grand_dollar_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ (៛)</td>
+                        <td class="text-right grand_riel_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Recieved Dollars / ប្រាក់ទទួល ($)</td>
+                        <td class="text-right received_dollar_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Received Riel / ប្រាក់ទទួល (៛)</td>
+                        <td class="text-right received_riel_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Exchange Dollars / ប្រាក់អាប់ ($)</td>
+                        <td class="text-right exchange_dollar_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ccc">
+                        <td style="font-weight: bold;">Exchange Riel / ប្រាក់អាប់ (៛)</td>
+                        <td class="text-right exchange_riel_total" style="font-weight: bold;">0.00</td>
+                    </tr>
+                    <tr hidden="hidden">
+                        <td style="font-weight: bold;">Exchange Rate / អត្រាប្ដូរប្រាក់ $1</td>
+                        <td class="text-right" style="font-weight: bold;">@Convert.ToDecimal(Context.Session.GetString("Riel")).ToString("0.00")</td>
+                    </tr>
+
+                </table>
+                <div>
+                    <h4 class="text-center">
+                        <span>@Context.Session.GetString("Description")</span>
+                    </h4>
+                    <p class="text-center">
+                        <span style="color: #cce5ff">Develop by CCNS Solution</span>
+                    </p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Invoice card end -->
+<div class="row text-center">
+    <div class="col-sm-12 invoice-btn-group text-right">
+        <button type="button" class="btn btn-primary btn-print-invoice m-b-10 btn-sm waves-effect waves-light m-r-20" onclick="clickPayment();">Pay</button>
+        <button type="button" class="btn btn-danger waves-effect m-b-10 btn-sm waves-light" data-dismiss="modal">Cancel</button>
+    </div>
+</div>

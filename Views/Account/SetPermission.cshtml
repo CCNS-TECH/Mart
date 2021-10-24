@@ -1,0 +1,212 @@
+﻿<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Set Permission</h4>
+                    <span>Set Permission Function</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header-breadcrumb">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
+                        <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a>Account</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="#!">Set Permission</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="text-right row">
+            <div class="col-6"></div>
+            <div class="col-1">
+                <div class="checkbox-zoom zoom-success" onchange="click_check_all()">
+                    <label >
+                        <input type="checkbox" id="check_all">
+                        <span class="cr">
+                            <i class="cr-icon icofont icofont-ui-check txt-success"></i>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-4">
+                <select class="form-control" id="User" onchange="get_menu()">
+                    @foreach (var u in ViewBag.AccList as List<UserAccount>)
+                    {
+                        <option value="@u.Id">@u.Username</option>
+                    }
+                </select>
+            </div>
+            <div class="col-1">
+                <a class="btn btn-primary btn-sm text-white btn-block text-center" onclick="click_save()">Save</a>
+            </div>
+        </div>
+
+        <h4 class="sub-title" style="border-bottom:2px #00ACED solid ">User Permission List</h4>
+    </div>
+    <div class="card-block">
+        <div class="dt-responsive table-responsive">
+            <table class="table table-striped table-bordered nowrap">
+                <thead>
+                    <tr>
+                        <th>N<sup>o</sup></th>
+                        <th>Name</th>
+                        <th>Controller</th>
+                        <th>Function</th>
+                        <th>Type</th>
+                        <th class="text-center" width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="table_menu">
+                    @{ int i = 1;}
+                    @foreach (var m in ViewBag.Menu as List<MenuPermission>)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@m.Name</td>
+                            <td>@m.Controller</td>
+                            <td>@m.Action</td>
+                            <td>@m.Type</td>
+                            <td hidden class="menu_id">@m.Id</td>
+                            <td class="text-center menu_status">
+                                <div class="checkbox-zoom zoom-success" onchange="click_check()">
+                                    <label>
+                                        <input type="checkbox">
+                                        <span class="cr">
+                                            <i class="cr-icon icofont icofont-ui-check txt-success"></i>
+                                        </span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //var userid = $("#User").val();
+        get_menu();
+    });
+    function click_check_all() {
+        var check_all = $("#check_all").prop("checked");
+        var table = $("#table_menu").find("tr");
+        if (check_all) {
+            table.each(function () {
+                $(this).find("td.menu_status input").prop("checked", "checked");
+            });
+        }
+        else {
+            table.each(function () {
+                $(this).find("td.menu_status input").prop("checked", "");
+            });
+        }
+    }
+    function click_check() {
+        var table = $("#table_menu").find("tr");
+        var count = 0;
+        table.each(function () {
+            var check = $(this).find("td.menu_status input").prop("checked");
+            if (!check) {
+                count++;
+            }
+        });
+        if (count == 0) {
+            $("#check_all").prop("checked", "checked");
+        }
+        else {
+            $("#check_all").prop("checked", "");
+        }
+    }
+
+
+    function get_menu() {
+        var userid = $("#User").val();
+        $.ajax({
+            url: "/account/GetMenuWithUser",
+            type: "get",
+            datatype: "json",
+            data: { UserId: userid },
+            success: function (data) {
+                var out = "";
+                var check_all = 0;
+
+                var table = $("#table_menu").find("tr");
+                table.each(function () {
+                    var id = $(this).find("td.menu_id").text();
+                    var count = 0;
+                    $.each(data, function (i, value) {
+                        if (id == value.menuId && userid == value.userId && value.status == "A") {
+                            count++;
+                        }
+                    });
+                    if (count > 0) {
+                        $(this).find("td.menu_status input").prop("checked", "checked");
+                    }
+                    else {
+                        $(this).find("td.menu_status input").prop("checked", "");
+                        check_all++;
+                    }
+
+                });
+                if (check_all == 0) {
+                    $("#check_all").prop("checked", "checked");
+                }
+                else {
+                    $("#check_all").prop("checked", "");
+                }
+            },
+            error: function (error) {
+                console.log("Error :" + error);
+            }
+        });
+    }
+    function click_save() {
+        var table = $("#table_menu").find("tr");
+        var userid = $("#User").val();
+        var perms = [];
+        table.each(function () {
+            var id = $(this).find("td.menu_id").text();
+            var check = $(this).find("td.menu_status input").prop("checked");
+            var status = "A";
+            if (check == false) {
+                status = "C";
+            }
+            var perm = {
+                MenuId: id,
+                UserId: userid,
+                Status: status
+            };
+            perms.push(perm);
+        });
+        $.ajax({
+            url: "/account/SavePermission",
+            type: "post",
+            datatype: "json",
+            data: { permission: perms },
+            success: function (data) {
+                console.log(JSON.stringify(data));
+            },
+            error: function (error) {
+                console.log("Error :" + JSON.stringify(error));
+            }
+        });
+
+    }
+
+</script>

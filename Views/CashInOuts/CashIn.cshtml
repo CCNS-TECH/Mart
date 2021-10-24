@@ -1,0 +1,230 @@
+@model CashIn
+@{
+    Layout = "OrderLayout/_Layout";
+    var shifts = await EmployeeService.GetShifts();
+    var emps = await EmployeeService.EmployeesList();
+    var cashins = await DashboardService.GetCashInList();
+}
+<!-- Page-header start -->
+<div class="page-header ribbon-header">
+    <div class="row align-items-end">
+        <div class="col-lg-8">
+            <div class="page-header-title">
+                <div class="d-inline">
+                    <h4>Cash-in</h4>
+                    <span>Create</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="pull-right m-l-10">
+                <div class="page-header-breadcrumb">
+                    <ul class="breadcrumb-title">
+                        <li class="breadcrumb-item">
+                            <a asp-action="index" asp-controller="Home"> <i class="icofont icofont-home"></i> </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a>Cash-in</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="#!">Create </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page-header end --> 
+<div class="card">
+    <div class="card-header">
+        <h5>Open Shift</h5>
+        <span> Amount By Shift</span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+           @*@if (!cashins.Any())
+        {
+            <button class="btn btn-primary waves-effect" style="float: right;margin-bottom: 10px" data-toggle="modal" data-target="#modal-cash-in">Cash-in</button>
+        }*@
+                <button class="btn btn-primary waves-effect" style="float: right;margin-bottom: 10px" data-toggle="modal" data-target="#modal-cash-in">Cash-in</button>
+
+                <div class="dt-responsive table-responsive">
+                    <table class="table-striped table-sm table-bordered nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th>N <sup>o</sup></th>
+                                <th>Cash-in Name</th>
+                                <th>Received Name</th>
+                                <th>Date
+                                <th>Shift</th>
+                                <th class="text-right">Total-USD</th>
+                                <th class="text-right">Total-KH</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @{ int i = 1;}
+                        @if(cashins != null){
+                            @foreach (var cashin in cashins)
+                            {
+                                
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@cashin.CashInByStr</td>
+                                    <td>@cashin.ReceivedByStr</td>
+                                    <td>@cashin.DocDate?.ToString("MM/dd/yyyy")</td>
+                                    <td>@cashin.ShiftStr</td>
+                                    <td class="text-right">$ @String.Format("{0:N2}", @cashin.TotalUSD)</td>
+                                    <td class="text-right">៛ @String.Format("{0:N2}", @cashin.TotalRiel)</td>
+                                    <td class="text-center">
+                                        <label class="label label-info">Open</label>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal print bill-->
+<div class="modal fade modal-flex" id="modal-cash-in" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 950px">
+        <div class="modal-content">
+            <div class="modal-body model-container">
+                     <div class="card">
+                        <div class="card-header">
+                             <h5>Cash-in</h5>
+                            <span>Cash-in Amount By Shift</span>
+                            <hr/>
+                         </div>
+                         <div class="card-block">
+                             <form asp-action="CashInMoney" asp-controller="CashInOuts" method="post">
+                                 <fieldset>
+                                     <div class="form-group row">
+                                         <input type="hidden" asp-for="CashInByStr" value="@Context.Session.GetString("OwnnerName")"/>
+                                         <label class="col-sm-3 col-form-label">Cash-in By</label>
+                                         <div class="col-sm-9">
+                                             <select asp-for="CashInById" class="form-control required" onchange="selectCashInBy();">
+                                                 <option value="@Context.Session.GetString("OwnnerId")">@Context.Session.GetString("OwnnerName")</option>
+                                             </select>
+                                             <span asp-validation-for="CashInById" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row" hidden>
+                                         <input type="hidden" asp-for="ReceivedByStr" value="@Context.Session.GetString("OwnnerName")"/>
+                                         <label class="col-sm-3 col-form-label">Receive By</label>
+                                         <div class="col-sm-9">
+                                             <select asp-for="ReceivedById" class="form-control required" onchange="selectReceiveBy();">
+                                                 <option value="@Context.Session.GetString("OwnnerId")">@Context.Session.GetString("OwnnerName")</option>
+                                             </select>
+                                             <span asp-validation-for="ReceivedById" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <input type="hidden" asp-for="ShiftStr"/>
+                                         <label class="col-sm-3 col-form-label">Shift</label>
+                                         <div class="col-sm-9">
+                                             <select asp-for="ShiftId" class="form-control required" onchange="selectShift();">
+                                                 @foreach (var shf in shifts)
+                                                 {
+                                                     <option value="@shf.Id">@shf.Shift_Str</option>
+                                                 }
+                                             </select>
+                                             <span asp-validation-for="ShiftId" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Date</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="DocDate" type="text" class="form-control birthdate" readonly="readonly">
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Cash-in (USD)</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="CashInUSD" min="0" type="number" onblur="CashInUsd();" value="0" placeholder="0.00" class="form-control">
+                                             <span asp-validation-for="CashInUSD" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Cash-in (៛)</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="CashInRiel" min="0" type="number" onblur="CashInUsd();" value="0" placeholder="0.00" class="form-control">
+                                             <span asp-validation-for="CashInRiel" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Total Cash-in (USD)</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="TotalUSD" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                             <span asp-validation-for="TotalUSD" class="text-danger"></span>
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Total Cash-in (៛)</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="TotalRiel" min="0" type="number" class="form-control" placeholder="0.00" readonly="readonly">
+                                         </div>
+                                     </div>
+                                     <div class="form-group row">
+                                         <label class="col-sm-3 col-form-label">Exchange Rate (៛)</label>
+                                         <div class="col-sm-9">
+                                             <input asp-for="ExchangeRate" type="text" readonly="readonly" class="form-control" value="@Convert.ToDecimal(Context.Session.GetString("Riel")).ToString("0.00")">
+                                             <span asp-validation-for="ExchangeRate" class="text-danger"></span>
+                                         </div>
+                                                
+                                     </div>
+                                     <div class="form-group row">
+                                         <div class="col-sm-12 text-right">
+                                             <button type="submit" class="btn btn-primary"> Send</button>
+                                         </div>
+                                     </div>
+                                 </fieldset>
+                             </form>
+                             
+                         </div>
+                     </div>
+                 </div>
+        </div>
+    </div>
+</div>
+<!-- Modal print bill end -->
+<script>
+    function CashInUsd() {
+      CalculatorValue();
+    }
+    function selectShift(){
+      var shiftstr = $("#ShiftId option:selected").text();
+      $("#ShiftStr").val(shiftstr);
+    }
+    function selectReceiveBy(){
+          var receivestr = $("#ReceivedById option:selected").text();
+          $("#ReceivedByStr").val(receivestr);
+        }
+    function selectCashInBy(){
+          var cashInstr = $("#CashInById option:selected").text();
+          $("#CashInByStr").val(cashInstr);
+        }
+    function CalculatorValue() {
+        var cashInUsd =parseFloat($("#CashInUSD").val());
+        var cashInRiel =parseFloat($("#CashInRiel").val());
+        var exchange =parseFloat($("#ExchangeRate").val());
+        
+            
+        var totalUsd= parseFloat(cashInRiel / exchange);
+        var grandtotalUsd = parseFloat(cashInUsd + totalUsd).toFixed(2);
+        var grandtotalRiel= parseFloat(grandtotalUsd * exchange).toFixed(2);
+        
+        
+        $("#TotalUSD").val(grandtotalUsd);
+        $("#TotalRiel").val(grandtotalRiel);
+        
+    }
+</script>

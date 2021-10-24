@@ -1,0 +1,760 @@
+@{
+    Layout = "OrderLayout/_Layout";
+    var invoice = ViewBag.Invoice; 
+}
+<div class="content">
+    <!-- row -->
+    <div class="row">
+    <!-- col-md-4 -->
+    <div class="col-md-4">
+        @{ await Html.RenderPartialAsync("_PaymentBodyDetailPartailAsync");}
+    </div>
+    <!-- /col-md-4 -->
+    <!-- col-md-8 -->
+    <div class="col-md-8" style="padding-left:0;">
+        <ul class="nav nav-tabs" role="tablist" style="background-color: #ffffff">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#pay_cash" role="tab"><i class="icofont icofont-money-bag"></i> CASH</a>
+            </li>
+            <li class="nav-item" hidden="hidden">
+                <a class="nav-link" data-toggle="tab" href="#authorize" role="tab"><i class="icofont icofont-ui-user "></i> AUTHORIZE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#credit" role="tab"><i class="icofont icofont-credit-card"></i> CREDIT</a>
+            </li>
+            <li class="nav-item" hidden="hidden">
+                <a class="nav-link" data-toggle="tab" href="#bank" role="tab"><i class="icofont icofont-bank"></i> BANK</a>
+            </li>
+            <li class="nav-item" hidden="hidden">
+                <a class="nav-link" data-toggle="tab" href="#coin" role="tab"><i class="icofont icofont-coins"></i> COIN</a>
+            </li>
+        </ul>
+        <div style="height:85px; padding: 20px 0">
+        <div id="paymentarea" class="">
+            <div class="tab-content">
+            <div id="pay_cash" class="tab-pane active" role="tabpanel">
+                @{
+                    await Html.RenderPartialAsync("_PaymentByCashPartailAsync");
+                 }
+            </div>
+            <div id="authorize" class="tab-pane" role="tabpanel">
+                @{
+                    await Html.RenderPartialAsync("_PaymentAuthorizePartailAsync");
+                }
+            </div>
+            <div id="credit" class="tab-pane" role="tabpanel">
+                @{
+                    await Html.RenderPartialAsync("_PaymentCreditPartailAsync");
+                }
+            </div>
+            <div id="bank" class="tab-pane" role="tabpanel">
+                @{
+                  await Html.RenderPartialAsync("_PaymentBankPartailAsync");
+                }    
+             </div>
+            <div id="coin" class="tab-pane" role="tabpanel">
+                @{
+                    await Html.RenderPartialAsync("_PaymentCoinPartailAsync");
+                }
+            </div>
+            
+            </div>
+        </div>
+    </div>
+    <!-- /col-md-8 -->
+    </div>
+    <!-- /row -->
+    <div id="numberinputbtn">
+        @{
+            await Html.RenderPartialAsync("_PaymentFooterPartailAsync");
+        }
+    </div>
+    </div>
+</div>
+<!-- Modal print bill-->
+<div class="modal fade modal-flex" id="modal-print-payment" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 950px">
+        <div class="modal-content">
+            <div class="modal-body model-container">
+                @{ await Html.RenderPartialAsync("_PrintPaymentByCashPartailAsync");}    
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal print bill end -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(function(){
+        click_money(0,1);
+    });
+    function click_money(value, check) {
+        if (check == 1) {
+            var receive_dollar = parseFloat($("#receive_dollar").val());
+            var total = receive_dollar + parseFloat(value);
+            $("#receive_dollar").val(total.toFixed(2));
+        }
+        else {
+            var receive_reil = parseFloat($("#receive_reil").val());
+            var total = receive_reil + parseFloat(value);
+            $("#receive_reil").val(total.toFixed(2));
+        }
+        calculate_payment();
+    }
+
+    function blur_receive(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) value = 0;
+
+        $(val).val(value.toFixed(2));
+
+        calculate_payment();
+    }
+    function  blur_commission(val) {
+      var value = parseFloat($(val).val());
+      if (isNaN(value)) value = 0;
+
+      $(val).val(value.toFixed(2));
+      var sub_total = parseFloat($("#sub_total").val());
+      var grandtottal = $("#grand_total").val();
+      var other_charge = parseFloat($("#other_charge").val());
+
+        $("#commission_amount").val(parseFloat(sub_total * (value / 100)).toFixed(2));
+
+      //$("#commission_amount").val(parseFloat((grandtottal-other_charge)*(value/100)).toFixed(2));
+
+      calculate_payment();
+    }
+    function  blur_commission_amount(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) value = 0;
+
+        $(val).val(value.toFixed(2));
+        
+        var grandtottal = parseFloat($("#grand_total").val());
+        var other_charge = parseFloat($("#other_charge").val());
+        
+        console.log(grandtottal+" | "+other_charge);
+        
+        $("#commission").val(parseFloat((value * 100)/(grandtottal-other_charge)).toFixed(2));
+        if(grandtottal ==0){
+         $("#commission").val("0.00");
+        }
+        calculate_payment();
+    }
+    
+    function blur_charge(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value)) {
+            value = 0;
+        }
+        $(val).val(value.toFixed(2));
+
+        calculate_payment();
+    }
+    function blur_vat_percent(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+        
+        var sub_total = parseFloat($("#sub_total").val());
+        var dis_dollar = parseFloat($("#discount_dollar").val());
+        var total = sub_total - dis_dollar;
+        var vat_value = (total * value) / 100;
+
+        $("#vat_dollar").val(vat_value.toFixed(2));
+        $("#vat_percent").val(value.toFixed(2));
+
+        calculate_payment();
+    }
+    function blur_vat(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#sub_total").val());
+        var dis_dollar = parseFloat($("#discount_dollar").val());
+        var total = sub_total - dis_dollar;
+        var vat_percent = (value * 100) / total;
+
+        $("#vat_dollar").val(value.toFixed(2));
+        $("#vat_percent").val(vat_percent.toFixed(2));
+
+        calculate_payment();
+    }
+    function blur_discount_percent(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#sub_total").val());
+        var dis_dollar = (sub_total * value) / 100;
+
+        $("#discount_dollar").val(dis_dollar.toFixed(2));
+        $("#discount_percent").val(value.toFixed(2));
+
+        calculate_payment();
+    }
+    function blur_discount(val) {
+        var value = parseFloat($(val).val());
+        if (isNaN(value))  value = 0;
+
+        var sub_total = parseFloat($("#sub_total").val());
+        var dis_percent = (value * 100) / sub_total;
+
+        $("#discount_dollar").val(value.toFixed(2));
+        $("#discount_percent").val(dis_percent.toFixed(2));
+
+        calculate_payment();
+    }
+    
+    function calculate_payment() {
+        var sub_total = parseFloat($("#sub_total").val());
+        var discount_percent = parseFloat($("#discount_percent").val());
+        var discount_dollar = parseFloat($("#discount_dollar").val());
+        var vat_percent = parseFloat($("#vat_percent").val());
+        var vat_dollar = parseFloat($("#vat_dollar").val());
+        var other_charge = parseFloat($("#other_charge").val());
+        var service_charge = parseFloat($("#service_charge").val());
+
+        var receive_dollar = parseFloat($("#receive_dollar").val());
+        var receive_reil = parseFloat($("#receive_reil").val());
+        
+        var commissionprcnt  =  $("#commission").val();
+        
+        var exchange_rate = parseFloat($("#exchange_rate").val());
+
+        var amount = sub_total - discount_dollar + vat_dollar + other_charge + service_charge;
+        var amount_reil = amount * exchange_rate;
+
+        $("#grand_total").val(amount.toFixed(2));
+        $("#grand_total_riel").val(amount_reil.toFixed(2));
+
+        var change = (receive_dollar + (receive_reil/exchange_rate)) - amount;
+        var change_reil = change * exchange_rate;
+        $("#exchange").val(change.toFixed(2));
+        $("#exchange_reil").val(change_reil.toFixed(2));
+        
+        $("#commission_amount").val(parseFloat((sub_total)*(commissionprcnt/100)).toFixed(2));
+
+        var change_check = parseFloat($("#exchange").val());
+        if (change_check < 0) {
+            $("#exchange").removeClass("form-bg-info");
+            $("#exchange").addClass("form-bg-danger");
+            $("#exchange").css("background-color", "rgb(254, 93, 112)");
+
+            $("#exchange_reil").removeClass("form-bg-info");
+            $("#exchange_reil").addClass("form-bg-danger");
+            $("#exchange_reil").css("background-color", "rgb(254, 93, 112)");
+        }
+        else {
+            $("#exchange").addClass("form-bg-info");
+            $("#exchange").removeClass("form-bg-danger");
+            $("#exchange").css("background-color", "");
+
+            $("#exchange_reil").addClass("form-bg-info");
+            $("#exchange_reil").removeClass("form-bg-danger");
+            $("#exchange_reil").css("background-color", "");
+        }
+    }
+    //Check Cash In
+
+    function onClickPrintPayment() {
+        $.ajax({
+            url: "/CashInOuts/Check_CashIn",
+            type: "get",
+            datatype: "json",
+            success: function (response) {
+                if (!response) {
+                    location.href = "/CashInOuts/CashIn";
+                }
+                else {
+                    onClickPrintPayments();
+                }
+            }
+        });
+    }
+
+    function onClickPrintPayments() {
+
+             var total_payment_footer=$("#payment_total").find("tr");
+             var payment_footer=$("#frm-total-payment-footer").find("div");
+             
+             var subtotal = payment_footer.find("#sub_total").val(); 
+             var dis = parseFloat(payment_footer.find("#discount_percent").val()).toFixed(2); 
+             var vat =parseFloat(payment_footer.find("#vat_percent").val()).toFixed(2); 
+             var service =parseFloat(payment_footer.find("#service_charge").val()).toFixed(2);
+             var charge =parseFloat(payment_footer.find("#other_charge").val()).toFixed(2); 
+             var freehour =parseFloat(payment_footer.find("#free-hour").val()).toFixed(2); 
+             var grand_dollar_total=parseFloat(payment_footer.find("#grand_total").val()).toFixed(2); 
+             var grand_riel_total=payment_footer.find("#grand_total_riel").val(); 
+             var received_total_dollar = payment_footer.find("#receive_dollar").val(); 
+             var received_total_riel = payment_footer.find("#receive_reil").val(); 
+             var Exchange_total_dollar = parseFloat(payment_footer.find("#exchange").val()); 
+             var Exchange_total_riel = payment_footer.find("#exchange_reil").val(); 
+             
+             if(Exchange_total_dollar<0){
+                 swal({
+                     title:"Paid Fail!",
+                     text:"Please select money received from customer!",
+                     type:"error"
+                 });
+                 return;
+             }
+             
+             var out="" 
+                 +"<tr class='h6'>" 
+                 +"<td>1</td>"
+                 +"<td class='text-left sectionname'style='font-weight: bold;'>Room Name:</td>"
+                 +"<td class='sectionhours' style='font-weight: bold;'>0.00</td>"
+                 +"<td class='sectionprice' style='font-weight: bold;'>0.00</td>"
+                 +"<td class='sectionhourfree' style='font-weight: bold;'>0.00 %</td>"
+                 +"<td class='text-right sectionamount' style='font-weight: bold;'><b>$ 0.00</b></td>"
+                 +"</tr>";       
+             $("#tbbod-print-payment").html(out);
+             
+            var table_calculate_info=$("#table_calculate").find("tr");
+            var sectionInfoPrice=$("#sectionPriceInfo").find("tr");
+            var tbprintbill = $("#table_print_payment").find("tr");
+            var tbinvoicetotal=$("#payment_total").find("tr");
+            var tbsectionInfo=$("#sectionInfo").find("tr");
+            
+            
+            var hourfree = table_calculate_info.find("td.free_hour_total").text();
+            var duration = sectionInfoPrice.find("td span.TrackHours").text();
+            var price = sectionInfoPrice.find("td span.price").text();
+            var totalhour = sectionInfoPrice.find("td span.totalhours").text().split(".");
+        var sectionamount = $("#timeInfo").find("tr td span.data-Room-Amount").text();
+
+            
+            var sectName = tbsectionInfo.find("td span.data-section-name").text();
+            
+            tbprintbill.find("td.sectionname").text("Section Name"+sectName);
+            tbprintbill.find("td.sectionprice").text(price);
+            tbprintbill.find("td.sectionhours").text(totalhour[0] +" h "+totalhour[1] +" min");
+            tbprintbill.find("td.sectionamount").text(sectionamount);
+            tbinvoicetotal.find("td.bill-hour-free").text(hourfree);
+            
+            total_payment_footer.find("td.sub_total").text(subtotal);
+            total_payment_footer.find("td.discount_total").text(parseFloat(dis).toFixed(2));
+            total_payment_footer.find("td.vat_total").text(parseFloat(vat).toFixed(2));
+            total_payment_footer.find("td.service_total").text(parseFloat(service).toFixed(2));
+            total_payment_footer.find("td.charg_total").text(parseFloat(charge).toFixed(2));
+            total_payment_footer.find("td.free_hour_total").text(parseFloat(freehour).toFixed(2));
+            total_payment_footer.find("td.grand_dollar_total").text(parseFloat(grand_dollar_total).toFixed(2));
+            total_payment_footer.find("td.grand_riel_total").text(grand_riel_total);
+            total_payment_footer.find("td.received_dollar_total").text(received_total_dollar);
+            total_payment_footer.find("td.received_riel_total").text(received_total_riel);
+            total_payment_footer.find("td.exchange_dollar_total").text(Exchange_total_dollar);
+            total_payment_footer.find("td.exchange_riel_total").text(Exchange_total_riel);
+            
+            get_item_print_bill();
+    }
+    
+    function get_item_print_bill(){
+         var loop_item_ordered = $("#item_ordered").find("li");
+         var i=2;
+         var out="";
+         
+         loop_item_ordered.each(function () {
+             var itemid = $(this).attr("data-item_id");
+             var itemcode = $(this).attr("data-item_code");
+             var itemname = $(this).find("p.item_name").text();
+             var qty = $(this).find("span.quantity").text();
+             var price = $(this).find("span.price").text();
+             var dis = $(this).find("span.discount").text();
+             var total = $(this).find("span.item_total").text();
+             var uomid = $(this).attr("data-uom_id");
+             var guomid = $(this).attr("data-guom_id");
+             var uomname = $(this).attr("data-item_uom_name");
+             var guomname = $(this).attr("data-item_guom_name");
+             var cost = $(this).attr("data-item_cost");
+             var type = $(this).attr("data-item_type");
+             var statusfree=$(this).attr("data-status-free");
+             var labelfree="";
+             if(statusfree=="Y"){
+                 labelfree= "   <span class='label label-danger text-right'>Free<span>";
+             }else{
+                 labelfree="";
+             }
+             out +=
+                 "<tr class='h6'>"
+                 + "<td>" + i + "</td>"
+                 + "<td class='text-left'><b>" + itemname + "</b>" + labelfree + "</td>"
+                 + "<td class=''><b>" + parseFloat(qty).toFixed(2) + "</b></td>"
+                 + "<td class=''><b>$ " + price + "</b></td>"
+                 + "<td class=''><b>" + dis + " %</b></td>"
+                 + "<td class='text-right' style='font-weight: bold;'><b>$ " + total + "</b></td>"
+                 + "</tr>";
+                     i++;
+         });
+       
+        $("#tbbod-print-payment").append(out);
+        
+        clickPayment();
+    }
+    function clickPayment() {
+        var payment = {};
+        var loop_item_ordered = $("#item_ordered").find("li");
+        var total_payment_footer=$("#payment_total").find("tr");
+        var payment_footer=$("#frm-total-payment-footer").find("div");
+        var table_commission=$("#tbcommission").find("tr");
+        var loop_section_info = $("#sectionInfo").find("tr");
+        var loop_invoice_info=$("#tb-head-invoice").find("tr");
+         
+        var subtotal = payment_footer.find("#sub_total").val(); //currow.find("td.sub_total").text();
+        var disprcnt = parseFloat(payment_footer.find("#discount_percent").val()).toFixed(2); 
+        var disctotalUSD=parseFloat(payment_footer.find("#discount_dollar").val()).toFixed(2);
+        var vatprcnt = parseFloat(payment_footer.find("#vat_percent").val()).toFixed(2); //parseFloat(currow.find("td.vat_total").text());
+        var vatvalueUSD = parseFloat(payment_footer.find("#vat_dollar").val()).toFixed(2);
+        var exchange = parseFloat(payment_footer.find("#exchange_rate").val()).toFixed(2);
+        var servicecharge =parseFloat(payment_footer.find("#service_charge").val()).toFixed(2); 
+        var othercharge =parseFloat(payment_footer.find("#other_charge").val()).toFixed(2); //parseFloat(currow.find("td.charg_total").text());
+        var freehour =parseFloat(payment_footer.find("#free-hour").val()).toFixed(2); // currow.find("td.free_hour_total").text();
+        var grand_dollar_total=parseFloat(payment_footer.find("#grand_total").val()).toFixed(2); //currow.find("td.grand_total").text();
+        var grand_riel_total=payment_footer.find("#grand_total_riel").val(); //currow.find("td.grand_total").text();
+        var received_total_dollar =parseFloat(payment_footer.find("#receive_dollar").val()).toFixed(2); //currow.find("td.grand_total").text();
+        var received_total_riel = payment_footer.find("#receive_reil").val(); //currow.find("td.grand_total").text();
+        var Exchange_total_dollar = payment_footer.find("#exchange").val(); //currow.find("td.grand_total").text();
+        var Exchange_total_riel = payment_footer.find("#exchange_reil").val(); //currow.find("td.grand_total").text();
+        var commission=payment_footer.find("#commission").val();
+        var commission_amount=payment_footer.find("#commission_amount").val();
+        var commissionId=table_commission.find("td span.commissionId").text();
+        var commissionName=table_commission.find("td span.commissionName").text();
+         
+        var bookingId =  loop_section_info.find("td span.data-section-bookingId").text();
+        var convertrecievedrieltodollar = parseFloat(received_total_riel/exchange).toFixed(2);
+        var recievedDollar =parseFloat(parseFloat(received_total_dollar) + parseFloat(convertrecievedrieltodollar)).toFixed(2);
+        var username = loop_section_info.find("td span.data-recieved-name").text();
+        var userid = loop_section_info.find("td span.data-recieved-id").text();
+        var shiftId=loop_section_info.find("td span.data-shift-id").text();
+        var shiftStr=loop_section_info.find("td span.data-shift-name").text();
+        var invcode = loop_invoice_info.find("td.invoice-code").text();
+        var sectionid=loop_section_info.find("td span.data-section-id").text();
+        var sectionStr=loop_section_info.find("td span.data-section-name").text();
+        var gsectionid=loop_section_info.find("td span.data-gsection-id").text();
+        var sectiontypeStr=loop_section_info.find("td span.data-section-type-name").text();
+        var sectiontypeid=loop_section_info.find("td span.data-section-type-id").text();
+        var commissionCheckBox = table_commission.find("td #commissionvalue").val();
+        
+         var bookingStatus=""; 
+         if(bookingId == 0){
+             commissionId=0;
+             bookingId = 0;
+             bookingStatus =  "N";
+         }else{
+             bookingStatus =  "Y";
+         }
+         
+        payment.Received_USD = received_total_dollar;
+        payment.Received_Riel = received_total_riel;
+       
+        payment.PaymentCode = 0;
+        payment.DiscPrcnt = disprcnt;
+        payment.TotalDiscUSD = disctotalUSD;
+        payment.TotalDiscRiel = (disctotalUSD * exchange).toFixed(2);
+        payment.TaxPrcnt = vatprcnt;
+        payment.TotalTaxUSD = vatvalueUSD;
+        payment.TotalTaxRiel = (vatvalueUSD * exchange).toFixed(2);
+        payment.ExchangeRate = exchange;
+        payment.ShiftId = shiftId;
+        payment.ShiftStr = shiftStr;
+        payment.ServiceChargeUSD = servicecharge;
+        payment.ServiceChargeRiel = (servicecharge *exchange).toFixed(2);
+        payment.OtherChargeUSD = othercharge;
+        payment.OtherChargeRiel = (othercharge * exchange).toFixed(2);
+        payment.SubTotalUSD = subtotal;
+        payment.SubTotalRiel = (subtotal * exchange).toFixed(2);
+        payment.GrandTotalUSD = grand_dollar_total;
+        payment.GrandTotalRiel = grand_riel_total;
+      
+      
+        if(parseFloat(recievedDollar) >= parseFloat(payment.GrandTotalUSD))
+        {
+            payment.ReceivedUSD = grand_dollar_total;
+            payment.ReceivedRiel = (grand_dollar_total * exchange).toFixed(2);
+        }
+        else{
+            payment.ReceivedUSD = recievedDollar;
+            payment.ReceivedRiel = (recievedDollar * exchange).toFixed(2);
+        }
+        if(commissionCheckBox == 1){
+           
+            payment.ComissionPrcn = commission;
+            payment.ComissionRate = commission;
+            payment.ComissionUSD  = commission_amount;
+            payment.ComissionRiel = (commission_amount * exchange).toFixed(2);
+            payment.ComissionById = commissionId;
+            payment.ComissionByStr = commissionName;
+          
+        }else{
+           
+            payment.ComissionPrcn = 0;
+            payment.ComissionRate = 0;
+            payment.ComissionUSD  = 0;
+            payment.ComissionRiel = 0;
+            payment.ComissionById = 0;
+            payment.ComissionByStr = "NONE";
+          
+        }
+       
+       /*payment.ComissionPrcn = commission;
+       payment.ComissionRate = commission;
+       payment.ComissionUSD  = commission_amount;
+       payment.ComissionRiel = (commission_amount * exchange).toFixed(2);
+       payment.ComissionById = commissionId;
+       payment.ComissionByStr = commissionName;*/
+       
+       payment.BookingId = bookingId;
+       payment.BookingStatus = bookingStatus;
+       
+       payment.ReceivedById = userid;
+       payment.ReceivedByStr = username;
+       payment.MethodTypeId = 1;
+       payment.MethodTypeStr = "Cash";
+       payment.DocStatus = "C";
+       payment.CancelStatus = "N";
+       payment.CancelById =0;
+       payment.Deleted ="N";
+       payment.Description = "This is order item by user id: "+userid+ "- user name: " +username +"#shift id:"+shiftId+"- shift :"+shiftStr;
+       
+       var paymentdetil=[];
+       loop_item_ordered.each(function () {
+           var itemid = $(this).attr("data-item_id");
+           var itemcode = $(this).attr("data-item_code");
+           var itemname = $(this).find("p.item_name").text();
+           var qty = $(this).find("div span.quantity").text();
+           var price = $(this).find("div span.price").text();
+           var dis = $(this).find("span.discount").text();
+           var total = $(this).find("span.item_total").text();
+           var uomid = $(this).attr("data-uom_id");
+           var guomid = $(this).attr("data-guom_id");
+           var uomname = $(this).attr("data-item_uom_name");
+           var guomname = $(this).attr("data-item_guom_name");
+           var cost = $(this).attr("data-item_cost");
+           var statusfree=$(this).attr("data-status-free");
+           var item = {
+               SectionId:sectionid,
+               SectionStr:sectionStr,
+               GSectionId:gsectionid,
+               GSectionStr:"",
+               SectionTypeId:sectiontypeid,
+               SectionTypeStr:sectiontypeStr,
+               FreeHour:0,
+               OrderCode:0,
+               InvCode:invcode,
+               OrderById:0,
+               ItemId: itemid,
+               ItemCode: itemcode,
+               ItemStr: itemname,
+               ItemType: "NULL",
+               Quantity: qty,
+               Cost: cost,
+               UnitPrice: price,
+               Currency:"USD",
+               UoMId: uomid,
+               UoMStr: uomname,
+               GUoMId: guomid,
+               GUoMStr: guomname,
+               WhsId:0,
+               DiscPrcnt: dis,
+               TotalDiscUSD:(total * dis/100),
+               TotalDiscRiel:(total * (dis/100) * exchange),
+               TaxPrcnt:0,
+               TaxRate:0,
+               TotalTaxUSD:0,
+               TotalTaxRiel:0,
+               TotalLine: total,
+               Deleted:"N",
+               LineFree:statusfree
+           };
+           paymentdetil.push(item);                    
+       });
+       //console.table(paymentdetil);
+       payment.PaymentDetails = paymentdetil;
+       //console.log(JSON.stringify(order));
+
+        $.ajax({
+           url: "/payment/pay",
+           type: "post",
+           datatype: "json",
+           async:false,
+           data:{"payment":payment,"invCode":invcode,"sectionId":sectionid},
+           success: function (data) {
+               if(data !==501){
+                   loop_invoice_info.find("td.payment-code").text("#"+data);
+                   //function print bill
+                    var printContents = document.getElementById("print_payment").innerHTML;
+                    var originalContents = document.body.innerHTML;
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    document.body.innerHTML = originalContents;
+                    window.location.replace('/pos/sections')
+               }else{
+                   swal({
+                       title:"Paid Fail!",
+                       text:"Your payment has been Fail!",
+                       type:"error"
+                   });
+               }
+            }
+       });
+    }
+    function onClickCreditPayment() {
+        $.ajax({
+            url: "/CashInOuts/Check_CashIn",
+            type: "get",
+            datatype: "json",
+            success: function (response) {
+                if (!response) {
+                    location.href = "/CashInOuts/CashIn";
+                }
+                else {
+                    $("#commissionvalue").val(0);
+                    onClickCreditPayments();
+                }
+            }
+        });
+    }
+    function onClickCreditPayments() {
+
+                 var payment_footer=$("#frm-total-payment-footer").find("div");
+                 var table_commission=$("#tbcommission").find("tr");
+                 var loop_section_info = $("#sectionInfo").find("tr");
+                 var loop_invoice_info=$("#timeInfo").find("tr");
+                 
+                 
+                 var exchange = parseFloat(payment_footer.find("#credit_exchange_rate").val()).toFixed(2);
+                
+                 var commission=payment_footer.find("#credit_commission").val();
+                 var commission_amount=payment_footer.find("#credit_commission_amount").val();
+                 var commissionId=table_commission.find("td span.commissionId").text();
+                 var commissionName=table_commission.find("td span.commissionName").text();
+                 
+                 var bookingId =  loop_section_info.find("td span.data-section-bookingId").text();
+                 
+                 var username = loop_section_info.find("td span.data-recieved-name").text();
+                 var userid = loop_section_info.find("td span.data-recieved-id").text();
+                 var shiftId=loop_section_info.find("td span.data-shift-id").text();
+                 var shiftStr=loop_section_info.find("td span.data-shift-name").text();
+                 var invcode = loop_invoice_info.find("td span.data-Inv-code").text();
+                 var sectionid=loop_section_info.find("td span.data-section-id").text();
+                 var commissionCheckBox = table_commission.find("td #commissionvalue").val();
+                 var customerId= $("#VendorId").val();
+                 var returnDate=$("#Pay_Date").val();
+                 var description = $("#descriptionCreditPayment").val(); 
+                 
+                 var bookingStatus=""; 
+                 if(bookingId == 0){
+                     commissionId = 0;
+                     bookingId = 0;
+                     bookingStatus =  "N";
+                 }else{
+                     bookingStatus =  "Y";
+                 }
+               var creditPayment={};
+                 
+               creditPayment.InvCode = invcode;
+               creditPayment.SectionId = sectionid;
+               creditPayment.ReturnDate = returnDate;
+               creditPayment.CustomerId = customerId;
+               creditPayment.ShiftId = shiftId;
+               creditPayment.ShiftStr = shiftStr;
+        console.log("Check BOX Value: " + commissionCheckBox);
+
+        if (commissionCheckBox == 1) {
+
+            creditPayment.CommissionPrcnt = commission;
+            creditPayment.CommissionRate = commission;
+            creditPayment.CommissionTotalUSD = commission_amount;
+            creditPayment.CommissionTotalRiel = (commission_amount * exchange).toFixed(2);
+            creditPayment.CommissionById = commissionId;
+            creditPayment.CommissionByStr = commissionName;
+
+        } else {
+
+            creditPayment.CommissionPrcnt = 0;
+            creditPayment.CommissionRate = 0;
+            creditPayment.CommissionTotalUSD = 0;
+            creditPayment.CommissionTotalRiel = 0;
+            creditPayment.CommissionById = 0;
+            creditPayment.CommissionByStr = "NONE";
+
+        }
+        creditPayment.BookingId = bookingId;
+        creditPayment.BookingStatus = bookingStatus;
+               
+        creditPayment.CreateById = userid;
+        creditPayment.CreateByStr = username;
+        creditPayment.MethodTypeId = 2;
+        creditPayment.MethodTypeStr = "Credit";
+        creditPayment.Description = description;
+
+        var timein = ($("tr td span.TimeIn").text()).split(' ');
+        creditPayment.TimeIn = timein[0];
+        creditPayment.TimeOut = getActualHour();
+    
+        if (creditPayment.CustomerId != 0) {
+            $.ajax({
+                url: "/payment/credit",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: { "creditPayment": creditPayment },
+                success: function (data) {
+                    if (data != 501) {
+                        window.location.replace('/pos/sections')
+                    } else {
+                        swal({
+                            title: "Credit Payment Fail!",
+                            text: "Your credit payment has been Fail!",
+                            type: "error"
+                        });
+                    }
+                }
+            });
+        } else {
+            swal({
+                title: "Credit Payment Fail!",
+                text: "Please select customer credit payment!",
+                type: "error"
+            });
+        }
+                
+    }
+    function getActualHour() {
+        var d = new Date();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var s = d.getSeconds();
+        return h + ":" + m + ":" + s;
+    }
+    function funcCheckCommission() {
+        if ($('#commissionCheckbox').prop("checked") == true) {
+
+            $('#commissionvalue').val(1);
+
+            $("#commission").removeClass("form-bg-info");
+            $("#commission").addClass("form-bg-danger");
+            $("#commission").css("background-color", "rgb(254, 93, 112)");
+            $("#commission").removeAttr("readonly");
+
+            $("#commission_amount").removeClass("form-bg-info");
+            $("#commission_amount").addClass("form-bg-danger");
+            $("#commission_amount").css("background-color", "rgb(254, 93, 112)");
+            
+            $("#commission_amount").removeAttr("readonly");
+        }
+        else if ($('#commissionCheckbox').prop("checked") == false) {
+
+            $('#commissionvalue').val(0);
+            $("#commission").val(0.00);
+            $("#commission").removeClass("form-bg-danger");
+            $("#commission").addClass("form-bg-info");
+            $("#commission").css("background-color", "");
+            $("#commission").attr("readonly", "readonly");
+
+            $("#commission_amount").val(0.00);
+            $("#commission_amount").removeClass("form-bg-danger");
+            $("#commission_amount").addClass("form-bg-info");
+            $("#commission_amount").css("background-color", "");
+            $("#commission_amount").attr("readonly", "readonly");
+        }
+    }
+</script>
