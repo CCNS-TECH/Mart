@@ -92,7 +92,7 @@
 
                             </td>
                         </tr>
-                        <tr>
+                        @*<tr>
                             <th>Time In : </th>
                             <td class="order-date" style="font-weight: bold;">
                                 @ViewBag.TimeIn
@@ -103,7 +103,7 @@
                             <td class="order-date" style="font-weight: bold;">
                                 @ViewBag.TimeOut
                             </td>
-                        </tr>
+                        </tr>*@
                     </tbody>
                 </table>
             </div>
@@ -126,7 +126,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach (var inv in Model.Invoices)
+                            @*@foreach (var inv in Model.Invoices)
                             {
                                 <tr>
                                     <td>1</td>
@@ -137,8 +137,8 @@
                                     <td class=''>0.00</td>
                                     <td class='text-right' style='font-weight: bold;'><b>$ @String.Format("{0:N2}", @inv.SectionAmount)</b></td>
                                 </tr>
-                            }
-                            @{ int i = 2;}
+                            }*@
+                            @{ int i = 1;}
                             @foreach (var inv in Model.PaymentDetails)
                             {
                                 <tr>
@@ -177,14 +177,14 @@
                         <td style="font-weight: bold;">VAT / ពន្ធ (%)</td>
                         <td class="text-right vat_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.TaxPrcnt)</td>
                     </tr>
-                    <tr>
+                    @*<tr>
                         <td style="font-weight: bold;">Service / សេវាកម្ម ($)</td>
                         <td class="text-right service_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.ServiceChargeUSD)</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #ccc">
                         <td style="font-weight: bold;">Other Charge / ការចំណាយផ្សេងៗ ($)</td>
                         <td class="text-right charg_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.OtherChargeUSD)</td>
-                    </tr>
+                    </tr>*@
                     <tr>
                         <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ ($)</td>
                         <td class="text-right grand_dollar_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.GrandTotalUSD)</td>
@@ -193,7 +193,7 @@
                         <td style="font-weight: bold;">Grand Total / សរុបទាំងអស់ (៛)</td>
                         <td class="text-right grand_riel_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.GrandTotalRiel)</td>
                     </tr>
-                    @if (Model.PayType == "W")
+                    @*@if (Model.PayType == "W")
                     {
                         <tr>
                             <td style="font-weight: bold;">Recieved Dollars / ប្រាក់ទទួល ($)</td>
@@ -214,7 +214,7 @@
                             <td style="font-weight: bold;">Received Riel / ប្រាក់ទទួល (៛)</td>
                             <td class="text-right received_riel_total" style="font-weight: bold;">@String.Format("{0:N2}", @Model.Received_Riel)</td>
                         </tr>
-                    }
+                    }*@
 
                     <tr hidden="hidden">
                         <td style="font-weight: bold;">Exchange Dollars / ប្រាក់អាប់ ($)</td>

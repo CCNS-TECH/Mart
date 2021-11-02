@@ -68,7 +68,7 @@
                                 <tr>
                                     <th></th>
                                     <th>Code</th>
-                                    <th>Section Name</th>
+                                    @*<th>Section Name</th>*@
                                     <th>Date</th>
                                     <th>Bill Time</th>
                                     <th class="text-center">Status</th>
@@ -80,7 +80,7 @@
                                 		<tr>
                                 			<th></th>
                                 			<td></td>
-                                			<td></td>
+                                			@*<td></td>*@
                                 			<td></td>
                                             <td></td>
                                             <th class="text-right">Totals</th>
@@ -178,13 +178,13 @@
                              return "<span> #"+data.toString()+"</span>";
                          } 
                     },
-                    {
+                    @*{
                         "data": "sectionStr",
                         "className": 'text-left',
                          "render" : function(data){
                              return "<span class='text-primary'>"+data+"</span>";
                          } 
-                    },
+                    },*@
                      { 
                          data: "createDate",
                          render: function(data, type, row){

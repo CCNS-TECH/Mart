@@ -368,19 +368,24 @@ namespace resm_app.Models.Repositories
                 to += TimeSpan.Parse("05:59:59");
                 var detail = await _context.InvoiceDetails.Where(d => d.DocDate >= from && d.DocDate <= to).ToListAsync();
 
+                foreach(var s in detail)
+                {
+                    s.DocDate = DateTime.Parse(s.DocDate?.ToString("yyyy-MM-dd"));
+                }
                 var list = (from s in detail
-                    group s by new { s.ItemCode,s.UoMStr,s.UnitPrice,s.DocDate} into g
-                    select new InvoiceDetail
-                    {
-                        ItemCode = g.Key.ItemCode,
-                        ItemStr = g.Max(p=>p.ItemStr),
-                        Quantity = g.Sum(s => s.Quantity),
-                        UoMStr = g.Key.UoMStr,
-                        DocDate = g.Key.DocDate,
-                        UnitPrice = g.Key.UnitPrice,
-                        TotalLine=(g.Sum(p=>p.Quantity)* g.Key.UnitPrice)
-                    
-                    }).OrderByDescending(p=>p.DocDate).ToList();
+                           group s by new { s.ItemCode, s.UoMStr, s.UnitPrice, s.DocDate } into g
+                            select new InvoiceDetail
+                            {
+                                ItemCode = g.Key.ItemCode,
+                                ItemStr = g.Max(p => p.ItemStr),
+                                Quantity = g.Sum(s => s.Quantity),
+                                UoMStr = g.Key.UoMStr,
+                                DocDate = g.Key.DocDate,
+                                UnitPrice = g.Key.UnitPrice,
+                                TotalLine = (g.Sum(p => p.Quantity) * g.Key.UnitPrice)
+
+                            }).OrderByDescending(p => p.DocDate)
+                            .ToList();
                 return list;
             }
             catch (Exception e)

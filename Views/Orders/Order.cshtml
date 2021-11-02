@@ -633,7 +633,7 @@
                     document.body.innerHTML = printContents;
                     window.print();
                     document.body.innerHTML = originalContents;
-                    window.location.replace('/home/dashboard')
+                    window.location.reload();
                 } else {
                     swal({
                         title: "Order Fail!",
